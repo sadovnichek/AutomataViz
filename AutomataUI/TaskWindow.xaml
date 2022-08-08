@@ -1,0 +1,62 @@
+﻿<Window x:Class="AutomataUI.TaskWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        Title="Создать работу" 
+        Height="450" Width="800" 
+        WindowStyle="ToolWindow">
+    <Grid>
+        <DockPanel LastChildFill="False" Margin="10, 10, 10, 10">
+            <WrapPanel DockPanel.Dock="Top" Margin="10, 10, 10, 10">
+                <Label FontSize="15" Margin="0, 0, 10, 0">Количество вариантов:</Label>
+                <TextBox x:Name="Number" FontSize="18"
+                         Width="40"
+                         Height="30"
+                         TextWrapping="Wrap"/>
+            </WrapPanel>
+            <WrapPanel DockPanel.Dock="Top" Margin="10, 10, 10, 10">
+                <Label FontSize="15" Margin="0, 0, 10, 0">Число состояний автомата:</Label>
+                <TextBox x:Name="StatesNumber" FontSize="15"
+                         Width="40"
+                         Height="30"
+                         TextWrapping="Wrap"/>
+            </WrapPanel>
+            <WrapPanel DockPanel.Dock="Top" Margin="10, 10, 10, 10">
+                <Label FontSize="15" Margin="0, 0, 10, 0">Алфавит:</Label>
+                <TextBox x:Name="Alphabet" FontSize="15"
+                         Width="200"
+                         Height="30"
+                         TextWrapping="Wrap"/>
+            </WrapPanel>
+            <CheckBox x:Name="WithSolution" FontSize="15" Margin="10, 10, 0, 0" 
+                      DockPanel.Dock="Top" IsChecked="True">С решением в отдельном файле
+            </CheckBox>
+            <StackPanel x:Name="Tasks" DockPanel.Dock="Top">
+                <WrapPanel>
+                    <Label VerticalAlignment="Center" FontSize="15" Margin="10, 0, 10, 0">Описание задания:</Label>
+                    <TextBox x:Name="Description" TextWrapping="Wrap" Margin="0, 10, 0, 10"
+                             TextAlignment="Left"
+                             HorizontalScrollBarVisibility="Disabled"
+                             VerticalScrollBarVisibility="Visible"
+                             Width="400"
+                             AcceptsReturn="True"
+                             MinHeight="50"
+                             MaxHeight="50"
+                             FontSize="15"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <Label FontSize="15" Margin="10, 10, 0, 0">Тип задания:</Label>
+                    <ComboBox Margin="10, 0, 0, 0" x:Name="Algolist" 
+                              Width="auto"
+                              Loaded="Algorithms_OnLoaded"
+                              FontSize="15"/>
+                </WrapPanel>
+            </StackPanel>
+            
+            <Button DockPanel.Dock="Bottom" Height="50" Width="100" HorizontalAlignment="Left"
+                    Click="Create_OnClick">Создать</Button>
+        </DockPanel>
+    </Grid>
+</Window>

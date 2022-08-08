@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+        <ProductName>AutomataViz</ProductName>
+        <TargetFramework>net6.0-windows</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Desktop\GraphVizDotNetLib-master\GraphVizDotNetLib\GraphVizDotNetLib.csproj" />
+      <ProjectReference Include="..\..\Automata\Automata\Automata.csproj" />
+      <ProjectReference Include="..\Automata\Automata.csproj" />
+      <ProjectReference Include="..\GraphVizDotNetLib\GraphVizDotNetLib.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.Drawing.Common" Version="7.0.0-preview.6.22324.4" />
+    </ItemGroup>
+
+</Project>

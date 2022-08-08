@@ -1,0 +1,99 @@
+﻿<Window x:Class="AutomataUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="AutomataViz" WindowState="Maximized">
+    <Grid x:Name="Grid1">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        
+        <Menu Grid.Row="0" Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2">
+            <MenuItem Header="Создать работу" Click="CreateTask_OnClick"/>
+        </Menu>
+        
+        <StackPanel Grid.Column="0" Grid.Row="1" Margin="10, 0, 0, 0">
+            <StackPanel>
+                <Label FontSize="18">
+                    Введите таблицу переходов автомата в виде "1.a = 2"
+                </Label>
+                <TextBox x:Name="TableInput"
+                         AcceptsTab="True"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         MinHeight="175"
+                         MaxHeight="175"
+                         FontSize="16"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+                <Label FontSize="18">
+                    Введите начальное состояние
+                </Label>
+                <TextBox x:Name="StartState" FontSize="18"/>
+                <Label FontSize="18">
+                    Введите заключительные состояния через пробел
+                </Label>
+                <TextBox x:Name="TerminateStates" FontSize="18"/>
+            </StackPanel>
+            
+            <DockPanel  LastChildFill="False" Margin="10, 10, 0, 0">
+                <Button x:Name="ApplyButton" 
+                        DockPanel.Dock="Left" 
+                        Content="Применить" 
+                        Width="100"
+                        IsEnabled="False"
+                        Click="ApplyButton_OnClick"/>
+                <ComboBox x:Name="Algolist" 
+                          DockPanel.Dock="Left" 
+                          Width="auto" 
+                          Loaded="Algorithms_OnLoaded" 
+                          SelectionChanged="Algorithms_OnSelectionChanged"
+                          FontSize="24"/>
+                <Button x:Name="VisualButton"
+                        DockPanel.Dock="Right" 
+                        Content="Визуализировать" 
+                        Width="100"
+                        Click="VisualButton_OnClick"/>
+            </DockPanel>
+            
+            <StackPanel>
+                <Label x:Name="Result" FontSize="18" Visibility="Hidden">
+                    Результат:
+                </Label>
+                <TextBox x:Name="TableOutput"
+                         AcceptsTab="True"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         MinHeight="125"
+                         MaxHeight="125"
+                         FontSize="16"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible"
+                         Visibility="Hidden"
+                         IsReadOnly="True"/>
+                <Label x:Name="startStatesLabel" FontSize="18" Visibility="Hidden">
+                    Начальное состояние:
+                </Label>
+                <TextBox x:Name="StartStateOutput" FontSize="18" Visibility="Hidden" IsReadOnly="True"/>
+                <Label x:Name="terminateStatesLabel" FontSize="18" Visibility="Hidden">
+                    Заключительные состояния:
+                </Label>
+                <TextBox x:Name="TerminateStatesOutput" FontSize="18" Visibility="Hidden" IsReadOnly="True"/>
+            </StackPanel>
+        </StackPanel>
+        <Image x:Name="Visualization"
+               Grid.Row="1" Grid.RowSpan="3"
+               Grid.Column="1"
+               Margin="10, 100, 10, 100"
+               Width="500"
+               Height="500"
+               />
+    </Grid>
+</Window>
