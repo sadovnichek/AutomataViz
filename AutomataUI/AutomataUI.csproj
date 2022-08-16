@@ -8,6 +8,16 @@
         <TargetFramework>net6.0-windows</TargetFramework>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <PlatformTarget>AnyCPU</PlatformTarget>
+      <Prefer32bit>true</Prefer32bit>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <PlatformTarget>AnyCPU</PlatformTarget>
+      <Prefer32bit>true</Prefer32bit>
+    </PropertyGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\..\..\Desktop\GraphVizDotNetLib-master\GraphVizDotNetLib\GraphVizDotNetLib.csproj" />
       <ProjectReference Include="..\..\Automata\Automata\Automata.csproj" />

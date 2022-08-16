@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,11 +12,14 @@ using Automata.Algorithm;
 using Automata.Infrastructure;
 using Automata.Domain;
 using GraphVizDotNetLib;
+using Microsoft.Win32;
 
 namespace AutomataUI;
 
 public partial class MainWindow
 {
+    private Bitmap _currentDisplayedImage;
+
     private void ConfigureImagesDirectory()
     {
         if (!Directory.Exists("./images"))
@@ -61,7 +65,7 @@ public partial class MainWindow
         return new Automata<string>(table, start, terminates, states, alphabet);
     }
 
-    private void WriteOutput<T>(Automata<T> automata)
+    private string GetTextForm<T>(Automata<T> automata)
     {
         var output = new StringBuilder();
         foreach (var state in automata.States)
@@ -75,9 +79,7 @@ public partial class MainWindow
             output.Append('\n');
         }
 
-        TableOutput.Text = output.ToString();
-        StartStateOutput.Text = automata.StartState.SetToString();
-        TerminateStatesOutput.Text = string.Join(" ", automata.TerminateStates.Select(s => s.SetToString()));
+        return output.ToString();
     }
 
     private void ApplyButton_OnClick(object sender, RoutedEventArgs e)
@@ -87,13 +89,17 @@ public partial class MainWindow
             var automata = GetAutomata();
             var algorithm = AlgorithmResolver.ResolveByName(Algolist.SelectionBoxItem.ToString());
             var transformed = algorithm.Get(automata);
+            
             TableOutput.Visibility = Visibility.Visible;
             StartStateOutput.Visibility = Visibility.Visible;
             TerminateStatesOutput.Visibility = Visibility.Visible;
             Result.Visibility = Visibility.Visible;
             startStatesLabel.Visibility = Visibility.Visible;
             terminateStatesLabel.Visibility = Visibility.Visible;
-            WriteOutput(transformed);
+            
+            TableOutput.Text = GetTextForm(transformed);
+            StartStateOutput.Text = transformed.StartState.SetToString();
+            TerminateStatesOutput.Text = string.Join(" ", transformed.TerminateStates.Select(s => s.SetToString()));
         }
         catch (Exception exception)
         {
@@ -160,6 +166,7 @@ public partial class MainWindow
         {
             throw new Exception("Поле начальных состояний заполнено не корректно");
         }
+
         var regex = (input.Contains('{'))
             ? new Regex(@"{.*?}")
             : new Regex(@"\d+");
@@ -172,6 +179,44 @@ public partial class MainWindow
     {
         var dot = transformed.ConvertToDotFormat();
         var gv = new GraphVizRenderer("./bin");
-        gv.DrawGraphFromDotCode(dot).Save($"./images/{transformed.Id}.png");
+        var image = gv.DrawGraphFromDotCode(dot);
+        image.Save($"./images/{transformed.Id}.png");
+        _currentDisplayedImage = image;
+    }
+
+    private void Pattern_OnClick(object sender, RoutedEventArgs e)
+    {
+        var output = new StringBuilder();
+        for (var state = 1; state <= 5; state++)
+        {
+            for (var letter = 97; letter < 99; letter++)
+            {
+                output.Append($"{state}.{(char) letter} = ");
+            }
+
+            output.Append('\n');
+        }
+
+        TableInput.Text += output.ToString();
+    }
+
+    private void ImageSave_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (Visualization.Source == null) return;
+        var saveFileDialog = new SaveFileDialog();
+        saveFileDialog.Filter = "picture files (*.png)|*.png|All files (*.*)|*.*";
+        if (saveFileDialog.ShowDialog() == true)
+        {
+            _currentDisplayedImage.Save(saveFileDialog.FileName);
+        }
+    }
+
+    private void RandomAutomata_OnClick(object sender, RoutedEventArgs e)
+    {
+        var random = new Random();
+        var randomAutomata = new RandomAutomata(random.Next(5, 11), random.Next(2, 4)).Get();
+        TableInput.Text = GetTextForm(randomAutomata);
+        StartState.Text = randomAutomata.StartState;
+        TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);
     }
 }

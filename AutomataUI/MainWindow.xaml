@@ -15,11 +15,15 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         
-        <Menu Grid.Row="0" Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2">
+        <Menu x:Name="Menu" Grid.Row="0" Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2">
             <MenuItem Header="Создать работу" Click="CreateTask_OnClick"/>
+            <MenuItem Header="Вставить шаблон для ввода" Click="Pattern_OnClick"/>
+            <MenuItem Header= "Сохранить изображение" Click="ImageSave_OnClick"/>
+            <MenuItem Header="Мне повезёт!" Click="RandomAutomata_OnClick"/>
         </Menu>
         
-        <StackPanel Grid.Column="0" Grid.Row="1" Margin="10, 0, 0, 0">
+        <ScrollViewer Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <StackPanel  Margin="10, 0, 0, 0">
             <StackPanel>
                 <Label FontSize="18">
                     Введите таблицу переходов автомата в виде "1.a = 2"
@@ -28,8 +32,8 @@
                          AcceptsTab="True"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
-                         MinHeight="175"
-                         MaxHeight="175"
+                         MinHeight="200"
+                         MaxHeight="200"
                          FontSize="16"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                          ScrollViewer.VerticalScrollBarVisibility="Visible"/>
@@ -71,8 +75,8 @@
                          AcceptsTab="True"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
-                         MinHeight="125"
-                         MaxHeight="125"
+                         MinHeight="150"
+                         MaxHeight="150"
                          FontSize="16"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                          ScrollViewer.VerticalScrollBarVisibility="Visible"
@@ -87,13 +91,14 @@
                 </Label>
                 <TextBox x:Name="TerminateStatesOutput" FontSize="18" Visibility="Hidden" IsReadOnly="True"/>
             </StackPanel>
-        </StackPanel>
+            
+            </StackPanel>
+        </ScrollViewer>
+        
         <Image x:Name="Visualization"
                Grid.Row="1" Grid.RowSpan="3"
                Grid.Column="1"
-               Margin="10, 100, 10, 100"
-               Width="500"
-               Height="500"
-               />
+               Margin="100, 100, 100, 200"
+        />
     </Grid>
 </Window>
