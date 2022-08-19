@@ -21,6 +21,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Automata\Automata.csproj" />
+      <ProjectReference Include="..\Updater\Updater.csproj" />
     </ItemGroup>
 
 </Project>

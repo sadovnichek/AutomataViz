@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,14 +15,15 @@ using Automata.Infrastructure;
 using Automata.Domain;
 using GraphVizDotNetLib;
 using Microsoft.Win32;
+using Updater;
 
 namespace AutomataUI;
 
-public partial class MainWindow
+public partial class MainWindow : Window
 {
     private Bitmap _currentDisplayedImage;
 
-    private void ConfigureImagesDirectory()
+    private static void ConfigureImagesDirectory()
     {
         if (!Directory.Exists("./images"))
         {
@@ -28,22 +31,28 @@ public partial class MainWindow
         }
         else
         {
-            foreach (var file in Directory.GetFiles("./images"))
-            {
-                File.Delete($"./{file}");
-            }
+            ClearDirectory("./images");
         }
     }
 
+    private static void ClearDirectory(string path)
+    {
+        foreach (var file in Directory.GetFiles(path))
+        {
+            File.Delete($"./{file}");
+        }
+    }
+    
     public MainWindow()
     {
         InitializeComponent();
         ConfigureImagesDirectory();
+        File.Delete("./AutomataViz.zip");
     }
 
     private void CreateTask_OnClick(object sender, RoutedEventArgs e)
     {
-        TaskWindow taskWindow = new TaskWindow();
+        var taskWindow = new TaskWindow();
         taskWindow.Show();
     }
 
@@ -218,5 +227,20 @@ public partial class MainWindow
         TableInput.Text = GetTextForm(randomAutomata);
         StartState.Text = randomAutomata.StartState;
         TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);
+    }
+
+    private void Update(object sender, RoutedEventArgs e)
+    {
+        var process = new Process();
+        var url = "https://github.com/sadovnichek/AutomataViz/releases/download/v1.0/AutomataViz.zip";
+        var pathToSave = Environment.CurrentDirectory;
+        var appName = "AutomataUI.exe";
+        process.StartInfo = new ProcessStartInfo()
+        {
+            FileName = "Updater.exe",
+            Arguments = $"{url} {pathToSave} {appName}"
+        };
+        process.Start();
+        Environment.Exit(0);
     }
 }

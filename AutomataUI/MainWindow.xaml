@@ -20,6 +20,7 @@
             <MenuItem Header="Вставить шаблон для ввода" Click="Pattern_OnClick"/>
             <MenuItem Header= "Сохранить изображение" Click="ImageSave_OnClick"/>
             <MenuItem Header="Мне повезёт!" Click="RandomAutomata_OnClick"/>
+            <MenuItem Header="Обновить" Click="Update"/>
         </Menu>
         
         <ScrollViewer Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
