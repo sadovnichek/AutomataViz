@@ -14,4 +14,19 @@ public static class Extensions
                 source.ToString()
         };
     }
+
+    public static HashSet<T> GetRandomSubset<T>(this IEnumerable<T> source, int count)
+    {
+        if (count > source.Count())
+        {
+            throw new ArgumentException("Count of result set cannot be more than source set");
+        }
+        var result = new HashSet<T>();
+        var random = new Random();
+        while (result.Count < count)
+        {
+            result.Add(source.ToList()[random.Next(0, source.Count() - 1)]);
+        }
+        return result;
+    }
 }

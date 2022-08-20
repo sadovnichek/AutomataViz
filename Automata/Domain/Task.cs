@@ -26,12 +26,14 @@ public class Task
         student.Write(_description);
         teacher.Write(_description);
         var states = Enumerable.Range(1, _statesNumber).Select(x => x.ToString()).ToHashSet();
-        var randomAutomata = new RandomAutomata(states, _alphabet).Get();
+        var randomAutomata = Automata<string>.GetRandom(states, _alphabet);
         var transformed = _algorithm.Get(randomAutomata);
 
-        while (!(randomAutomata.GetUnreachableStates().Count <= 1 && transformed.CountCompoundSets() >= 2))
+        while (!(randomAutomata.GetUnreachableStates().Count <= 1 
+                 && transformed.CountCompoundSets() >= 2 
+                 && transformed.TerminateStates.Count > 1))
         {
-            randomAutomata = new RandomAutomata(states, _alphabet).Get();
+            randomAutomata = Automata<string>.GetRandom(states, _alphabet);
             transformed = _algorithm.Get(randomAutomata);
         }
         

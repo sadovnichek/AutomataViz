@@ -131,4 +131,32 @@ public class Automata<TState>
             return states.Count(set => set.Count > 1);
         throw new Exception("Unexpected type of States");
     }
+
+    public static Automata<string> GetRandom(HashSet<string> states, HashSet<string> alphabet)
+    {
+        var random = new Random();
+        var start = states.ToList()[random.Next(1, states.Count)];
+        var terminates = states.GetRandomSubset(random.Next(2, states.Count / 2 + 1));
+        var table = new Table<string, string, string>();
+        foreach (var state in states)
+        {
+            foreach (var letter in alphabet)
+            {
+                var randomIndex = random.Next(0, states.Count);
+                table[state, letter] = states.ToList()[randomIndex];
+            }
+        }
+        return new Automata<string>(table, start, terminates, states, alphabet);
+    }
+
+    public static Automata<string> GetRandom(int statesNumber, int alphabetNumber)
+    {
+        var states = Enumerable.Range(1, statesNumber)
+            .Select(x => x.ToString())
+            .ToHashSet();
+        var alphabet = Enumerable.Range(0, alphabetNumber)
+            .Select(x => ((char)(97 + x)).ToString())
+            .ToHashSet();
+        return GetRandom(states, alphabet);
+    }
 }

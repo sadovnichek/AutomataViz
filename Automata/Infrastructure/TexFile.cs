@@ -4,8 +4,9 @@ public class TexFile
 {
     private readonly string _filename;
 
-    private const string Header = @"\documentclass[preview, border = 12pt]{standalone}" + "\n" +
+    private const string Header = @"\documentclass{article}" + "\n" +
                                   @"\usepackage[T2A]{fontenc}" + "\n" +
+                                  @"\usepackage[a4paper, total={6in, 8in}]{geometry}" + "\n" +
                                   @"\begin{document}" + "\n";
                                   
     private const string Delimiter = "\n" + @"\\";

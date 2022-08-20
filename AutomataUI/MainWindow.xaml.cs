@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,11 +14,10 @@ using Automata.Infrastructure;
 using Automata.Domain;
 using GraphVizDotNetLib;
 using Microsoft.Win32;
-using Updater;
 
 namespace AutomataUI;
 
-public partial class MainWindow : Window
+public partial class MainWindow
 {
     private Bitmap _currentDisplayedImage;
 
@@ -223,7 +221,7 @@ public partial class MainWindow : Window
     private void RandomAutomata_OnClick(object sender, RoutedEventArgs e)
     {
         var random = new Random();
-        var randomAutomata = new RandomAutomata(random.Next(5, 11), random.Next(2, 4)).Get();
+        var randomAutomata = Automata<string>.GetRandom(random.Next(5, 11), random.Next(2, 4));
         TableInput.Text = GetTextForm(randomAutomata);
         StartState.Text = randomAutomata.StartState;
         TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);
