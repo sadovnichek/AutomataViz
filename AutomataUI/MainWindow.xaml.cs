@@ -11,8 +11,8 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Automata.Algorithm;
 using Automata.Infrastructure;
-using Automata.Domain;
 using GraphVizDotNetLib;
+using Automata;
 using Microsoft.Win32;
 
 namespace AutomataUI;
@@ -45,7 +45,6 @@ public partial class MainWindow
     {
         InitializeComponent();
         ConfigureImagesDirectory();
-        File.Delete("./AutomataViz.zip");
     }
 
     private void CreateTask_OnClick(object sender, RoutedEventArgs e)
@@ -62,7 +61,7 @@ public partial class MainWindow
         }
     }
 
-    private Automata<string> GetAutomata()
+    private Automata<string> GetAutomata() // ?
     {
         var table = ParseTableInput();
         var start = ParseStartState();
@@ -72,7 +71,7 @@ public partial class MainWindow
         return new Automata<string>(table, start, terminates, states, alphabet);
     }
 
-    private string GetTextForm<T>(Automata<T> automata)
+    private static string GetTextForm<T>(Automata<T> automata)
     {
         var output = new StringBuilder();
         foreach (var state in automata.States)

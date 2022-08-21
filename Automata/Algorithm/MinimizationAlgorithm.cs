@@ -1,5 +1,4 @@
-﻿using Automata.Domain;
-using Automata.Infrastructure;
+﻿using Automata.Infrastructure;
 
 namespace Automata.Algorithm;
 
@@ -70,5 +69,12 @@ public class MinimizationAlgorithm : IAlgorithm
             }
         }
         return new Automata<HashSet<string>>(minAutomataTable, start, terminates, classes, _automata.Alphabet);
+    }
+
+    public bool IsAppropriate(Automata<string> source, Automata<HashSet<string>> result)
+    {
+        return source.GetUnreachableStates().Count <= 1 
+               && result.CountCompoundSets() > 2 
+               && result.TerminateStates.Count > 1;
     }
 }

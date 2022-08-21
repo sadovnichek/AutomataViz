@@ -1,7 +1,7 @@
-﻿using Automata.DotFormat; // ???
+﻿using Automata.DotFormat;
 using Automata.Infrastructure;
 
-namespace Automata.Domain;
+namespace Automata;
 
 public class Automata<TState>
 {
