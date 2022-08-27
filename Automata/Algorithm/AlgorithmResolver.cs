@@ -5,6 +5,7 @@ public static class AlgorithmResolver
     private static readonly Dictionary<string, IAlgorithm> Algorithms = new()
     {
         { "Алгоритм минимизации ДКА", new MinimizationAlgorithm() },
+        { "Построение ДКА по λ-НКА", new DeterminizationAlgorithm() }
     };
 
     public static IAlgorithm ResolveByName(string name)

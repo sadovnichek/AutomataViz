@@ -5,14 +5,14 @@ namespace Automata.Task;
 
 public class AutomataTask : ITask
 {
-    public string Description { get; }
+    private string _description;
     private readonly IAlgorithm _algorithm;
     private readonly int _states;
     private readonly HashSet<string> _alphabet;
 
     public AutomataTask(string description, IAlgorithm algorithm, int states, HashSet<string> alphabet)
     {
-        Description = description;
+        _description = description;
         _algorithm = algorithm;
         _states = states;
         _alphabet = alphabet;
@@ -26,7 +26,7 @@ public class AutomataTask : ITask
     
     public void Create(TexFile student, TexFile teacher)
     {
-        WriteBoth(student, teacher, Description);
+        WriteBoth(student, teacher, _description);
         var states = Enumerable.Range(1, _states).Select(x => x.ToString()).ToHashSet();
         var randomAutomata = Automata<string>.GetRandom(states, _alphabet);
         var transformed = _algorithm.Get(randomAutomata);

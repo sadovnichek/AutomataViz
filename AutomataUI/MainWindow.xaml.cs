@@ -240,4 +240,9 @@ public partial class MainWindow
         process.Start();
         Environment.Exit(0);
     }
+
+    private void AddLambda(object sender, RoutedEventArgs e)
+    {
+        TableInput.Text += "λ";
+    }
 }
