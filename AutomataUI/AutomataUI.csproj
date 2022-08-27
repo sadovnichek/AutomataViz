@@ -6,6 +6,9 @@
         <UseWPF>true</UseWPF>
         <ProductName>AutomataViz</ProductName>
         <TargetFramework>net6.0-windows</TargetFramework>
+        <ProductName>1.1</ProductName>
+        <PublisherName>Sadovnichek</PublisherName>
+        <ProductName>AutomataViz</ProductName>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Automata.Algorithm;
 using Automata.Infrastructure;
@@ -20,6 +22,8 @@ namespace AutomataUI;
 public partial class MainWindow
 {
     private Bitmap _currentDisplayedImage;
+    private readonly ScaleTransform _st = new();
+    private const string Version = "1.1";
 
     private static void ConfigureImagesDirectory()
     {
@@ -45,7 +49,7 @@ public partial class MainWindow
     {
         InitializeComponent();
         ConfigureImagesDirectory();
-        File.Delete("./AutomataViz.zip");
+        Visualization.RenderTransform = _st;
     }
 
     private void CreateTask_OnClick(object sender, RoutedEventArgs e)
@@ -230,7 +234,7 @@ public partial class MainWindow
     private void Update(object sender, RoutedEventArgs e)
     {
         var process = new Process();
-        var url = "https://github.com/sadovnichek/AutomataViz/releases/download/v1.0/AutomataViz.zip";
+        var url = $"https://github.com/sadovnichek/AutomataViz/releases/download/v{Version}/AutomataViz.zip";
         var pathToSave = Environment.CurrentDirectory;
         var appName = "AutomataUI.exe";
         process.StartInfo = new ProcessStartInfo()
@@ -240,5 +244,14 @@ public partial class MainWindow
         };
         process.Start();
         Environment.Exit(0);
+    }
+    
+    private void image_MouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        var zoom = e.Delta > 0 ? 0.1 : -0.05;
+        _st.ScaleX += zoom;
+        _st.ScaleY += zoom;
+        _st.CenterX = e.MouseDevice.GetPosition(Visualization).X;
+        _st.CenterY = e.MouseDevice.GetPosition(Visualization).Y;
     }
 }
