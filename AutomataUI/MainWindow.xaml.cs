@@ -13,8 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Automata.Algorithm;
 using Automata.Infrastructure;
-using Automata.Domain;
 using GraphVizDotNetLib;
+using Automata;
 using Microsoft.Win32;
 
 namespace AutomataUI;
@@ -66,7 +66,7 @@ public partial class MainWindow
         }
     }
 
-    private Automata<string> GetAutomata()
+    private Automata<string> GetAutomata() // ?
     {
         var table = ParseTableInput();
         var start = ParseStartState();
@@ -76,7 +76,7 @@ public partial class MainWindow
         return new Automata<string>(table, start, terminates, states, alphabet);
     }
 
-    private string GetTextForm<T>(Automata<T> automata)
+    private static string GetTextForm<T>(Automata<T> automata)
     {
         var output = new StringBuilder();
         foreach (var state in automata.States)
@@ -244,6 +244,11 @@ public partial class MainWindow
         };
         process.Start();
         Environment.Exit(0);
+    }
+
+    private void AddLambda(object sender, RoutedEventArgs e)
+    {
+        TableInput.Text += "λ";
     }
     
     private void image_MouseWheel(object sender, MouseWheelEventArgs e)

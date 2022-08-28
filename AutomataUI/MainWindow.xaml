@@ -30,6 +30,7 @@
             <MenuItem Header= "Сохранить изображение" Click="ImageSave_OnClick"/>
             <MenuItem Header="Мне повезёт!" Click="RandomAutomata_OnClick"/>
             <MenuItem Header="Обновить" Click="Update"/>
+            <MenuItem Header="λ" Click="AddLambda"/>
         </Menu>
         
         <ScrollViewer Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
@@ -37,7 +38,10 @@
             <StackPanel>
             <StackPanel>
                 <Label FontSize="18">
-                    Введите таблицу переходов автомата в виде "1.a = 2"
+                    Введите таблицу переходов автомата в виде "1.a = 2
+                </Label>
+                <Label FontSize="18">
+                    Для обозначения пустой строки используйте символ λ
                 </Label>
                 <TextBox x:Name="TableInput"
                          AcceptsTab="True"

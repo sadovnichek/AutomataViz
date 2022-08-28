@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
 using Automata.Algorithm;
-using Automata.Domain;
+using Automata.Task;
 using Microsoft.Win32;
 
 namespace AutomataUI;
@@ -28,10 +28,11 @@ public partial class TaskWindow
         var alphabet = Alphabet.Text.Replace(',', ' ').Split().Where(x => x.Length > 0).ToHashSet();
         var selectedAlgorithm = AlgorithmResolver.ResolveByName(Algolist.SelectedItem.ToString());
         var description = Description.Text;
+        saveFileDialog.Filter = "LaTeX files (*.tex)|*.tex|All files (*.*)|*.*";
         if (saveFileDialog.ShowDialog() == true)
         {
             TestPaper.Create(int.Parse(Number.Text), saveFileDialog.FileName, WithSolution.IsChecked.Value)
-                .AddTask(new Task(description, selectedAlgorithm, statesNumber, alphabet))
+                .AddTask(new AutomataTask(description, selectedAlgorithm, statesNumber, alphabet))
                 .Generate();
         }
         MessageBox.Show("Готово");
