@@ -23,7 +23,6 @@ public partial class MainWindow
 {
     private Bitmap _currentDisplayedImage;
     private readonly ScaleTransform _st = new();
-    private const string Version = "1.1";
 
     private static void ConfigureImagesDirectory()
     {
@@ -234,7 +233,7 @@ public partial class MainWindow
     private void Update(object sender, RoutedEventArgs e)
     {
         var process = new Process();
-        var url = $"https://github.com/sadovnichek/AutomataViz/releases/download/v{Version}/AutomataViz.zip";
+        var url = "https://github.com/sadovnichek/AutomataViz/releases/download/v1.0/AutomataViz.zip";
         var pathToSave = Environment.CurrentDirectory;
         var appName = "AutomataUI.exe";
         process.StartInfo = new ProcessStartInfo()

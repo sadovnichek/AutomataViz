@@ -11,24 +11,27 @@
         <DockPanel LastChildFill="False" Margin="10, 10, 10, 10">
             <WrapPanel DockPanel.Dock="Top" Margin="10, 10, 10, 10">
                 <Label FontSize="15" Margin="0, 0, 10, 0">Количество вариантов:</Label>
-                <TextBox x:Name="Number" FontSize="18"
+                <TextBox x:Name="Number" FontSize="15"
                          Width="40"
                          Height="30"
-                         TextWrapping="Wrap"/>
+                         TextWrapping="Wrap"
+                         Text = "30"/>
             </WrapPanel>
             <WrapPanel DockPanel.Dock="Top" Margin="10, 10, 10, 10">
                 <Label FontSize="15" Margin="0, 0, 10, 0">Число состояний автомата:</Label>
                 <TextBox x:Name="StatesNumber" FontSize="15"
                          Width="40"
                          Height="30"
-                         TextWrapping="Wrap"/>
+                         TextWrapping="Wrap"
+                         Text = "9"/>
             </WrapPanel>
             <WrapPanel DockPanel.Dock="Top" Margin="10, 10, 10, 10">
                 <Label FontSize="15" Margin="0, 0, 10, 0">Алфавит:</Label>
                 <TextBox x:Name="Alphabet" FontSize="15"
                          Width="200"
                          Height="30"
-                         TextWrapping="Wrap"/>
+                         TextWrapping="Wrap"
+                         Text = "a b"/>
             </WrapPanel>
             <CheckBox x:Name="WithSolution" FontSize="15" Margin="10, 10, 0, 0" 
                       DockPanel.Dock="Top" IsChecked="True">С решением в отдельном файле
@@ -44,7 +47,8 @@
                              AcceptsReturn="True"
                              MinHeight="50"
                              MaxHeight="50"
-                             FontSize="15"/>
+                             FontSize="15"
+                             Text = "minimize DFA"/>
                 </WrapPanel>
                 <WrapPanel>
                     <Label FontSize="15" Margin="10, 10, 0, 0">Тип задания:</Label>
@@ -52,6 +56,11 @@
                               Width="auto"
                               Loaded="Algorithms_OnLoaded"
                               FontSize="15"/>
+                </WrapPanel>
+                
+                <WrapPanel>
+                    <TextBlock FontSize="15" Margin="10, 10, 0, 0">Статус: </TextBlock>
+                    <TextBlock FontSize="15" Margin="10, 10, 0, 0" x:Name="Status" FontWeight="Bold"/>
                 </WrapPanel>
             </StackPanel>
             

@@ -24,7 +24,7 @@
                MaxWidth="600"
         />
         
-        <Menu x:Name="Menu" Grid.Row="0" Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2" >
+        <Menu x:Name="Menu" Grid.Row="0" VerticalAlignment="Top" Grid.ColumnSpan="2" >
             <MenuItem Header="Создать работу" Click="CreateTask_OnClick"/>
             <MenuItem Header="Вставить шаблон для ввода" Click="Pattern_OnClick"/>
             <MenuItem Header= "Сохранить изображение" Click="ImageSave_OnClick"/>
@@ -34,8 +34,8 @@
         </Menu>
         
         <ScrollViewer Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                      Margin="10, 0, 10, 0" Background="White">
-            <StackPanel>
+                      Background="White">
+            <StackPanel Margin="10, 0, 20, 0" >
             <StackPanel>
                 <Label FontSize="18">
                     Введите таблицу переходов автомата в виде "1.a = 2
@@ -62,7 +62,7 @@
                 <TextBox x:Name="TerminateStates" FontSize="18"/>
             </StackPanel>
             
-            <DockPanel  LastChildFill="False" Margin="10, 10, 0, 0">
+            <DockPanel  LastChildFill="False" Margin="0, 10, 0, 0" >
                 <Button x:Name="ApplyButton" 
                         DockPanel.Dock="Left" 
                         Content="Применить" 
@@ -82,7 +82,7 @@
                         Click="VisualButton_OnClick"/>
             </DockPanel>
             
-            <StackPanel>
+            <StackPanel Margin="0, 0, 20, 0" >
                 <Label x:Name="Result" FontSize="18" Visibility="Hidden">
                     Результат:
                 </Label>
