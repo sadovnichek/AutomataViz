@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -14,9 +15,9 @@ public partial class TaskWindow
 {
     private readonly BackgroundWorker _worker = new();
     private int _statesNumber;
-    private HashSet<string> _alphabet;
-    private IAlgorithm _selectedAlgorithm;
-    private string _description;
+    private HashSet<string> _alphabet = null!;
+    private IAlgorithm _selectedAlgorithm = null!;
+    private string _description = null!;
     private int _variantsNumber;
     private bool _withSolution;
 
@@ -34,6 +35,7 @@ public partial class TaskWindow
         }
     }
 
+    [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Func`2[System.Collections.Generic.HashSet`1[System.String],System.Boolean]")]
     private void Create(object sender, DoWorkEventArgs e)
     {
         var saveFileDialog = new SaveFileDialog
@@ -67,10 +69,10 @@ public partial class TaskWindow
                 throw new Exception("Выберите тип задания");
             }
             _selectedAlgorithm = AlgorithmResolver
-                .ResolveByName(Algolist.SelectedItem.ToString());
+                .ResolveByName(Algolist.SelectedItem.ToString()!);
             _description = Description.Text;
             _variantsNumber = int.Parse(Number.Text);
-            _withSolution = WithSolution.IsChecked.Value;
+            _withSolution = WithSolution.IsChecked!.Value;
             Status.Text = "В процессе создания...";
             _worker.RunWorkerAsync();
         }
