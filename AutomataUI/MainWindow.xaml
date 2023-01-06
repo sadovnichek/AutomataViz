@@ -28,9 +28,11 @@
             <MenuItem Header="Создать работу" Click="CreateTask_OnClick"/>
             <MenuItem Header="Вставить шаблон для ввода" Click="Pattern_OnClick"/>
             <MenuItem Header= "Сохранить изображение" Click="ImageSave_OnClick"/>
-            <MenuItem Header="Мне повезёт!" Click="RandomAutomata_OnClick"/>
+            <MenuItem Header="Случайный автомат">
+                <MenuItem Header="ДКА" Click="RandomDFA_OnClick"></MenuItem>
+                <MenuItem Header="НКА" Click="RandomNDFA_OnClick"></MenuItem>
+            </MenuItem>
             <MenuItem Header="Обновить" Click="Update"/>
-            <MenuItem Header="λ" Click="AddLambda"/>
         </Menu>
         
         <ScrollViewer Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
@@ -39,9 +41,6 @@
             <StackPanel>
                 <Label FontSize="18">
                     Введите таблицу переходов автомата в виде "1.a = 2"
-                </Label>
-                <Label FontSize="18">
-                    Для обозначения пустой строки используйте символ "λ"
                 </Label>
                 <TextBox x:Name="TableInput"
                          AcceptsTab="True"
@@ -73,7 +72,7 @@
                           DockPanel.Dock="Left" 
                           Width="auto" 
                           Loaded="Algorithms_OnLoaded" 
-                          SelectionChanged="Algorithms_OnSelectionChanged"
+                          DropDownClosed="Algolist_OnDropDownClosed"
                           FontSize="24"/>
                 <Button x:Name="VisualButton"
                         DockPanel.Dock="Right" 
@@ -82,29 +81,8 @@
                         Click="VisualButton_OnClick"/>
             </DockPanel>
             
-            <StackPanel Margin="0, 0, 20, 0" >
-                <Label x:Name="Result" FontSize="18" Visibility="Hidden">
-                    Результат:
-                </Label>
-                <TextBox x:Name="TableOutput"
-                         AcceptsTab="True"
-                         TextWrapping="Wrap"
-                         AcceptsReturn="True"
-                         MinHeight="150"
-                         MaxHeight="150"
-                         FontSize="16"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         ScrollViewer.VerticalScrollBarVisibility="Visible"
-                         Visibility="Hidden"
-                         IsReadOnly="True"/>
-                <Label x:Name="startStatesLabel" FontSize="18" Visibility="Hidden">
-                    Начальное состояние:
-                </Label>
-                <TextBox x:Name="StartStateOutput" FontSize="18" Visibility="Hidden" IsReadOnly="True"/>
-                <Label x:Name="terminateStatesLabel" FontSize="18" Visibility="Hidden">
-                    Заключительные состояния:
-                </Label>
-                <TextBox x:Name="TerminateStatesOutput" FontSize="18" Visibility="Hidden" IsReadOnly="True"/>
+            <StackPanel Margin="0, 0, 20, 0" x:Name="AnswerField">
+               
             </StackPanel>
             
             </StackPanel>

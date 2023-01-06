@@ -5,23 +5,17 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>ConsoleApp1</RootNamespace>
-        <Platforms>AnyCPU;x86</Platforms>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <PlatformTarget>AnyCPU</PlatformTarget>
-      <Prefer32bit>false</Prefer32bit>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <PlatformTarget>AnyCPU</PlatformTarget>
-      <Prefer32bit>false</Prefer32bit>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Automata\Automata.csproj" />
-      <ProjectReference Include="..\Updater\Updater.csproj" />
+      <ProjectReference Include="..\GraphVizDotNetLib\GraphVizDotNetLib.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="System.Drawing.Common, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+        <HintPath>..\AutomataUI\bin\Release\net6.0-windows\runtimes\win\lib\net6.0\System.Drawing.Common.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

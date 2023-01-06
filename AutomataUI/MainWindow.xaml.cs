@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -15,6 +14,7 @@ using Automata.Algorithm;
 using Automata.Infrastructure;
 using GraphVizDotNetLib;
 using Automata;
+using AutomataUI.Workspaces;
 using Microsoft.Win32;
 
 namespace AutomataUI;
@@ -23,7 +23,11 @@ public partial class MainWindow
 {
     private Bitmap _currentDisplayedImage;
     private readonly ScaleTransform _st = new();
+    private readonly AcceptWordWorkspace _acceptWordWorkspace = AcceptWordWorkspace.GetInstance();
+    private readonly MinimizationAlgorithmWorkspace _minimizationAlgorithmWorkspace =
+        MinimizationAlgorithmWorkspace.GetInstance();
 
+    /*Creates a directory to store images*/
     private static void ConfigureImagesDirectory()
     {
         if (!Directory.Exists("./images"))
@@ -43,7 +47,7 @@ public partial class MainWindow
             File.Delete($"./{file}");
         }
     }
-    
+
     public MainWindow()
     {
         InitializeComponent();
@@ -51,65 +55,75 @@ public partial class MainWindow
         Visualization.RenderTransform = _st;
     }
 
-    private void CreateTask_OnClick(object sender, RoutedEventArgs e)
+    /*Creates an automata from user input*/
+    private Automata.Automata GetAutomata()
     {
-        var taskWindow = new TaskWindow();
-        taskWindow.Show();
-    }
-
-    private void Algorithms_OnLoaded(object sender, RoutedEventArgs e)
-    {
-        foreach (var algorithm in AlgorithmResolver.GetAll())
-        {
-            Algolist.Items.Add(algorithm);
-        }
-    }
-
-    private Automata<string> GetAutomata() // ?
-    {
-        var table = ParseTableInput();
-        var start = ParseStartState();
+        var states = new HashSet<string>();
+        var alphabet = new HashSet<string>();
         var terminates = ParseTerminateStates();
-        var states = table.Columns;
-        var alphabet = table.Rows;
-        return new Automata<string>(table, start, terminates, states, alphabet);
-    }
+        var start = ParseStartState();
+        var transitions = new HashSet<Tuple<string, string, string>>();
 
-    private static string GetTextForm<T>(Automata<T> automata)
-    {
-        var output = new StringBuilder();
-        foreach (var state in automata.States)
+        var regex = new Regex(@"(\w+|{(.*?)}|∅).\w+\s*=\s*(\w+|{(.*?)}|∅)");
+        var matches = regex.Matches(TableInput.Text);
+
+        foreach (Match match in matches)
         {
-            foreach (var letter in automata.Alphabet)
-            {
-                output.Append($"{state.SetToString()}.{letter} = {automata.Table[state, letter].SetToString()}");
-                output.Append('\t');
-            }
-
-            output.Append('\n');
+            var line = match.Value;
+            var key = line.Split("=")[0].Trim();
+            var state = key.Split(".")[0];
+            var symbol = key.Split(".")[1];
+            var value = line.Split("=")[1].Trim();
+            states.Add(state);
+            alphabet.Add(symbol);
+            transitions.Add(Tuple.Create(state, symbol, value));
         }
-
-        return output.ToString();
+        
+        if(transitions.GroupBy(x => new { x.Item1, x.Item2 }).Any(group => group.Count() > 1))
+            return new NDFA(states, alphabet, transitions, start, terminates);
+        return new DFA(states, alphabet, transitions, start, terminates);
     }
 
+    /*Actions after apply button pressing*/
     private void ApplyButton_OnClick(object sender, RoutedEventArgs e)
     {
         try
         {
             var automata = GetAutomata();
-            var algorithm = AlgorithmResolver.ResolveByName(Algolist.SelectionBoxItem.ToString());
-            var transformed = algorithm.Get(automata);
-            
-            TableOutput.Visibility = Visibility.Visible;
-            StartStateOutput.Visibility = Visibility.Visible;
-            TerminateStatesOutput.Visibility = Visibility.Visible;
-            Result.Visibility = Visibility.Visible;
-            startStatesLabel.Visibility = Visibility.Visible;
-            terminateStatesLabel.Visibility = Visibility.Visible;
-            
-            TableOutput.Text = GetTextForm(transformed);
-            StartStateOutput.Text = transformed.StartState.SetToString();
-            TerminateStatesOutput.Text = string.Join(" ", transformed.TerminateStates.Select(s => s.SetToString()));
+            var selectedAlgorithmName = Algolist.SelectionBoxItem.ToString();
+            if (selectedAlgorithmName == MinimizationAlgorithm.GetInstance().Name)
+            {
+                if (automata is DFA dfa)
+                {
+                    var algorithm = MinimizationAlgorithm.GetInstance();
+                    var transformed = algorithm.Get(dfa);
+                    _minimizationAlgorithmWorkspace.AddContent(transformed);
+                }
+                else
+                {
+                    MessageBox.Show("Автомат не является ДКА");
+                }
+            }
+            else if (selectedAlgorithmName == AcceptWordAlgorithm.GetInstance().Name)
+            {
+                var algorithm = AcceptWordAlgorithm.GetInstance();
+                var word = _acceptWordWorkspace.Word.Text;
+                var answer = algorithm.Get(automata, word) ? "распознаёт" : "не распознаёт";
+                _acceptWordWorkspace.AddContent(answer);
+            }
+            else if (selectedAlgorithmName == DeterminizationAlgorithm.GetInstance().Name)//
+            {
+                if (automata is NDFA ndfa)
+                {
+                    var algorithm = DeterminizationAlgorithm.GetInstance();//
+                    var transformed = algorithm.Get(ndfa);
+                    _minimizationAlgorithmWorkspace.AddContent(transformed);
+                }
+                else
+                {
+                    MessageBox.Show("Автомат не является НКА");
+                }
+            }
         }
         catch (Exception exception)
         {
@@ -117,11 +131,24 @@ public partial class MainWindow
         }
     }
 
-    private void Algorithms_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    /*Actions after choosing an algorithm from list*/
+    private void Algolist_OnDropDownClosed(object? sender, EventArgs e)
     {
+        AnswerField.Children.Clear();
         ApplyButton.IsEnabled = true;
+        var selectedAlgorithmName = Algolist.SelectionBoxItem.ToString();
+        if (selectedAlgorithmName == AcceptWordAlgorithm.GetInstance().Name)
+        {
+            _acceptWordWorkspace.Init(AnswerField);
+        }
+        else if (selectedAlgorithmName == MinimizationAlgorithm.GetInstance().Name || 
+                 selectedAlgorithmName == DeterminizationAlgorithm.GetInstance().Name)//
+        {
+            _minimizationAlgorithmWorkspace.Init(AnswerField);
+        }
     }
 
+    /*Actions after visual button pressing*/
     private void VisualButton_OnClick(object sender, RoutedEventArgs e)
     {
         try
@@ -136,26 +163,6 @@ public partial class MainWindow
         {
             MessageBox.Show(ex.Message);
         }
-    }
-
-    private Table<string, string, string> ParseTableInput()
-    {
-        var table = new Table<string, string, string>();
-        var regex = (TableInput.Text.Contains('{'))
-            ? new Regex(@".*?.\w*\s*=\s*{.*?}")
-            : new Regex(@"\d*.\w*\s*=\s*\d*");
-        var matches = regex.Matches(TableInput.Text);
-        foreach (Match match in matches)
-        {
-            var line = match.Value;
-            var key = line.Split("=")[0].Trim();
-            var columnIndex = key.Split(".")[0];
-            var rowIndex = key.Split(".")[1];
-            var value = line.Split("=")[1].Trim();
-            table[columnIndex, rowIndex] = value;
-        }
-
-        return table;
     }
 
     private string ParseStartState()
@@ -174,23 +181,21 @@ public partial class MainWindow
         var input = TerminateStates.Text;
         if (input.Length == 0)
         {
-            throw new Exception("Поле начальных состояний заполнено не корректно");
+            throw new Exception("Поле заключительных состояний заполнено не корректно");
         }
 
-        var regex = (input.Contains('{'))
-            ? new Regex(@"{.*?}")
-            : new Regex(@"\d+");
+        var regex = new Regex(@"(\w+|{(.*?)})");
         var matches = regex.Matches(input);
 
         return matches.Select(m => m.Value).ToHashSet();
     }
 
-    private void GenerateImage<T>(Automata<T> transformed)
+    private void GenerateImage(Automata.Automata automata)
     {
-        var dot = transformed.ConvertToDotFormat();
+        var dot = automata.ConvertToDotFormat();
         var gv = new GraphVizRenderer("./bin");
         var image = gv.DrawGraphFromDotCode(dot);
-        image.Save($"./images/{transformed.Id}.png");
+        image.Save($"./images/{automata.Id}.png");
         _currentDisplayedImage = image;
     }
 
@@ -221,11 +226,20 @@ public partial class MainWindow
         }
     }
 
-    private void RandomAutomata_OnClick(object sender, RoutedEventArgs e)
+    private void RandomNDFA_OnClick(object sender, RoutedEventArgs e)
     {
         var random = new Random();
-        var randomAutomata = Automata<string>.GetRandom(random.Next(5, 11), random.Next(2, 4));
-        TableInput.Text = GetTextForm(randomAutomata);
+        var randomAutomata = NDFA.GetRandom(random.Next(5, 11), random.Next(2, 4));
+        TableInput.Text = randomAutomata.GetTextForm();
+        StartState.Text = randomAutomata.StartState;
+        TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);
+    }
+    
+    private void RandomDFA_OnClick(object sender, RoutedEventArgs e)
+    {
+        var random = new Random();
+        var randomAutomata = DFA.GetRandom(random.Next(5, 11), random.Next(2, 4));
+        TableInput.Text = randomAutomata.GetTextForm();
         StartState.Text = randomAutomata.StartState;
         TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);
     }
@@ -236,7 +250,7 @@ public partial class MainWindow
         var url = "https://github.com/sadovnichek/AutomataViz/releases/download/v1.0/AutomataViz.zip";
         var pathToSave = Environment.CurrentDirectory;
         var appName = "AutomataUI.exe";
-        process.StartInfo = new ProcessStartInfo()
+        process.StartInfo = new ProcessStartInfo
         {
             FileName = "Updater.exe",
             Arguments = $"{url} {pathToSave} {appName}"
@@ -245,11 +259,6 @@ public partial class MainWindow
         Environment.Exit(0);
     }
 
-    private void AddLambda(object sender, RoutedEventArgs e)
-    {
-        TableInput.Text += "λ";
-    }
-    
     private void image_MouseWheel(object sender, MouseWheelEventArgs e)
     {
         var zoom = e.Delta > 0 ? 0.1 : -0.05;
@@ -257,5 +266,19 @@ public partial class MainWindow
         _st.ScaleY += zoom;
         _st.CenterX = e.MouseDevice.GetPosition(Visualization).X;
         _st.CenterY = e.MouseDevice.GetPosition(Visualization).Y;
+    }
+
+    private void CreateTask_OnClick(object sender, RoutedEventArgs e)
+    {
+        var taskWindow = new TaskWindow();
+        taskWindow.Show();
+    }
+
+    private void Algorithms_OnLoaded(object sender, RoutedEventArgs e)
+    {
+        foreach (var algorithmName in AlgorithmResolver.Algorithms.Keys)
+        {
+            Algolist.Items.Add(algorithmName);
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -13,10 +12,9 @@ namespace AutomataUI;
 
 public partial class TaskWindow
 {
-    private readonly BackgroundWorker _worker = new();
+    //private readonly BackgroundWorker _worker = new();
     private int _statesNumber;
     private HashSet<string> _alphabet = null!;
-    private IAlgorithm _selectedAlgorithm = null!;
     private string _description = null!;
     private int _variantsNumber;
     private bool _withSolution;
@@ -24,19 +22,27 @@ public partial class TaskWindow
     public TaskWindow()
     {
         InitializeComponent();
-        _worker.DoWork += Create!;
+        //_worker.DoWork += Create!;
     }
 
     private void Algorithms_OnLoaded(object sender, RoutedEventArgs e)
     {
-        foreach (var algorithm in AlgorithmResolver.GetAll())
+        foreach (var algorithm in AlgorithmResolver.Algorithms
+                     .Where(pair => pair.Value.IsTask)
+                     .Select(pair => pair.Key))
         {
             Algolist.Items.Add(algorithm);
         }
     }
 
-    [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Func`2[System.Collections.Generic.HashSet`1[System.String],System.Boolean]")]
-    private void Create(object sender, DoWorkEventArgs e)
+    private ITask GetTask(string taskName)
+    {
+        if (taskName == MinimizationAlgorithm.GetInstance().Name)
+            return new MinimizationTask(_description, _statesNumber, _alphabet);
+        return new DeterminizationTask(_description, _statesNumber, _alphabet);
+    }
+    
+    private void Create(/*object sender, DoWorkEventArgs e*/)
     {
         var saveFileDialog = new SaveFileDialog
         {
@@ -45,7 +51,7 @@ public partial class TaskWindow
         if (saveFileDialog.ShowDialog() == true)
         {
             TestPaper.Create(_variantsNumber, saveFileDialog.FileName, _withSolution)
-                .AddTask(new AutomataTask(_description, _selectedAlgorithm, _statesNumber, _alphabet))
+                .AddTask(GetTask(Algolist.SelectionBoxItem.ToString()))
                 .Generate();
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -68,13 +74,12 @@ public partial class TaskWindow
             {
                 throw new Exception("Выберите тип задания");
             }
-            _selectedAlgorithm = AlgorithmResolver
-                .ResolveByName(Algolist.SelectedItem.ToString()!);
             _description = Description.Text;
             _variantsNumber = int.Parse(Number.Text);
             _withSolution = WithSolution.IsChecked!.Value;
             Status.Text = "В процессе создания...";
-            _worker.RunWorkerAsync();
+            //_worker.RunWorkerAsync();
+            Create();
         }
         catch (Exception exception)
         {
