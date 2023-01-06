@@ -2,19 +2,14 @@
 
 public static class AlgorithmResolver
 {
-    private static readonly Dictionary<string, IAlgorithm> Algorithms = new()
+    private static List<IAlgorithm> _algorithms = new()
     {
-        { "Алгоритм минимизации ДКА", new MinimizationAlgorithm() },
-        /*{ "Построение ДКА по λ-НКА", new DeterminizationAlgorithm() }*/
+        MinimizationAlgorithm.GetInstance(),
+        AcceptWordAlgorithm.GetInstance(),
+        DeterminizationAlgorithm.GetInstance()
     };
 
-    public static IAlgorithm ResolveByName(string name)
-    {
-        return Algorithms[name];
-    }
-
-    public static IEnumerable<string> GetAll()
-    {
-        return Algorithms.Keys;
-    }
+    public static Dictionary<string, IAlgorithm> Algorithms = _algorithms
+        .Select(algorithm => new {algorithm.Name, algorithm})
+        .ToDictionary(pair => pair.Name, pair => pair.algorithm);
 }

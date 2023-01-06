@@ -2,10 +2,23 @@
 
 namespace Automata.Algorithm;
 
+/*Singleton*/
 public class MinimizationAlgorithm : IAlgorithm
 {
-    private Automata<string> _automata;
+    private static MinimizationAlgorithm? _instance;
+    private DFA _dfa;
+    public string Name => "Алгоритм минимизации ДКА";
+    public bool IsTask => true;
+    
+    private MinimizationAlgorithm() { }
 
+    public static MinimizationAlgorithm GetInstance()
+    {
+        if (_instance == null)
+            _instance = new MinimizationAlgorithm();
+        return _instance;
+    }
+    
     private HashSet<string> GetSet(string element, IEnumerable<HashSet<string>> queue)
     {
         return queue.FirstOrDefault(set => set.Contains(element));
@@ -18,9 +31,9 @@ public class MinimizationAlgorithm : IAlgorithm
         foreach (var element in set)
         {
             var characteristicSet = new HashSet<HashSet<string>>();
-            foreach (var letter in _automata.Alphabet)
+            foreach (var letter in _dfa.Alphabet)
             {
-                var result = _automata.Table[element, letter];
+                var result = _dfa[element, letter];
                 var belongsSet = GetSet(result, queue);
                 characteristicSet.Add(belongsSet);
             }
@@ -38,10 +51,10 @@ public class MinimizationAlgorithm : IAlgorithm
     
     private HashSet<HashSet<string>> GetClasses()
     {
-        var terminates = _automata.TerminateStates;
-        var nonTerminateStates = _automata.States.Where(s => !terminates.Contains(s)).ToHashSet();
+        var terminates = _dfa.TerminateStates;
+        var nonTerminateStates = _dfa.States.Where(s => !terminates.Contains(s)).ToHashSet();
         var queue = new Queue<HashSet<string>>();
-        queue.Enqueue(terminates); 
+        queue.Enqueue(terminates.ToHashSet()); 
         queue.Enqueue(nonTerminateStates);
         while (CanBeAnyClassSplit(queue))
         {
@@ -53,28 +66,25 @@ public class MinimizationAlgorithm : IAlgorithm
         return queue.ToHashSet();
     }
     
-    public Automata<HashSet<string>> Get(Automata<string> source)
+    public DFA Get(DFA source)
     {
-        _automata = source.ExceptStates(source.GetUnreachableStates());
+        _dfa = source.ExceptStates(source.GetUnreachableStates());
         var classes = GetClasses();
-        var minAutomataTable = new Table<string, HashSet<string>, HashSet<string>>();
-        var start = GetSet(_automata.StartState, classes);
-        var terminates = _automata.TerminateStates.Select(v => GetSet(v, classes)).ToHashSet();
+        var transitions = new HashSet<Tuple<string, string, string>>();
+        var start = GetSet(_dfa.StartState, classes);
+        var terminates = _dfa.TerminateStates.Select(v => GetSet(v, classes)).Select(x => x.SetToString())
+            .ToHashSet();
         foreach (var cls in classes)
         {
             var firstElement = cls.First();
-            foreach (var letter in _automata.Alphabet)
+            foreach (var letter in _dfa.Alphabet)
             {
-                minAutomataTable[cls, letter] = GetSet(_automata.Table[firstElement, letter], classes);
+                var value = GetSet(_dfa[firstElement, letter], classes).SetToString();
+                transitions.Add(Tuple.Create(cls.SetToString(), letter, value));
             }
         }
-        return new Automata<HashSet<string>>(minAutomataTable, start, terminates, classes, _automata.Alphabet);
-    }
 
-    public bool IsAppropriate(Automata<string> source, Automata<HashSet<string>> result)
-    {
-        return source.GetUnreachableStates().Count <= 1 
-               && result.CountCompoundSets() > 2 
-               && result.TerminateStates.Count > 1;
+        return new DFA(classes.Select(x => x.SetToString()).ToHashSet(), 
+            _dfa.Alphabet, transitions, start.SetToString(), terminates);
     }
 }

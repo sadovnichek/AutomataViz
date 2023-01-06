@@ -2,19 +2,41 @@
 
 public static class Extensions
 {
-    public static string SetToString<T>(this T source)
+    public static string SetToString(this HashSet<string> source, bool latex = false)
     {
-        return source switch
+        if (!source.Any())
+            return "Ø";
+        if (source.Count() == 1)
+            return source.First();
+        if (latex)
         {
-            IEnumerable<string> set => 
-                @"{" + string.Join(", ", set) + "}",
-            IEnumerable<IEnumerable<string>> compoundSet => 
-                compoundSet.Aggregate("", (current, set) => current + (set.SetToString() + "; ")),
-            _ => 
-                source.ToString()
-        };
+            var compounds = source.Select(x => x.StringToSet()).Select(x => x.SetToString(true));
+            return @"\{" + string.Join(", ", compounds.ToSortedSet()) + @"\}";
+        }
+        return @"{" + string.Join(", ", source.ToSortedSet()) + "}";
     }
 
+    public static HashSet<string> StringToSet(this string source)
+    {
+        if (source.Length == 0)
+            return Enumerable.Empty<string>().ToHashSet();
+        source = source.Trim('{', '}');
+        return source.Trim('{', '}')
+            .Split(", ")
+            .ToSortedSet()
+            .ToHashSet();
+    }
+
+    public static SortedSet<string> ToSortedSet(this IEnumerable<string> source)
+    {
+        var result = new SortedSet<string>();
+        foreach (var element in source)
+        {
+            result.Add(element);
+        }
+        return result;
+    }
+    
     public static HashSet<T> GetRandomSubset<T>(this IEnumerable<T> source, int count)
     {
         if (count > source.Count())
@@ -27,6 +49,7 @@ public static class Extensions
         {
             result.Add(source.ToList()[random.Next(0, source.Count() - 1)]);
         }
+
         return result;
     }
 }
