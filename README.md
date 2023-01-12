@@ -2,4 +2,7 @@
 
 Simple calculator and visualizator for Finite Automatas with UI
 
-Currently all UI is written on Russian
+Available algorithms:
+* Determinate NDFA
+* Minimize DFA
+* Calculate an answer of automata with some word
