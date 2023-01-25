@@ -136,27 +136,14 @@ public class DFA : Automata
             .ToHashSet();
         return GetRandom(states, alphabet);
     }
-
-    //TODO: Can be simplified
+    
     public override bool IsAcceptWord(string word)
     {
-        var currentNode = StartState;
-        var queue = new Queue<Tuple<string, int>>();
-        queue.Enqueue(Tuple.Create(currentNode, -1));
-        while (queue.Any(x => x.Item2 != word.Length - 1))
+        var currentState = StartState;
+        foreach (var w in word)
         {
-            var t = queue.Dequeue();
-            currentNode = t.Item1;
-            var index = t.Item2;
-            if (index + 1 < word.Length)
-            {
-                var nodeToVisit = this[currentNode, word[index + 1].ToString()];
-                queue.Enqueue(Tuple.Create(nodeToVisit, index + 1));
-            }
+            currentState = this[currentState, w.ToString()];
         }
-
-        var terminates = queue.Select(x => x.Item1).ToHashSet();
-        terminates.IntersectWith(TerminateStates);
-        return terminates.Count > 0;
+        return TerminateStates.Contains(currentState);
     }
 }

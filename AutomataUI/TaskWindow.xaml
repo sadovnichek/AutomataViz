@@ -4,8 +4,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
-        Title="Создать работу" 
-        Height="450" Width="800" 
+        Title="Создать работу"
+        Height="450" Width="800"
         WindowStyle="ToolWindow">
     <Grid>
         <DockPanel LastChildFill="False" Margin="10, 10, 10, 10">
@@ -15,7 +15,7 @@
                          Width="40"
                          Height="30"
                          TextWrapping="Wrap"
-                         Text = "30"/>
+                         Text="30" />
             </WrapPanel>
             <WrapPanel DockPanel.Dock="Top" Margin="10, 10, 10, 10">
                 <Label FontSize="15" Margin="0, 0, 10, 0">Число состояний автомата:</Label>
@@ -23,7 +23,7 @@
                          Width="40"
                          Height="30"
                          TextWrapping="Wrap"
-                         Text = "9"/>
+                         Text="9" />
             </WrapPanel>
             <WrapPanel DockPanel.Dock="Top" Margin="10, 10, 10, 10">
                 <Label FontSize="15" Margin="0, 0, 10, 0">Алфавит:</Label>
@@ -31,65 +31,46 @@
                          Width="200"
                          Height="30"
                          TextWrapping="Wrap"
-                         Text = "a b"/>
+                         Text="a b" />
             </WrapPanel>
-            <CheckBox x:Name="WithSolution" FontSize="15" Margin="10, 10, 0, 0" 
-                      DockPanel.Dock="Top" IsChecked="True">С решением в отдельном файле
+            <CheckBox x:Name="WithSolution" FontSize="15" Margin="10, 10, 0, 0"
+                      DockPanel.Dock="Top" IsChecked="True">
+                С решением в отдельном файле
             </CheckBox>
-            
+
             <ScrollViewer>
                 <StackPanel x:Name="Tasks" DockPanel.Dock="Top">
-                <WrapPanel>
-                    <Label VerticalAlignment="Center" FontSize="15" Margin="10, 0, 10, 0">Описание задания:</Label>
-                    <TextBox x:Name="Description" TextWrapping="Wrap" Margin="0, 10, 0, 10"
-                             TextAlignment="Left"
-                             HorizontalScrollBarVisibility="Disabled"
-                             VerticalScrollBarVisibility="Visible"
-                             Width="400"
-                             AcceptsReturn="True"
-                             MinHeight="50"
-                             MaxHeight="50"
-                             FontSize="15"
-                             Text = "minimize DFA"/>
-                </WrapPanel>
-                <WrapPanel>
-                    <Label FontSize="15" Margin="10, 10, 0, 0">Тип задания:</Label>
-                    <ComboBox Margin="10, 0, 0, 0" x:Name="Algolist" 
-                              Width="auto"
-                              Loaded="Algorithms_OnLoaded"
-                              FontSize="15"/>
-                </WrapPanel>
-                
-                <WrapPanel>
-                    <Label VerticalAlignment="Center" FontSize="15" Margin="10, 0, 10, 0">Описание задания:</Label>
-                    <TextBox x:Name="Description1" TextWrapping="Wrap" Margin="0, 10, 0, 10"
-                             TextAlignment="Left"
-                             HorizontalScrollBarVisibility="Disabled"
-                             VerticalScrollBarVisibility="Visible"
-                             Width="400"
-                             AcceptsReturn="True"
-                             MinHeight="50"
-                             MaxHeight="50"
-                             FontSize="15"
-                             Text = "minimize DFA"/>
-                </WrapPanel>
-                <WrapPanel>
-                    <Label FontSize="15" Margin="10, 10, 0, 0">Тип задания:</Label>
-                    <ComboBox Margin="10, 0, 0, 0" x:Name="Algolist1" 
-                              Width="auto"
-                              Loaded="Algorithms_OnLoaded"
-                              FontSize="15"/>
-                </WrapPanel>
-                
-                <WrapPanel Margin="0, 10, 0, 0">
-                    <TextBlock FontSize="15" Margin="10, 10, 0, 0">Статус: </TextBlock>
-                    <TextBlock FontSize="15" Margin="10, 10, 0, 0" x:Name="Status" FontWeight="Bold"/>
-                </WrapPanel>
-                    
-                    <Button Margin="0, 10, 0, 0" 
+                    <WrapPanel>
+                        <Label VerticalAlignment="Center" FontSize="15" Margin="10, 0, 10, 0">Описание задания:</Label>
+                        <TextBox x:Name="Description" TextWrapping="Wrap" Margin="0, 10, 0, 10"
+                                 TextAlignment="Left"
+                                 HorizontalScrollBarVisibility="Disabled"
+                                 VerticalScrollBarVisibility="Visible"
+                                 Width="400"
+                                 AcceptsReturn="True"
+                                 MinHeight="50"
+                                 MaxHeight="50"
+                                 FontSize="15"
+                                 Text="minimize DFA" />
+                    </WrapPanel>
+                    <WrapPanel>
+                        <Label FontSize="15" Margin="10, 10, 0, 0">Тип задания:</Label>
+                        <ComboBox Margin="10, 0, 0, 0" x:Name="Algolist"
+                                  Width="auto"
+                                  Loaded="Algorithms_OnLoaded"
+                                  FontSize="15" />
+                    </WrapPanel>
+                    <WrapPanel Margin="0, 10, 0, 0">
+                        <TextBlock FontSize="15" Margin="10, 10, 0, 0">Статус: </TextBlock>
+                        <TextBlock FontSize="15" Margin="10, 10, 0, 0" x:Name="Status" FontWeight="Bold" />
+                    </WrapPanel>
+
+                    <Button Margin="0, 10, 0, 0"
                             DockPanel.Dock="Bottom" Height="50" Width="100" HorizontalAlignment="Left"
-                            Click="Create_OnClick">Создать</Button>
-            </StackPanel>
+                            Click="Create_OnClick">
+                        Создать
+                    </Button>
+                </StackPanel>
             </ScrollViewer>
         </DockPanel>
     </Grid>

@@ -5,7 +5,7 @@ namespace Automata.Algorithm;
 /*Singleton*/
 public class DeterminizationAlgorithm : IAlgorithm
 {
-    private static DeterminizationAlgorithm? _instance;
+    private static DeterminizationAlgorithm _instance;
     public string Name => "Приведение НКА к ДКА";
     public bool IsTask => true;
 
