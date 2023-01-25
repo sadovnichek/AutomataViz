@@ -149,26 +149,17 @@ public class NDFA : Automata
 
     public override bool IsAcceptWord(string word)
     {
-        var currentNode = StartState;
-        var queue = new Queue<Tuple<string, int>>();
-        queue.Enqueue(Tuple.Create(currentNode, -1));
-        while (queue.Any(x => x.Item2 != word.Length - 1))
+        var currentNode = new HashSet<string>{StartState};
+        foreach (var w in word)
         {
-            var t = queue.Dequeue();
-            currentNode = t.Item1;
-            var index = t.Item2;
-            if (index + 1 < word.Length)
+            var resultSet = new HashSet<string>();
+            foreach (var q in currentNode)
             {
-                var nodesToVisit = this[currentNode, word[index + 1].ToString()];
-                foreach (var node in nodesToVisit)
-                {
-                    queue.Enqueue(Tuple.Create(node, index + 1));
-                }
+                resultSet = resultSet.Concat(this[q, w.ToString()]).ToHashSet();
             }
+            currentNode = resultSet;
         }
-
-        var terminates = queue.Select(x => x.Item1).ToHashSet();
-        terminates.IntersectWith(TerminateStates);
-        return terminates.Count > 0;
+        currentNode.IntersectWith(TerminateStates);
+        return currentNode.Count > 0;
     }
 }
