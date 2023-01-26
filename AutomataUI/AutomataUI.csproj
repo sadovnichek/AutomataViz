@@ -22,8 +22,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Desktop\GraphVizDotNetLib-master\GraphVizDotNetLib\GraphVizDotNetLib.csproj" />
-      <ProjectReference Include="..\..\Automata\Automata\Automata.csproj" />
       <ProjectReference Include="..\Automata\Automata.csproj" />
       <ProjectReference Include="..\GraphVizDotNetLib\GraphVizDotNetLib.csproj" />
       <ProjectReference Include="..\Updater\Updater.csproj" />

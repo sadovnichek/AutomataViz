@@ -1,6 +1,6 @@
 # AutomataViz
 
-Simple calculator and visualizator for Finite Automatas with UI
+Simple calculator and visualizer for Finite Automatas with UI
 
 Available algorithms:
 * Determinate NDFA
