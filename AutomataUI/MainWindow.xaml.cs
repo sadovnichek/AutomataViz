@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,13 +10,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Automata.Algorithm;
-using Automata.Infrastructure;
-using GraphVizDotNetLib;
 using Automata;
 using AutomataUI.Workspaces;
 using Microsoft.Win32;
 
 namespace AutomataUI;
+
+using Bitmap = System.Drawing.Bitmap;
 
 public partial class MainWindow
 {
@@ -192,11 +191,20 @@ public partial class MainWindow
 
     private void GenerateImage(Automata.Automata automata)
     {
-        var dot = automata.ConvertToDotFormat();
-        var gv = new GraphVizRenderer("./bin");
-        var image = gv.DrawGraphFromDotCode(dot);
-        image.Save($"./images/{automata.Id}.png");
-        _currentDisplayedImage = image;
+        using (var writer = new StreamWriter("temp.dot"))
+        {
+            writer.Write(automata.ConvertToDotFormat());
+        }
+        var process = new Process();
+        process.StartInfo = new ProcessStartInfo
+        {
+            FileName = "./bin/dot.exe",
+            UseShellExecute = false,
+            Arguments = $"temp.dot -Tpng -o ./images/{automata.Id}.png"
+        };
+        process.Start();
+        process.WaitForExit();
+        File.Delete("temp.dot");
     }
 
     private void Pattern_OnClick(object sender, RoutedEventArgs e)
