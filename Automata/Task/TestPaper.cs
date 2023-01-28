@@ -4,19 +4,19 @@ namespace Automata.Task;
 
 public class TestPaper
 {
-    private readonly int _variantsNumber;
-    private readonly List<ITask> _tasks;
-    private readonly TexFile _studentFile;
-    private readonly TexFile _teacherFile;
-    private readonly bool _withSolution;
+    private readonly int number;
+    private readonly List<ITask> tasks;
+    private readonly TexFile studentFile;
+    private readonly TexFile teacherFile;
+    private readonly bool withSolution;
 
-    private TestPaper(int variantsNumber, string name, bool withSolution)
+    private TestPaper(int number, string name, bool withSolution)
     {
-        _variantsNumber = variantsNumber;
-        _tasks = new List<ITask>();
-        _studentFile = new TexFile($"{name}");
-        _teacherFile = new TexFile($"{name.Replace(".tex", "_solutions.tex")}");
-        _withSolution = withSolution;
+        this.number = number;
+        tasks = new List<ITask>();
+        studentFile = new TexFile($"{name}");
+        teacherFile = new TexFile($"{name.Replace(".tex", "_solutions.tex")}");
+        this.withSolution = withSolution;
     }
 
     public static TestPaper Create(int variantsNumber, string filename, bool withSolution = true)
@@ -26,28 +26,28 @@ public class TestPaper
     
     public TestPaper AddTask(ITask task)
     {
-        _tasks.Add(task);
+        tasks.Add(task);
         return this;
     }
 
     public void Generate()
     {
-        for (var variant = 1; variant <= _variantsNumber; variant++)
+        for (var variant = 1; variant <= number; variant++)
         {
-            _studentFile.Write(@"\textbf{Вариант " + variant + "}");
-            _teacherFile.Write(@"\textbf{Вариант " + variant + "}");
-            foreach (var task in _tasks)
+            studentFile.Write(@"\textbf{Вариант " + variant + "}");
+            teacherFile.Write(@"\textbf{Вариант " + variant + "}");
+            foreach (var task in tasks)
             {
-                task.Create(_studentFile, _teacherFile);
+                task.Create(studentFile, teacherFile);
             }
-            _teacherFile.WriteWhiteSpace(3);
-            _studentFile.WriteWhiteSpace(3);
+            teacherFile.WriteWhiteSpace(3);
+            studentFile.WriteWhiteSpace(3);
         }
-        _studentFile.Close();
-        _teacherFile.Close();
-        if (!_withSolution)
+        studentFile.Close();
+        teacherFile.Close();
+        if (!withSolution)
         {
-            _teacherFile.Delete();
+            teacherFile.Delete();
         }
     }
 }

@@ -5,17 +5,17 @@ namespace Automata.Task;
 
 public class MinimizationTask : ITask
 {
-    private string _description;
-    private readonly MinimizationAlgorithm _algorithm;
-    private readonly int _states;
-    private readonly HashSet<string> _alphabet;
+    private readonly string description;
+    private readonly MinimizationAlgorithm algorithm;
+    private readonly HashSet<string> states;
+    private readonly HashSet<string> alphabet;
     
     public MinimizationTask(string description, int states, HashSet<string> alphabet)
     {
-        _description = description;
-        _algorithm = MinimizationAlgorithm.GetInstance();
-        _states = states;
-        _alphabet = alphabet;
+        this.description = description;
+        algorithm = MinimizationAlgorithm.GetInstance();
+        this.states = Enumerable.Range(1, states).Select(x => x.ToString()).ToHashSet();
+        this.alphabet = alphabet;
     }
 
     private static void WriteBoth(TexFile student, TexFile teacher, string text)
@@ -23,8 +23,8 @@ public class MinimizationTask : ITask
         student.Write(text); 
         teacher.Write(text);
     }
-    
-    public bool IsAppropriate(DFA source, DFA result)
+
+    private static bool IsAppropriate(Automata source, Automata result)
     {
         return result.CountCompoundSets() > source.States.Count / 4
                && result.TerminateStates.Count > 1;
@@ -32,15 +32,15 @@ public class MinimizationTask : ITask
     
     public void Create(TexFile student, TexFile teacher)
     {
-        WriteBoth(student, teacher, _description);
-        var states = Enumerable.Range(1, _states).Select(x => x.ToString()).ToHashSet();
-        var randomAutomata = DFA.GetRandom(states, _alphabet);
-        var transformed = _algorithm.Get(randomAutomata);
+        WriteBoth(student, teacher, description);
+        
+        var randomAutomata = DFA.GetRandom(states, alphabet);
+        var transformed = algorithm.Get(randomAutomata);
 
         while (!IsAppropriate(randomAutomata, transformed))
         {
-            randomAutomata = DFA.GetRandom(states, _alphabet);
-            transformed = _algorithm.Get(randomAutomata);
+            randomAutomata = DFA.GetRandom(states, alphabet);
+            transformed = algorithm.Get(randomAutomata);
         }
         WriteBoth(student, teacher, randomAutomata.ConvertToTexFormat());
         
