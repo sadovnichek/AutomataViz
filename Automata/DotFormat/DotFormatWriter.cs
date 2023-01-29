@@ -65,11 +65,9 @@ public static class DotFormatExtensions
 {
     public static string ToDotFormat(this Graph graph)
     {
-        using (var s = new StringWriter())
-        {
-            new DotFormatWriter(s).Write(graph);
-            s.Flush();
-            return s.ToString();
-        }
+        using var s = new StringWriter();
+        new DotFormatWriter(s).Write(graph);
+        s.Flush();
+        return s.ToString();
     }
 }

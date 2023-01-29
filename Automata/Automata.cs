@@ -6,7 +6,7 @@ namespace Automata;
 
 public abstract class Automata
 {
-    protected HashSet<Tuple<string, string, string>> _transitions = new();
+    protected HashSet<Tuple<string, string, string>> Transitions = new();
     public Guid Id = Guid.NewGuid();
     public HashSet<string> Alphabet { get; protected init; }
     public HashSet<string> States { get; protected init;}
@@ -15,7 +15,7 @@ public abstract class Automata
 
     public void AddTransition(string state, string symbol, string value)
     {
-        _transitions.Add(Tuple.Create(state, symbol, value));
+        Transitions.Add(Tuple.Create(state, symbol, value));
     }
 
     public string ConvertToDotFormat()
@@ -31,7 +31,7 @@ public abstract class Automata
             .ForEach(r => dot.AddNode(r).With(n => n.Shape(NodeShape.DoubleCircle)));
         dot.AddEdge($"START{StartState}", StartState);
 
-        foreach (var (from, symbol, to) in _transitions)
+        foreach (var (from, symbol, to) in Transitions)
         {
             if (edges.ContainsKey(Tuple.Create(from, to)))
             {
@@ -53,7 +53,7 @@ public abstract class Automata
     public string GetTextForm()
     {
         var output = new StringBuilder();
-        foreach (var groups in _transitions.GroupBy(x => x.Item1))
+        foreach (var groups in Transitions.GroupBy(x => x.Item1))
         {
             foreach (var (item1, item2, item3) in groups)
             {

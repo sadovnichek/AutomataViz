@@ -5,17 +5,15 @@ namespace Automata.Algorithm;
 /*Singleton*/
 public class DeterminizationAlgorithm : IAlgorithm
 {
-    private static DeterminizationAlgorithm _instance;
+    private static DeterminizationAlgorithm? instance;
     public string Name => "Приведение НКА к ДКА";
-    public bool IsTask => true;
+    public bool IsTaskable => true;
 
-    private DeterminizationAlgorithm()
-    {
-    }
+    private DeterminizationAlgorithm() { }
 
     public static DeterminizationAlgorithm GetInstance()
     {
-        return _instance ??= new DeterminizationAlgorithm();
+        return instance ??= new DeterminizationAlgorithm();
     }
 
     public DFA Get(NDFA automata)

@@ -18,19 +18,6 @@ public class DeterminizationTask : ITask
         this.alphabet = alphabet;
     }
     
-    private static void WriteBoth(TexFile student, TexFile teacher, string text)
-    {
-        student.Write(text); 
-        teacher.Write(text);
-    }
-
-    private static bool IsAppropriate(Automata source, Automata result)
-    {
-        return result.TerminateStates.Count >= 1
-               && result.States.Count > Math.Pow(2, source.States.Count - 1)
-               && result.CountCompoundSets() >= 2;
-    }
-    
     public void Create(TexFile student, TexFile teacher)
     {
         WriteBoth(student, teacher, description);
@@ -48,5 +35,18 @@ public class DeterminizationTask : ITask
         teacher.WriteWhiteSpace(2);
         teacher.Write("Ответ:");
         teacher.Write(transformed.ConvertToTexFormat());
+    }
+    
+    private static void WriteBoth(TexFile student, TexFile teacher, string text)
+    {
+        student.Write(text); 
+        teacher.Write(text);
+    }
+
+    private static bool IsAppropriate(Automata source, Automata result)
+    {
+        return result.TerminateStates.Count >= 1
+               && result.States.Count > Math.Pow(2, source.States.Count - 1)
+               && result.CountCompoundSets() >= 2;
     }
 }

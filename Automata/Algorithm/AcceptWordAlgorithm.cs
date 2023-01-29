@@ -3,17 +3,17 @@
 /*Singleton*/
 public class AcceptWordAlgorithm : IAlgorithm
 {
-    private static AcceptWordAlgorithm? _instance;
+    private static AcceptWordAlgorithm? instance;
     public string Name => "Проверить слово на распознаваемость";
-    public bool IsTask => false;
+    public bool IsTaskable => false;
 
     private AcceptWordAlgorithm() { }
 
     public static AcceptWordAlgorithm GetInstance()
     {
-        if (_instance == null)
-            _instance = new AcceptWordAlgorithm();
-        return _instance;
+        if (instance == null)
+            instance = new AcceptWordAlgorithm();
+        return instance;
     }
     
     public bool Get(Automata automata, string word)

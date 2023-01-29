@@ -21,7 +21,7 @@ public class NDFA : Automata
         string startState,
         HashSet<string> terminateStates)
     {
-        _transitions = transitions;
+        Transitions = transitions;
         Alphabet = alphabet;
         States = states;
         StartState = startState;
@@ -32,7 +32,7 @@ public class NDFA : Automata
     {
         get
         {
-            return _transitions.Where(x => x.Item1 == state && x.Item2 == symbol)
+            return Transitions.Where(x => x.Item1 == state && x.Item2 == symbol)
                 .Select(x => x.Item3)
                 .ToHashSet();
         }

@@ -13,6 +13,26 @@ public static class Updater
                                 "[3] Название exe файла, который нужно запустить после завершения обновления\n" +
                                 "Автор: sadovnichek";
 
+    public static void Main(string[] args)
+    {
+        if (args.Length != 3)
+        {
+            Console.WriteLine(Help);
+            Console.ReadKey();
+        }
+        else
+        {
+            Update(args[0], args[1]);
+            var process = new Process();
+            process.StartInfo = new ProcessStartInfo()
+            {
+                FileName = args[2]
+            };
+            process.Start();
+            Environment.Exit(0);
+        }
+    }
+    
     private static void CheckPath(string fullPath)
     {
         var parts = fullPath.Split("/");
@@ -73,25 +93,5 @@ public static class Updater
         var fullPath = pathToSave + url.Split("/").Last();
         Download(url, fullPath);
         UnpackZip(fullPath);
-    }
-
-    public static void Main(string[] args)
-    {
-        if (args.Length != 3)
-        {
-            Console.WriteLine(Help);
-            Console.ReadKey();
-        }
-        else
-        {
-            Update(args[0], args[1]);
-            var process = new Process();
-            process.StartInfo = new ProcessStartInfo()
-            {
-                FileName = args[2]
-            };
-            process.Start();
-            Environment.Exit(0);
-        }
     }
 }

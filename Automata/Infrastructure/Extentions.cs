@@ -6,21 +6,18 @@ public static class Extensions
     {
         if (!source.Any())
             return "Ø";
-        if (source.Count() == 1)
+        if (source.Count == 1)
             return source.First();
-        if (latex)
-        {
-            var compounds = source.Select(x => x.StringToSet()).Select(x => x.SetToString(true));
-            return @"\{" + string.Join(", ", compounds.ToSortedSet()) + @"\}";
-        }
-        return @"{" + string.Join(", ", source.ToSortedSet()) + "}";
+        if (!latex) 
+            return @"{" + string.Join(", ", source.ToSortedSet()) + "}";
+        var compounds = source.Select(x => x.StringToSet()).Select(x => x.SetToString(true));
+        return @"\{" + string.Join(", ", compounds.ToSortedSet()) + @"\}";
     }
 
     public static HashSet<string> StringToSet(this string source)
     {
         if (source.Length == 0)
             return Enumerable.Empty<string>().ToHashSet();
-        source = source.Trim('{', '}');
         return source.Trim('{', '}')
             .Split(", ")
             .ToSortedSet()

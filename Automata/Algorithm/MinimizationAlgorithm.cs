@@ -5,18 +5,40 @@ namespace Automata.Algorithm;
 /*Singleton*/
 public class MinimizationAlgorithm : IAlgorithm
 {
-    private static MinimizationAlgorithm? _instance;
+    private static MinimizationAlgorithm? instance;
     private DFA _dfa;
     public string Name => "Алгоритм минимизации ДКА";
-    public bool IsTask => true;
+    public bool IsTaskable => true;
     
     private MinimizationAlgorithm() { }
 
     public static MinimizationAlgorithm GetInstance()
     {
-        if (_instance == null)
-            _instance = new MinimizationAlgorithm();
-        return _instance;
+        if (instance == null)
+            instance = new MinimizationAlgorithm();
+        return instance;
+    }
+    
+    public DFA Get(DFA source)
+    {
+        _dfa = source.ExceptStates(source.GetUnreachableStates());
+        var classes = GetClasses();
+        var transitions = new HashSet<Tuple<string, string, string>>();
+        var start = GetSet(_dfa.StartState, classes);
+        var terminates = _dfa.TerminateStates.Select(v => GetSet(v, classes)).Select(x => x.SetToString())
+            .ToHashSet();
+        foreach (var cls in classes)
+        {
+            var firstElement = cls.First();
+            foreach (var letter in _dfa.Alphabet)
+            {
+                var value = GetSet(_dfa[firstElement, letter], classes).SetToString();
+                transitions.Add(Tuple.Create(cls.SetToString(), letter, value));
+            }
+        }
+
+        return new DFA(classes.Select(x => x.SetToString()).ToHashSet(), 
+            _dfa.Alphabet, transitions, start.SetToString(), terminates);
     }
     
     private HashSet<string> GetSet(string element, IEnumerable<HashSet<string>> queue)
@@ -64,27 +86,5 @@ public class MinimizationAlgorithm : IAlgorithm
             queue.Dequeue();
         }
         return queue.ToHashSet();
-    }
-    
-    public DFA Get(DFA source)
-    {
-        _dfa = source.ExceptStates(source.GetUnreachableStates());
-        var classes = GetClasses();
-        var transitions = new HashSet<Tuple<string, string, string>>();
-        var start = GetSet(_dfa.StartState, classes);
-        var terminates = _dfa.TerminateStates.Select(v => GetSet(v, classes)).Select(x => x.SetToString())
-            .ToHashSet();
-        foreach (var cls in classes)
-        {
-            var firstElement = cls.First();
-            foreach (var letter in _dfa.Alphabet)
-            {
-                var value = GetSet(_dfa[firstElement, letter], classes).SetToString();
-                transitions.Add(Tuple.Create(cls.SetToString(), letter, value));
-            }
-        }
-
-        return new DFA(classes.Select(x => x.SetToString()).ToHashSet(), 
-            _dfa.Alphabet, transitions, start.SetToString(), terminates);
     }
 }

@@ -2,14 +2,14 @@
 
 public static class AlgorithmResolver
 {
-    private static List<IAlgorithm> _algorithms = new()
+    private static readonly List<IAlgorithm> algorithms = new()
     {
         MinimizationAlgorithm.GetInstance(),
         AcceptWordAlgorithm.GetInstance(),
         DeterminizationAlgorithm.GetInstance()
     };
 
-    public static Dictionary<string, IAlgorithm> Algorithms = _algorithms
+    public static readonly Dictionary<string, IAlgorithm> Algorithms = algorithms
         .Select(algorithm => new {algorithm.Name, algorithm})
         .ToDictionary(pair => pair.Name, pair => pair.algorithm);
 }

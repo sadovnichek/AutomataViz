@@ -18,18 +18,6 @@ public class MinimizationTask : ITask
         this.alphabet = alphabet;
     }
 
-    private static void WriteBoth(TexFile student, TexFile teacher, string text)
-    {
-        student.Write(text); 
-        teacher.Write(text);
-    }
-
-    private static bool IsAppropriate(Automata source, Automata result)
-    {
-        return result.CountCompoundSets() > source.States.Count / 4
-               && result.TerminateStates.Count > 1;
-    }
-    
     public void Create(TexFile student, TexFile teacher)
     {
         WriteBoth(student, teacher, description);
@@ -47,5 +35,17 @@ public class MinimizationTask : ITask
         teacher.WriteWhiteSpace(2);
         teacher.Write("Ответ:");
         teacher.Write(transformed.ConvertToTexFormat());
+    }
+    
+    private static void WriteBoth(TexFile student, TexFile teacher, string text)
+    {
+        student.Write(text); 
+        teacher.Write(text);
+    }
+
+    private static bool IsAppropriate(Automata source, Automata result)
+    {
+        return result.CountCompoundSets() > source.States.Count / 4
+               && result.TerminateStates.Count > 1;
     }
 }

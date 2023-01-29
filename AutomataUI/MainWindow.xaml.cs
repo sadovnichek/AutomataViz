@@ -26,6 +26,13 @@ public partial class MainWindow
     private readonly MinimizationAlgorithmWorkspace _minimizationAlgorithmWorkspace =
         MinimizationAlgorithmWorkspace.GetInstance();
 
+    public MainWindow()
+    {
+        InitializeComponent();
+        ConfigureImagesDirectory();
+        Visualization.RenderTransform = _st;
+    }
+    
     /*Creates a directory to store images*/
     private static void ConfigureImagesDirectory()
     {
@@ -45,13 +52,6 @@ public partial class MainWindow
         {
             File.Delete($"./{file}");
         }
-    }
-
-    public MainWindow()
-    {
-        InitializeComponent();
-        ConfigureImagesDirectory();
-        Visualization.RenderTransform = _st;
     }
 
     /*Creates an automata from user input*/

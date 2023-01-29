@@ -4,5 +4,5 @@ public interface IAlgorithm
 {
     string Name { get; }
     
-    bool IsTask { get; }
+    bool IsTaskable { get; }
 }

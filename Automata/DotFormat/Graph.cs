@@ -21,8 +21,7 @@ public class Graph
 
     public GraphNode AddNode(string name)
     {
-        GraphNode result;
-        if (!nodes.TryGetValue(name, out result))
+        if (!nodes.TryGetValue(name, out var result))
             nodes.Add(name, result = new GraphNode(name));
         return result;
     }

@@ -12,23 +12,21 @@ namespace AutomataUI;
 
 public partial class TaskWindow
 {
-    //private readonly BackgroundWorker _worker = new();
-    private int _statesNumber;
-    private HashSet<string> _alphabet = null!;
-    private string _description = null!;
-    private int _variantsNumber;
-    private bool _withSolution;
+    private int statesNumber;
+    private HashSet<string> alphabet = null!;
+    private string description = null!;
+    private int variantsNumber;
+    private bool withSolution;
 
     public TaskWindow()
     {
         InitializeComponent();
-        //_worker.DoWork += Create!;
     }
 
     private void Algorithms_OnLoaded(object sender, RoutedEventArgs e)
     {
         foreach (var algorithm in AlgorithmResolver.Algorithms
-                     .Where(pair => pair.Value.IsTask)
+                     .Where(pair => pair.Value.IsTaskable)
                      .Select(pair => pair.Key))
         {
             Algolist.Items.Add(algorithm);
@@ -38,11 +36,11 @@ public partial class TaskWindow
     private ITask GetTask(string taskName)
     {
         if (taskName == MinimizationAlgorithm.GetInstance().Name)
-            return new MinimizationTask(_description, _statesNumber, _alphabet);
-        return new DeterminizationTask(_description, _statesNumber, _alphabet);
+            return new MinimizationTask(description, statesNumber, alphabet);
+        return new DeterminizationTask(description, statesNumber, alphabet);
     }
     
-    private void Create(/*object sender, DoWorkEventArgs e*/)
+    private void Create()
     {
         var saveFileDialog = new SaveFileDialog
         {
@@ -50,7 +48,7 @@ public partial class TaskWindow
         };
         if (saveFileDialog.ShowDialog() == true)
         {
-            TestPaper.Create(_variantsNumber, saveFileDialog.FileName, _withSolution)
+            TestPaper.Create(variantsNumber, saveFileDialog.FileName, withSolution)
                 .AddTask(GetTask(Algolist.SelectionBoxItem.ToString()))
                 .Generate();
             Application.Current.Dispatcher.Invoke(() =>
@@ -65,8 +63,8 @@ public partial class TaskWindow
     {
         try
         {
-            _statesNumber = int.Parse(StatesNumber.Text);
-            _alphabet = Alphabet.Text.Replace(',', ' ')
+            statesNumber = int.Parse(StatesNumber.Text);
+            alphabet = Alphabet.Text.Replace(',', ' ')
                 .Split()
                 .Where(x => x.Length > 0)
                 .ToHashSet();
@@ -74,11 +72,10 @@ public partial class TaskWindow
             {
                 throw new Exception("Выберите тип задания");
             }
-            _description = Description.Text;
-            _variantsNumber = int.Parse(Number.Text);
-            _withSolution = WithSolution.IsChecked!.Value;
+            description = Description.Text;
+            variantsNumber = int.Parse(Number.Text);
+            withSolution = WithSolution.IsChecked!.Value;
             Status.Text = "В процессе создания...";
-            //_worker.RunWorkerAsync();
             Create();
         }
         catch (Exception exception)
