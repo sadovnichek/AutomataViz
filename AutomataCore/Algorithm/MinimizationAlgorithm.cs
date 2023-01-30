@@ -6,7 +6,7 @@ namespace Automata.Algorithm;
 public class MinimizationAlgorithm : IAlgorithm
 {
     private static MinimizationAlgorithm? instance;
-    private DFA _dfa;
+    private DFA dfa;
     public string Name => "Алгоритм минимизации ДКА";
     public bool IsTaskable => true;
     
@@ -21,24 +21,24 @@ public class MinimizationAlgorithm : IAlgorithm
     
     public DFA Get(DFA source)
     {
-        _dfa = source.ExceptStates(source.GetUnreachableStates());
+        dfa = source.ExceptStates(source.GetUnreachableStates());
         var classes = GetClasses();
         var transitions = new HashSet<Tuple<string, string, string>>();
-        var start = GetSet(_dfa.StartState, classes);
-        var terminates = _dfa.TerminateStates.Select(v => GetSet(v, classes)).Select(x => x.SetToString())
+        var start = GetSet(dfa.StartState, classes);
+        var terminates = dfa.TerminateStates.Select(v => GetSet(v, classes)).Select(x => x.SetToString())
             .ToHashSet();
         foreach (var cls in classes)
         {
             var firstElement = cls.First();
-            foreach (var letter in _dfa.Alphabet)
+            foreach (var letter in dfa.Alphabet)
             {
-                var value = GetSet(_dfa[firstElement, letter], classes).SetToString();
+                var value = GetSet(dfa[firstElement, letter], classes).SetToString();
                 transitions.Add(Tuple.Create(cls.SetToString(), letter, value));
             }
         }
 
         return new DFA(classes.Select(x => x.SetToString()).ToHashSet(), 
-            _dfa.Alphabet, transitions, start.SetToString(), terminates);
+            dfa.Alphabet, transitions, start.SetToString(), terminates);
     }
     
     private HashSet<string> GetSet(string element, IEnumerable<HashSet<string>> queue)
@@ -53,9 +53,9 @@ public class MinimizationAlgorithm : IAlgorithm
         foreach (var element in set)
         {
             var characteristicSet = new HashSet<HashSet<string>>();
-            foreach (var letter in _dfa.Alphabet)
+            foreach (var letter in dfa.Alphabet)
             {
-                var result = _dfa[element, letter];
+                var result = dfa[element, letter];
                 var belongsSet = GetSet(result, queue);
                 characteristicSet.Add(belongsSet);
             }
@@ -73,8 +73,8 @@ public class MinimizationAlgorithm : IAlgorithm
     
     private HashSet<HashSet<string>> GetClasses()
     {
-        var terminates = _dfa.TerminateStates;
-        var nonTerminateStates = _dfa.States.Where(s => !terminates.Contains(s)).ToHashSet();
+        var terminates = dfa.TerminateStates;
+        var nonTerminateStates = dfa.States.Where(s => !terminates.Contains(s)).ToHashSet();
         var queue = new Queue<HashSet<string>>();
         queue.Enqueue(terminates.ToHashSet()); 
         queue.Enqueue(nonTerminateStates);

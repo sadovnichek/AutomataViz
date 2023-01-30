@@ -22,7 +22,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Automata\Automata.csproj" />
+      <ProjectReference Include="..\AutomataCore\AutomataCore.csproj" />
       <ProjectReference Include="..\GraphVizDotNetLib\GraphVizDotNetLib.csproj" />
       <ProjectReference Include="..\Updater\Updater.csproj" />
     </ItemGroup>

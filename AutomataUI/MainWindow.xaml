@@ -25,9 +25,8 @@
         />
         
         <Menu x:Name="Menu" Grid.Row="0" VerticalAlignment="Top" Grid.ColumnSpan="2" >
-            <MenuItem Header="Создать работу" Click="CreateTask_OnClick"/>
+            <MenuItem Header="Создать тест" Click="CreateTask_OnClick"/>
             <MenuItem Header="Вставить шаблон для ввода" Click="Pattern_OnClick"/>
-            <MenuItem Header= "Сохранить изображение" Click="ImageSave_OnClick"/>
             <MenuItem Header="Случайный автомат">
                 <MenuItem Header="ДКА" Click="RandomDFA_OnClick"></MenuItem>
                 <MenuItem Header="НКА" Click="RandomNDFA_OnClick"></MenuItem>

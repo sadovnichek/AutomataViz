@@ -20,17 +20,17 @@ using Bitmap = System.Drawing.Bitmap;
 
 public partial class MainWindow
 {
-    private Bitmap _currentDisplayedImage;
-    private readonly ScaleTransform _st = new();
-    private readonly AcceptWordWorkspace _acceptWordWorkspace = AcceptWordWorkspace.GetInstance();
-    private readonly MinimizationAlgorithmWorkspace _minimizationAlgorithmWorkspace =
+    private Bitmap currentDisplayedImage;
+    private readonly ScaleTransform st = new();
+    private readonly AcceptWordWorkspace acceptWordWorkspace = AcceptWordWorkspace.GetInstance();
+    private readonly MinimizationAlgorithmWorkspace minimizationAlgorithmWorkspace =
         MinimizationAlgorithmWorkspace.GetInstance();
 
     public MainWindow()
     {
         InitializeComponent();
         ConfigureImagesDirectory();
-        Visualization.RenderTransform = _st;
+        Visualization.RenderTransform = st;
     }
     
     /*Creates a directory to store images*/
@@ -96,7 +96,7 @@ public partial class MainWindow
                 {
                     var algorithm = MinimizationAlgorithm.GetInstance();
                     var transformed = algorithm.Get(dfa);
-                    _minimizationAlgorithmWorkspace.AddContent(transformed);
+                    minimizationAlgorithmWorkspace.AddContent(transformed);
                 }
                 else
                 {
@@ -106,9 +106,9 @@ public partial class MainWindow
             else if (selectedAlgorithmName == AcceptWordAlgorithm.GetInstance().Name)
             {
                 var algorithm = AcceptWordAlgorithm.GetInstance();
-                var word = _acceptWordWorkspace.Word.Text;
+                var word = acceptWordWorkspace.Word.Text;
                 var answer = algorithm.Get(automata, word) ? "распознаёт" : "не распознаёт";
-                _acceptWordWorkspace.AddContent(answer);
+                acceptWordWorkspace.AddContent(answer);
             }
             else if (selectedAlgorithmName == DeterminizationAlgorithm.GetInstance().Name)//
             {
@@ -116,7 +116,7 @@ public partial class MainWindow
                 {
                     var algorithm = DeterminizationAlgorithm.GetInstance();//
                     var transformed = algorithm.Get(ndfa);
-                    _minimizationAlgorithmWorkspace.AddContent(transformed);
+                    minimizationAlgorithmWorkspace.AddContent(transformed);
                 }
                 else
                 {
@@ -138,12 +138,12 @@ public partial class MainWindow
         var selectedAlgorithmName = Algolist.SelectionBoxItem.ToString();
         if (selectedAlgorithmName == AcceptWordAlgorithm.GetInstance().Name)
         {
-            _acceptWordWorkspace.Init(AnswerField);
+            acceptWordWorkspace.Init(AnswerField);
         }
         else if (selectedAlgorithmName == MinimizationAlgorithm.GetInstance().Name || 
                  selectedAlgorithmName == DeterminizationAlgorithm.GetInstance().Name)//
         {
-            _minimizationAlgorithmWorkspace.Init(AnswerField);
+            minimizationAlgorithmWorkspace.Init(AnswerField);
         }
     }
 
@@ -223,17 +223,6 @@ public partial class MainWindow
         TableInput.Text += output.ToString();
     }
 
-    private void ImageSave_OnClick(object sender, RoutedEventArgs e)
-    {
-        if (Visualization.Source == null) return;
-        var saveFileDialog = new SaveFileDialog();
-        saveFileDialog.Filter = "picture files (*.png)|*.png|All files (*.*)|*.*";
-        if (saveFileDialog.ShowDialog() == true)
-        {
-            _currentDisplayedImage.Save(saveFileDialog.FileName);
-        }
-    }
-
     private void RandomNDFA_OnClick(object sender, RoutedEventArgs e)
     {
         var random = new Random();
@@ -270,10 +259,10 @@ public partial class MainWindow
     private void image_MouseWheel(object sender, MouseWheelEventArgs e)
     {
         var zoom = e.Delta > 0 ? 0.1 : -0.05;
-        _st.ScaleX += zoom;
-        _st.ScaleY += zoom;
-        _st.CenterX = e.MouseDevice.GetPosition(Visualization).X;
-        _st.CenterY = e.MouseDevice.GetPosition(Visualization).Y;
+        st.ScaleX += zoom;
+        st.ScaleY += zoom;
+        st.CenterX = e.MouseDevice.GetPosition(Visualization).X;
+        st.CenterY = e.MouseDevice.GetPosition(Visualization).Y;
     }
 
     private void CreateTask_OnClick(object sender, RoutedEventArgs e)
