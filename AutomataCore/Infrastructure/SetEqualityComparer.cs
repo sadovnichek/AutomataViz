@@ -1,4 +1,4 @@
-﻿namespace Automata.Infrastructure;
+﻿namespace Infrastructure;
 
 public class SetEqualityComparer : IEqualityComparer<HashSet<HashSet<string>>>
 {

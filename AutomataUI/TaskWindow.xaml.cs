@@ -4,8 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Automata.Algorithm;
-using Automata.Task;
+using AutomataCore.Algorithm;
+using AutomataCore.Task;
 using Microsoft.Win32;
 
 namespace AutomataUI;

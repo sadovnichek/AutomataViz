@@ -9,8 +9,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Automata.Algorithm;
-using Automata;
+using AutomataCore.Algorithm;
+using AutomataCore;
+using AutomataCore.Automata;
 using AutomataUI.Workspaces;
 using Microsoft.Win32;
 
@@ -55,7 +56,7 @@ public partial class MainWindow
     }
 
     /*Creates an automata from user input*/
-    private Automata.Automata GetAutomata()
+    private AutomataCore.Automata.Automata GetAutomata()
     {
         var states = new HashSet<string>();
         var alphabet = new HashSet<string>();
@@ -189,7 +190,7 @@ public partial class MainWindow
         return matches.Select(m => m.Value).ToHashSet();
     }
 
-    private void GenerateImage(Automata.Automata automata)
+    private void GenerateImage(AutomataCore.Automata.Automata automata)
     {
         using (var writer = new StreamWriter("temp.dot"))
         {

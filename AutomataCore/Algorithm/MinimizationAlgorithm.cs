@@ -1,6 +1,7 @@
-﻿using Automata.Infrastructure;
+﻿using AutomataCore.Automata;
+using Infrastructure;
 
-namespace Automata.Algorithm;
+namespace AutomataCore.Algorithm;
 
 /*Singleton*/
 public class MinimizationAlgorithm : IAlgorithm

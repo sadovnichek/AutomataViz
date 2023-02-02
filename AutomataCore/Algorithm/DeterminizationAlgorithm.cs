@@ -1,6 +1,7 @@
-﻿using Automata.Infrastructure;
+﻿using Infrastructure;
+using AutomataCore.Automata;
 
-namespace Automata.Algorithm;
+namespace AutomataCore.Algorithm;
 
 /*Singleton*/
 public class DeterminizationAlgorithm : IAlgorithm

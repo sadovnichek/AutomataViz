@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Automata;
+using AutomataCore;
+using AutomataCore.Automata;
 
 namespace AutomataUI.Workspaces;
 

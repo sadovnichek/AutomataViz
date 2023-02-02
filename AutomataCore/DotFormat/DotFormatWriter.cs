@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Automata.DotFormat;
+namespace Infrastructure.DotFormat;
 
 public class DotFormatWriter
 {

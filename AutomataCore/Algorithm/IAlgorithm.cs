@@ -1,4 +1,4 @@
-﻿namespace Automata.Algorithm;
+﻿namespace AutomataCore.Algorithm;
 
 public interface IAlgorithm
 {

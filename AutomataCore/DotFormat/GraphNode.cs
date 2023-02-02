@@ -1,4 +1,4 @@
-﻿namespace Automata.DotFormat;
+﻿namespace Infrastructure.DotFormat;
 
 public class GraphNode
 {

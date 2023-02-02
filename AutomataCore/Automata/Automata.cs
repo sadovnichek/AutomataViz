@@ -1,8 +1,8 @@
 ﻿using System.Text;
-using Automata.DotFormat;
-using Automata.Infrastructure;
+using Infrastructure;
+using Infrastructure.DotFormat;
 
-namespace Automata;
+namespace AutomataCore.Automata;
 
 public abstract class Automata
 {

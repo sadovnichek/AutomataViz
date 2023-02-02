@@ -1,6 +1,6 @@
-﻿using Automata.Infrastructure;
+﻿using Infrastructure;
 
-namespace Automata.Task;
+namespace AutomataCore.Task;
 
 public class TestPaper
 {

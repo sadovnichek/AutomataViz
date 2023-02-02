@@ -1,7 +1,8 @@
-﻿using Automata.Algorithm;
-using Automata.Infrastructure;
+﻿using AutomataCore.Algorithm;
+using AutomataCore.Automata;
+using Infrastructure;
 
-namespace Automata.Task;
+namespace AutomataCore.Task;
 
 public class DeterminizationTask : ITask
 {
@@ -43,7 +44,7 @@ public class DeterminizationTask : ITask
         teacher.Write(text);
     }
 
-    private static bool IsAppropriate(Automata source, Automata result)
+    private static bool IsAppropriate(Automata.Automata source, Automata.Automata result)
     {
         return result.TerminateStates.Count >= 1
                && result.States.Count > Math.Pow(2, source.States.Count - 1)

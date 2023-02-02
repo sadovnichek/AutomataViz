@@ -1,7 +1,8 @@
-﻿using Automata.Algorithm;
-using Automata.Infrastructure;
+﻿using AutomataCore.Algorithm;
+using AutomataCore.Automata;
+using Infrastructure;
 
-namespace Automata.Task;
+namespace AutomataCore.Task;
 
 public class MinimizationTask : ITask
 {
@@ -43,7 +44,7 @@ public class MinimizationTask : ITask
         teacher.Write(text);
     }
 
-    private static bool IsAppropriate(Automata source, Automata result)
+    private static bool IsAppropriate(Automata.Automata source, Automata.Automata result)
     {
         return result.CountCompoundSets() > source.States.Count / 4
                && result.TerminateStates.Count > 1;

@@ -1,10 +1,10 @@
-﻿using Automata.Infrastructure;
+﻿using Infrastructure;
 
-namespace Automata;
+namespace AutomataCore.Automata;
 
-public class DFA : Automata
+public class NDFA : Automata
 {
-    public DFA(HashSet<string> states,
+    public NDFA(HashSet<string> states,
         HashSet<string> alphabet,
         string startState,
         HashSet<string> terminateStates)
@@ -15,7 +15,7 @@ public class DFA : Automata
         TerminateStates = terminateStates;
     }
 
-    public DFA(HashSet<string> states,
+    public NDFA(HashSet<string> states,
         HashSet<string> alphabet,
         HashSet<Tuple<string, string, string>> transitions,
         string startState,
@@ -28,15 +28,16 @@ public class DFA : Automata
         TerminateStates = terminateStates;
     }
 
-    public string this[string state, string symbol]
+    public HashSet<string> this[string state, string symbol]
     {
         get
         {
             return Transitions.Where(x => x.Item1 == state && x.Item2 == symbol)
-                .Select(x => x.Item3).First();
+                .Select(x => x.Item3)
+                .ToHashSet();
         }
     }
-    
+
     public string ConvertToTexFormat()
     {
         var result = "\n\\begin{tabular}{ c | " + string.Join(" ", Enumerable.Repeat("c", States.Count)) + " }\n & ";
@@ -51,7 +52,7 @@ public class DFA : Automata
             result += symbol + " & ";
             foreach (var state in States)
             {
-                result += this[state, symbol] + (States.Last().Equals(state) ? "" : " & ");
+                result += this[state, symbol].SetToString(true) + (States.Last().Equals(state) ? "" : " & ");
             }
 
             result += " \\\\\n";
@@ -61,21 +62,24 @@ public class DFA : Automata
         result += $"вход: {StartState}, выходы: {TerminateStates.SetToString(true)}";
         return result;
     }
-    
-    public DFA ExceptStates(HashSet<string> exceptedStates)
+
+    public NDFA ExceptStates(HashSet<string> exceptedStates)
     {
         var newTerminates = TerminateStates.Where(s => !exceptedStates.Contains(s)).ToHashSet();
         var newStates = States.Where(s => !exceptedStates.Contains(s)).ToHashSet();
-        var newAutomata = new DFA(newStates, Alphabet, StartState, newTerminates);
+        var newAutomata = new NDFA(newStates, Alphabet, StartState, newTerminates);
 
         foreach (var state in newStates)
         {
             foreach (var symbol in Alphabet)
             {
-                var value = this[state, symbol];
-                if (!exceptedStates.Contains(value))
+                var values = this[state, symbol];
+                foreach (var value in values)
                 {
-                    newAutomata.AddTransition(state, symbol, value);
+                    if (!exceptedStates.Contains(value))
+                    {
+                        newAutomata.AddTransition(state, symbol, value);
+                    }
                 }
             }
         }
@@ -98,35 +102,41 @@ public class DFA : Automata
             Alphabet.ToList()
                 .ForEach(letter =>
                 {
-                    var state = this[currentState, letter];
-                    if (!queue.Contains(state))
-                        queue.Enqueue(state);
+                    var states = this[currentState, letter];
+                    foreach (var state in states)
+                    {
+                        if (!queue.Contains(state))
+                            queue.Enqueue(state);
+                    }
                 });
             used.Add(currentState);
         }
 
         return States.Where(s => !used.Contains(s)).ToHashSet();
     }
-
-    public static DFA GetRandom(HashSet<string> states, HashSet<string> alphabet)
+    
+    public static NDFA GetRandom(HashSet<string> states, HashSet<string> alphabet)
     {
         var random = new Random();
-        var start = states.ToList()[random.Next(1, states.Count)];
+        var start = states.ToList()[random.Next(0, states.Count)];
         var terminates = states.GetRandomSubset(random.Next(2, states.Count / 2 + 1));
-        var randomAutomata = new DFA(states, alphabet, start, terminates);
+        var randomAutomata = new NDFA(states, alphabet, start, terminates);
         foreach (var state in states)
         {
             foreach (var symbol in alphabet)
             {
-                var randomIndex = random.Next(0, states.Count);
-                randomAutomata.AddTransition(state, symbol, states.ToList()[randomIndex]);
+                for (int i = 0; i < random.Next(0, 3); i++)
+                {
+                    var randomIndex = random.Next(0, states.Count);
+                    randomAutomata.AddTransition(state, symbol, states.ToList()[randomIndex]);
+                }
             }
         }
 
         return randomAutomata.ExceptStates(randomAutomata.GetUnreachableStates());
     }
 
-    public static DFA GetRandom(int statesNumber, int alphabetNumber)
+    public static NDFA GetRandom(int statesNumber, int alphabetNumber)
     {
         var states = Enumerable.Range(1, statesNumber)
             .Select(x => x.ToString())
@@ -136,14 +146,20 @@ public class DFA : Automata
             .ToHashSet();
         return GetRandom(states, alphabet);
     }
-    
+
     public override bool IsAcceptWord(string word)
     {
-        var currentState = StartState;
+        var currentNode = new HashSet<string>{StartState};
         foreach (var w in word)
         {
-            currentState = this[currentState, w.ToString()];
+            var resultSet = new HashSet<string>();
+            foreach (var q in currentNode)
+            {
+                resultSet = resultSet.Concat(this[q, w.ToString()]).ToHashSet();
+            }
+            currentNode = resultSet;
         }
-        return TerminateStates.Contains(currentState);
+        currentNode.IntersectWith(TerminateStates);
+        return currentNode.Count > 0;
     }
 }

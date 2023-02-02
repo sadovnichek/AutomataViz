@@ -1,4 +1,4 @@
-﻿namespace Automata.Algorithm;
+﻿namespace AutomataCore.Algorithm;
 
 /*Singleton*/
 public class AcceptWordAlgorithm : IAlgorithm
@@ -16,7 +16,7 @@ public class AcceptWordAlgorithm : IAlgorithm
         return instance;
     }
     
-    public bool Get(Automata automata, string word)
+    public bool Get(Automata.Automata automata, string word)
     {
         return automata.IsAcceptWord(word);
     }
