@@ -9,7 +9,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AutomataCore\AutomataCore.csproj" />
-      <ProjectReference Include="..\GraphVizDotNetLib\GraphVizDotNetLib.csproj" />
     </ItemGroup>
 
     <ItemGroup>
