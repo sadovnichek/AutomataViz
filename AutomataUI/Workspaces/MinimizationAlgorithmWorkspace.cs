@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using AutomataCore;
 using AutomataCore.Automata;
 
 namespace AutomataUI.Workspaces;
@@ -8,23 +7,23 @@ namespace AutomataUI.Workspaces;
 /*Singleton*/
 public class MinimizationAlgorithmWorkspace
 {
-    private static MinimizationAlgorithmWorkspace? _instance;
-    public Label AnswerLabel { get; private set; }
-    public TextBox Transformed { get; private set; }
-    public Label StartStatesLabel { get; private set; }
-    public TextBox StartStatesText { get; private set; }
-    public Label TerminateStatesLabel { get; private set; }
-    public TextBox TerminateStatesText { get; private set; }
+    private static MinimizationAlgorithmWorkspace? instance;
+    private Label AnswerLabel { get; set; }
+    private TextBox Transformed { get; set; }
+    private Label StartStatesLabel { get; set; }
+    private TextBox StartStatesText { get; set; }
+    private Label TerminateStatesLabel { get; set; }
+    private TextBox TerminateStatesText { get; set; }
     
     private MinimizationAlgorithmWorkspace() { }
     
     public static MinimizationAlgorithmWorkspace GetInstance()
     {
-        if (_instance == null)
+        if (instance == null)
         {
-            _instance = new MinimizationAlgorithmWorkspace();
+            instance = new MinimizationAlgorithmWorkspace();
         }
-        return _instance;
+        return instance;
     }
 
     public void Init(StackPanel panel)

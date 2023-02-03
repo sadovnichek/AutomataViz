@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using AutomataCore.Algorithm;
 using AutomataCore.Task;
 using Microsoft.Win32;
 
@@ -25,19 +23,17 @@ public partial class TaskWindow
 
     private void Algorithms_OnLoaded(object sender, RoutedEventArgs e)
     {
-        foreach (var algorithm in AlgorithmResolver.Algorithms
-                     .Where(pair => pair.Value.IsTaskable)
-                     .Select(pair => pair.Key))
+        foreach (var taskName in TaskResolver.GetAllServices()
+                     .Select(task => task.Name))
         {
-            Algolist.Items.Add(algorithm);
+            Algolist.Items.Add(taskName);
         }
     }
 
     private ITask GetTask(string taskName)
     {
-        if (taskName == MinimizationAlgorithm.GetInstance().Name)
-            return new MinimizationTask(description, statesNumber, alphabet);
-        return new DeterminizationTask(description, statesNumber, alphabet);
+        return TaskResolver.GetService(taskName)
+            .Configure(description, statesNumber, alphabet);
     }
     
     private void Create()

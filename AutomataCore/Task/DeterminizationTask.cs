@@ -6,17 +6,24 @@ namespace AutomataCore.Task;
 
 public class DeterminizationTask : ITask
 {
-    private readonly string description;
-    private readonly DeterminizationAlgorithm algorithm;
-    private readonly HashSet<string> states;
-    private readonly HashSet<string> alphabet;
+    private string description;
+    private DeterminizationAlgorithm algorithm;
+    private HashSet<string> states;
+    private HashSet<string> alphabet;
+    public string Name { get; }
     
-    public DeterminizationTask(string description, int states, HashSet<string> alphabet)
+    public DeterminizationTask()
+    {
+        algorithm = DeterminizationAlgorithm.GetInstance();
+        Name = algorithm.Name;
+    }
+
+    public ITask Configure(string description, int states, HashSet<string> alphabet)
     {
         this.description = description;
-        algorithm = DeterminizationAlgorithm.GetInstance();
         this.states = Enumerable.Range(1, states).Select(x => x.ToString()).ToHashSet();
         this.alphabet = alphabet;
+        return this;
     }
     
     public void Create(TexFile student, TexFile teacher)

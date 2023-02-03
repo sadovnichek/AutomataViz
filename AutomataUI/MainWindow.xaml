@@ -80,9 +80,7 @@
                         Click="VisualButton_OnClick"/>
             </DockPanel>
             
-            <StackPanel Margin="0, 0, 20, 0" x:Name="AnswerField">
-               
-            </StackPanel>
+            <StackPanel Margin="0, 0, 20, 0" x:Name="AnswerField"/>
             
             </StackPanel>
         </ScrollViewer>

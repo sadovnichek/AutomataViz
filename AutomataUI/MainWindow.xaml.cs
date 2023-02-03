@@ -10,18 +10,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AutomataCore.Algorithm;
-using AutomataCore;
 using AutomataCore.Automata;
 using AutomataUI.Workspaces;
-using Microsoft.Win32;
 
 namespace AutomataUI;
 
-using Bitmap = System.Drawing.Bitmap;
-
 public partial class MainWindow
 {
-    private Bitmap currentDisplayedImage;
     private readonly ScaleTransform st = new();
     private readonly AcceptWordWorkspace acceptWordWorkspace = AcceptWordWorkspace.GetInstance();
     private readonly MinimizationAlgorithmWorkspace minimizationAlgorithmWorkspace =
@@ -56,7 +51,7 @@ public partial class MainWindow
     }
 
     /*Creates an automata from user input*/
-    private AutomataCore.Automata.Automata GetAutomata()
+    private Automata GetAutomata()
     {
         var states = new HashSet<string>();
         var alphabet = new HashSet<string>();
@@ -111,7 +106,7 @@ public partial class MainWindow
                 var answer = algorithm.Get(automata, word) ? "распознаёт" : "не распознаёт";
                 acceptWordWorkspace.AddContent(answer);
             }
-            else if (selectedAlgorithmName == DeterminizationAlgorithm.GetInstance().Name)//
+            else if (selectedAlgorithmName == DeterminizationAlgorithm.GetInstance().Name)
             {
                 if (automata is NDFA ndfa)
                 {
@@ -142,7 +137,7 @@ public partial class MainWindow
             acceptWordWorkspace.Init(AnswerField);
         }
         else if (selectedAlgorithmName == MinimizationAlgorithm.GetInstance().Name || 
-                 selectedAlgorithmName == DeterminizationAlgorithm.GetInstance().Name)//
+                 selectedAlgorithmName == DeterminizationAlgorithm.GetInstance().Name)
         {
             minimizationAlgorithmWorkspace.Init(AnswerField);
         }
