@@ -74,11 +74,17 @@ public partial class MainWindow
             transitions.Add(Tuple.Create(state, symbol, value));
         }
 
-        if (transitions.GroupBy(x => new {x.Item1, x.Item2}).All(group => group.Count() == 1))
+        foreach (var state in states)
         {
-            return new DFA(states, alphabet, transitions, start, terminates);
+            foreach (var symbol in alphabet)
+            {
+                if (transitions.Count(t => t.Item1 == state && t.Item2 == symbol) != 1)
+                {
+                    return new NDFA(states, alphabet, transitions, start, terminates);
+                }
+            }
         }
-        return new NDFA(states, alphabet, transitions, start, terminates);
+        return new DFA(states, alphabet, transitions, start, terminates);
     }
 
     /*Actions after apply button pressing*/

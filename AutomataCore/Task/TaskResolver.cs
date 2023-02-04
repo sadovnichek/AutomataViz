@@ -18,7 +18,7 @@ public static class TaskResolver
     public static T GetService<T>()
         where T : IAutomataTask
     {
-        return (T)serviceProvider.GetRequiredService(typeof(T));
+        return (T) serviceProvider.GetServices<IAutomataTask>().First(a => a is T);
     }
 
     public static IAutomataTask GetServiceByName(string serviceName)

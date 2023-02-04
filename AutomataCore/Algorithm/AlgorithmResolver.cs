@@ -9,12 +9,9 @@ public static class AlgorithmResolver
     static AlgorithmResolver()
     {
         var services = new ServiceCollection()
-            .AddSingleton<IAlgorithm, AcceptWordAlgorithm>()
-            .AddSingleton<IAlgorithm, MinimizationAlgorithm>()
-            .AddSingleton<IAlgorithm, DeterminizationAlgorithm>()
-            .AddSingleton<AcceptWordAlgorithm>()
-            .AddSingleton<MinimizationAlgorithm>()
-            .AddSingleton<DeterminizationAlgorithm>();
+                .AddSingleton<IAlgorithm, AcceptWordAlgorithm>()
+                .AddSingleton<IAlgorithm, MinimizationAlgorithm>()
+                .AddSingleton<IAlgorithm, DeterminizationAlgorithm>();
         
         serviceProvider = services.BuildServiceProvider();
     }
@@ -22,7 +19,7 @@ public static class AlgorithmResolver
     public static T GetService<T>()
         where T : IAlgorithm
     {
-        return (T) serviceProvider.GetRequiredService(typeof(T));
+        return (T) serviceProvider.GetServices<IAlgorithm>().First(a => a is T);
     }
 
     public static IEnumerable<IAlgorithm> GetAllServices()
