@@ -6,17 +6,8 @@ namespace AutomataCore.Algorithm;
 /*Singleton*/
 public class DeterminizationAlgorithm : IAlgorithm
 {
-    private static DeterminizationAlgorithm? instance;
     public string Name => "Приведение НКА к ДКА";
-    public bool IsTaskable => true;
-
-    private DeterminizationAlgorithm() { }
-
-    public static DeterminizationAlgorithm GetInstance()
-    {
-        return instance ??= new DeterminizationAlgorithm();
-    }
-
+    
     public DFA Get(NDFA automata)
     {
         automata = automata.ExceptStates(automata.GetUnreachableStates());

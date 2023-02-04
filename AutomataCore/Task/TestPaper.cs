@@ -5,7 +5,7 @@ namespace AutomataCore.Task;
 public class TestPaper
 {
     private readonly int number;
-    private readonly List<ITask> tasks;
+    private readonly List<IAutomataTask> tasks;
     private readonly TexFile studentFile;
     private readonly TexFile teacherFile;
     private readonly bool withSolution;
@@ -13,7 +13,7 @@ public class TestPaper
     private TestPaper(int number, string name, bool withSolution)
     {
         this.number = number;
-        tasks = new List<ITask>();
+        tasks = new List<IAutomataTask>();
         studentFile = new TexFile($"{name}");
         teacherFile = new TexFile($"{name.Replace(".tex", "_solutions.tex")}");
         this.withSolution = withSolution;
@@ -24,9 +24,9 @@ public class TestPaper
         return new TestPaper(variantsNumber, filename, withSolution);
     }
     
-    public TestPaper AddTask(ITask task)
+    public TestPaper AddTask(IAutomataTask automataTask)
     {
-        tasks.Add(task);
+        tasks.Add(automataTask);
         return this;
     }
 

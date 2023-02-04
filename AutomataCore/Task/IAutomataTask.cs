@@ -2,11 +2,11 @@
 
 namespace AutomataCore.Task;
 
-public interface ITask
+public interface IAutomataTask
 {
     string Name { get; }
 
-    ITask Configure(string description, int states, HashSet<string> alphabet);
+    IAutomataTask Configure(string description, int states, HashSet<string> alphabet);
     
     void Create(TexFile studentPaper, TexFile teacherPaper);
 }

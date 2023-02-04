@@ -1,15 +1,32 @@
-﻿namespace AutomataCore.Algorithm;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace AutomataCore.Algorithm;
 
 public static class AlgorithmResolver
 {
-    private static readonly List<IAlgorithm> algorithms = new()
-    {
-        MinimizationAlgorithm.GetInstance(),
-        AcceptWordAlgorithm.GetInstance(),
-        DeterminizationAlgorithm.GetInstance()
-    };
+    private static readonly IServiceProvider serviceProvider;
 
-    public static readonly Dictionary<string, IAlgorithm> Algorithms = algorithms
-        .Select(algorithm => new {algorithm.Name, algorithm})
-        .ToDictionary(pair => pair.Name, pair => pair.algorithm);
+    static AlgorithmResolver()
+    {
+        var services = new ServiceCollection()
+            .AddSingleton<IAlgorithm, AcceptWordAlgorithm>()
+            .AddSingleton<IAlgorithm, MinimizationAlgorithm>()
+            .AddSingleton<IAlgorithm, DeterminizationAlgorithm>()
+            .AddSingleton<AcceptWordAlgorithm>()
+            .AddSingleton<MinimizationAlgorithm>()
+            .AddSingleton<DeterminizationAlgorithm>();
+        
+        serviceProvider = services.BuildServiceProvider();
+    }
+
+    public static T GetService<T>()
+        where T : IAlgorithm
+    {
+        return (T) serviceProvider.GetRequiredService(typeof(T));
+    }
+
+    public static IEnumerable<IAlgorithm> GetAllServices()
+    {
+        return serviceProvider.GetServices<IAlgorithm>();
+    }
 }

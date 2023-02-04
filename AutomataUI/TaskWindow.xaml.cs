@@ -30,9 +30,9 @@ public partial class TaskWindow
         }
     }
 
-    private ITask GetTask(string taskName)
+    private IAutomataTask GetTask(string taskName)
     {
-        return TaskResolver.GetService(taskName)
+        return TaskResolver.GetServiceByName(taskName)
             .Configure(description, statesNumber, alphabet);
     }
     
@@ -59,6 +59,7 @@ public partial class TaskWindow
     {
         try
         {
+            var services = TaskResolver.GetAllServices();
             statesNumber = int.Parse(StatesNumber.Text);
             alphabet = Alphabet.Text.Replace(',', ' ')
                 .Split()

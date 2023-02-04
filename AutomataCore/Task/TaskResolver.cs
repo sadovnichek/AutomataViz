@@ -3,29 +3,31 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AutomataCore.Task;
 
-public class TaskResolver
+public static class TaskResolver
 {
     private static readonly IServiceProvider serviceProvider;
     
     static TaskResolver()
     {
         var services = new ServiceCollection()
-            .AddSingleton<ITask, DeterminizationTask>()
-            .AddSingleton<ITask, MinimizationTask>();
+            .AddSingleton<IAutomataTask, DeterminizationAutomataTask>()
+            .AddSingleton<IAutomataTask, MinimizationAutomataTask>();
         serviceProvider = services.BuildServiceProvider();
     }
 
-    public static ITask GetService(string name)
+    public static T GetService<T>()
+        where T : IAutomataTask
     {
-        if (name == DeterminizationAlgorithm.GetInstance().Name)
-            return serviceProvider.GetRequiredService<DeterminizationTask>();
-        if(name == MinimizationAlgorithm.GetInstance().Name)
-            return serviceProvider.GetRequiredService<MinimizationTask>();
-        throw new ArgumentException($"service {name} does not exist");
+        return (T)serviceProvider.GetRequiredService(typeof(T));
     }
 
-    public static IEnumerable<ITask> GetAllServices()
+    public static IAutomataTask GetServiceByName(string serviceName)
     {
-        return serviceProvider.GetServices<ITask>();
+        return GetAllServices().First(service => service.Name == serviceName);
+    }
+    
+    public static IEnumerable<IAutomataTask> GetAllServices()
+    {
+        return serviceProvider.GetServices<IAutomataTask>();
     }
 }

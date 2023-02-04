@@ -73,10 +73,12 @@ public partial class MainWindow
             alphabet.Add(symbol);
             transitions.Add(Tuple.Create(state, symbol, value));
         }
-        
-        if(transitions.GroupBy(x => new { x.Item1, x.Item2 }).Any(group => group.Count() > 1))
-            return new NDFA(states, alphabet, transitions, start, terminates);
-        return new DFA(states, alphabet, transitions, start, terminates);
+
+        if (transitions.GroupBy(x => new {x.Item1, x.Item2}).All(group => group.Count() == 1))
+        {
+            return new DFA(states, alphabet, transitions, start, terminates);
+        }
+        return new NDFA(states, alphabet, transitions, start, terminates);
     }
 
     /*Actions after apply button pressing*/
@@ -86,11 +88,11 @@ public partial class MainWindow
         {
             var automata = GetAutomata();
             var selectedAlgorithmName = Algolist.SelectionBoxItem.ToString();
-            if (selectedAlgorithmName == MinimizationAlgorithm.GetInstance().Name)
+            if (selectedAlgorithmName == AlgorithmResolver.GetService<MinimizationAlgorithm>().Name)
             {
                 if (automata is DFA dfa)
                 {
-                    var algorithm = MinimizationAlgorithm.GetInstance();
+                    var algorithm = AlgorithmResolver.GetService<MinimizationAlgorithm>();
                     var transformed = algorithm.Get(dfa);
                     minimizationAlgorithmWorkspace.AddContent(transformed);
                 }
@@ -99,18 +101,18 @@ public partial class MainWindow
                     MessageBox.Show("Автомат не является ДКА");
                 }
             }
-            else if (selectedAlgorithmName == AcceptWordAlgorithm.GetInstance().Name)
+            else if (selectedAlgorithmName == AlgorithmResolver.GetService<AcceptWordAlgorithm>().Name)
             {
-                var algorithm = AcceptWordAlgorithm.GetInstance();
+                var algorithm = AlgorithmResolver.GetService<AcceptWordAlgorithm>();
                 var word = acceptWordWorkspace.Word.Text;
                 var answer = algorithm.Get(automata, word) ? "распознаёт" : "не распознаёт";
                 acceptWordWorkspace.AddContent(answer);
             }
-            else if (selectedAlgorithmName == DeterminizationAlgorithm.GetInstance().Name)
+            else if (selectedAlgorithmName == AlgorithmResolver.GetService<DeterminizationAlgorithm>().Name)
             {
                 if (automata is NDFA ndfa)
                 {
-                    var algorithm = DeterminizationAlgorithm.GetInstance();//
+                    var algorithm = AlgorithmResolver.GetService<DeterminizationAlgorithm>();
                     var transformed = algorithm.Get(ndfa);
                     minimizationAlgorithmWorkspace.AddContent(transformed);
                 }
@@ -132,12 +134,12 @@ public partial class MainWindow
         AnswerField.Children.Clear();
         ApplyButton.IsEnabled = true;
         var selectedAlgorithmName = Algolist.SelectionBoxItem.ToString();
-        if (selectedAlgorithmName == AcceptWordAlgorithm.GetInstance().Name)
+        if (selectedAlgorithmName == AlgorithmResolver.GetService<AcceptWordAlgorithm>().Name)
         {
             acceptWordWorkspace.Init(AnswerField);
         }
-        else if (selectedAlgorithmName == MinimizationAlgorithm.GetInstance().Name || 
-                 selectedAlgorithmName == DeterminizationAlgorithm.GetInstance().Name)
+        else if (selectedAlgorithmName == AlgorithmResolver.GetService<MinimizationAlgorithm>().Name || 
+                 selectedAlgorithmName == AlgorithmResolver.GetService<DeterminizationAlgorithm>().Name)
         {
             minimizationAlgorithmWorkspace.Init(AnswerField);
         }
@@ -222,7 +224,7 @@ public partial class MainWindow
     private void RandomNDFA_OnClick(object sender, RoutedEventArgs e)
     {
         var random = new Random();
-        var randomAutomata = NDFA.GetRandom(random.Next(5, 11), random.Next(2, 4));
+        var randomAutomata = NDFA.GetRandom(random.Next(3, 6), random.Next(2, 4));
         TableInput.Text = randomAutomata.GetTextForm();
         StartState.Text = randomAutomata.StartState;
         TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);
@@ -231,7 +233,7 @@ public partial class MainWindow
     private void RandomDFA_OnClick(object sender, RoutedEventArgs e)
     {
         var random = new Random();
-        var randomAutomata = DFA.GetRandom(random.Next(5, 11), random.Next(2, 4));
+        var randomAutomata = DFA.GetRandom(random.Next(3, 10), random.Next(2, 4));
         TableInput.Text = randomAutomata.GetTextForm();
         StartState.Text = randomAutomata.StartState;
         TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);
@@ -269,9 +271,9 @@ public partial class MainWindow
 
     private void Algorithms_OnLoaded(object sender, RoutedEventArgs e)
     {
-        foreach (var algorithmName in AlgorithmResolver.Algorithms.Keys)
+        foreach (var algorithm in AlgorithmResolver.GetAllServices())
         {
-            Algolist.Items.Add(algorithmName);
+            Algolist.Items.Add(algorithm.Name);
         }
     }
 }

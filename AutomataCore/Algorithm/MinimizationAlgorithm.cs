@@ -3,22 +3,10 @@ using Infrastructure;
 
 namespace AutomataCore.Algorithm;
 
-/*Singleton*/
 public class MinimizationAlgorithm : IAlgorithm
 {
-    private static MinimizationAlgorithm? instance;
     private DFA dfa;
     public string Name => "Алгоритм минимизации ДКА";
-    public bool IsTaskable => true;
-    
-    private MinimizationAlgorithm() { }
-
-    public static MinimizationAlgorithm GetInstance()
-    {
-        if (instance == null)
-            instance = new MinimizationAlgorithm();
-        return instance;
-    }
     
     public DFA Get(DFA source)
     {

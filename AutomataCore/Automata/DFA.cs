@@ -58,7 +58,7 @@ public class DFA : Automata
         }
 
         result += "\\end{tabular}\n\\\\\n";
-        result += $"вход: {StartState}, выходы: {TerminateStates.SetToString(true)}";
+        result += $"вход: {StartState.StringToSet().SetToString(true)}, выходы: {TerminateStates.SetToString(true)}";
         return result;
     }
     

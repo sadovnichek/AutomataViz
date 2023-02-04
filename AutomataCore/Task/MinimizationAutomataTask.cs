@@ -4,7 +4,7 @@ using Infrastructure;
 
 namespace AutomataCore.Task;
 
-public class MinimizationTask : ITask
+public class MinimizationAutomataTask : IAutomataTask
 {
     private string description;
     private MinimizationAlgorithm algorithm;
@@ -12,13 +12,13 @@ public class MinimizationTask : ITask
     private HashSet<string> alphabet;
     public string Name { get; }
     
-    public MinimizationTask()
+    public MinimizationAutomataTask()
     {
-        algorithm = MinimizationAlgorithm.GetInstance();
+        algorithm = AlgorithmResolver.GetService<MinimizationAlgorithm>();
         Name = algorithm.Name;
     }
 
-    public ITask Configure(string description, int states, HashSet<string> alphabet)
+    public IAutomataTask Configure(string description, int states, HashSet<string> alphabet)
     {
         this.description = description;
         this.states = Enumerable.Range(1, states).Select(x => x.ToString()).ToHashSet();

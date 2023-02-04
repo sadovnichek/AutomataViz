@@ -4,7 +4,7 @@ using Infrastructure;
 
 namespace AutomataCore.Task;
 
-public class DeterminizationTask : ITask
+public class DeterminizationAutomataTask : IAutomataTask
 {
     private string description;
     private DeterminizationAlgorithm algorithm;
@@ -12,13 +12,13 @@ public class DeterminizationTask : ITask
     private HashSet<string> alphabet;
     public string Name { get; }
     
-    public DeterminizationTask()
+    public DeterminizationAutomataTask()
     {
-        algorithm = DeterminizationAlgorithm.GetInstance();
+        algorithm = AlgorithmResolver.GetService<DeterminizationAlgorithm>();
         Name = algorithm.Name;
     }
 
-    public ITask Configure(string description, int states, HashSet<string> alphabet)
+    public IAutomataTask Configure(string description, int states, HashSet<string> alphabet)
     {
         this.description = description;
         this.states = Enumerable.Range(1, states).Select(x => x.ToString()).ToHashSet();
