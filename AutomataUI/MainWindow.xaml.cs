@@ -58,10 +58,8 @@ public partial class MainWindow
         var terminates = ParseTerminateStates();
         var start = ParseStartState();
         var transitions = new HashSet<Tuple<string, string, string>>();
-
         var regex = new Regex(@"(\w+|{(.*?)}|∅).\w+\s*=\s*(\w+|{(.*?)}|∅)");
         var matches = regex.Matches(TableInput.Text);
-
         foreach (Match match in matches)
         {
             var line = match.Value;
@@ -73,18 +71,9 @@ public partial class MainWindow
             alphabet.Add(symbol);
             transitions.Add(Tuple.Create(state, symbol, value));
         }
-
-        foreach (var state in states)
-        {
-            foreach (var symbol in alphabet)
-            {
-                if (transitions.Count(t => t.Item1 == state && t.Item2 == symbol) != 1)
-                {
-                    return new NDFA(states, alphabet, transitions, start, terminates);
-                }
-            }
-        }
-        return new DFA(states, alphabet, transitions, start, terminates);
+        if (Automata.IsDfa(transitions, alphabet, states))
+            return new DFA(states, alphabet, transitions, start, terminates);
+        return new NDFA(states, alphabet, transitions, start, terminates);
     }
 
     /*Actions after apply button pressing*/

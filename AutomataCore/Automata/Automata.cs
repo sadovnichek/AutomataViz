@@ -71,6 +71,24 @@ public abstract class Automata
     {
         return States.Count(s => s.StringToSet().Count > 1);
     }
+
+    public static bool IsDfa(
+        HashSet<Tuple<string, string, string>> transitions,
+        HashSet<string> alphabet,
+        HashSet<string> states)
+    {
+        foreach (var state in states)
+        {
+            foreach (var symbol in alphabet)
+            {
+                if (transitions.Count(t => t.Item1 == state && t.Item2 == symbol) != 1)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
     
     public abstract bool IsAcceptWord(string word);
 }
