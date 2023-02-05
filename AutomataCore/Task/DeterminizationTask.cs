@@ -4,7 +4,7 @@ using Infrastructure;
 
 namespace AutomataCore.Task;
 
-public class DeterminizationAutomataTask : IAutomataTask
+public class DeterminizationTask : IAutomataTask
 {
     private string description;
     private DeterminizationAlgorithm algorithm;
@@ -12,7 +12,7 @@ public class DeterminizationAutomataTask : IAutomataTask
     private HashSet<string> alphabet;
     public string Name { get; }
     
-    public DeterminizationAutomataTask()
+    public DeterminizationTask()
     {
         algorithm = AlgorithmResolver.GetService<DeterminizationAlgorithm>();
         Name = algorithm.Name;
@@ -54,7 +54,7 @@ public class DeterminizationAutomataTask : IAutomataTask
     private static bool IsAppropriate(Automata.Automata source, Automata.Automata result)
     {
         return result.TerminateStates.Count >= 1
-               && result.States.Count > Math.Pow(2, source.States.Count - 1)
+               && result.States.Count >= Math.Pow(2, source.States.Count - 1)
                && result.CountCompoundSets() >= 2;
     }
 }

@@ -47,19 +47,15 @@ public partial class TaskWindow
             TestPaper.Create(variantsNumber, saveFileDialog.FileName, withSolution)
                 .AddTask(GetTask(Algolist.SelectionBoxItem.ToString()))
                 .Generate();
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Status.Text = "Готово";
-                Status.Foreground = Brushes.Green;
-            });
+            Status.Text = "Готово";
+            Status.Foreground = Brushes.Green;
         }
     }
     
     private void Create_OnClick(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            var services = TaskResolver.GetAllServices();
+        //try
+        //{
             statesNumber = int.Parse(StatesNumber.Text);
             alphabet = Alphabet.Text.Replace(',', ' ')
                 .Split()
@@ -72,12 +68,13 @@ public partial class TaskWindow
             description = Description.Text;
             variantsNumber = int.Parse(Number.Text);
             withSolution = WithSolution.IsChecked!.Value;
+            Status.Foreground = Brushes.Black;
             Status.Text = "В процессе создания...";
             Create();
-        }
-        catch (Exception exception)
-        {
-            MessageBox.Show(exception.Message);
-        }
+        //}
+        //catch (Exception exception)
+        //{
+            //MessageBox.Show(exception.Message);
+        //}
     }
 }

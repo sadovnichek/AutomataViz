@@ -1,4 +1,5 @@
-﻿using Infrastructure;
+﻿using System.Text;
+using Infrastructure;
 
 namespace AutomataCore.Automata;
 
@@ -10,6 +11,7 @@ public class NDFA : Automata
         HashSet<string> terminateStates)
     {
         Alphabet = alphabet;
+        Transitions = new();
         States = states;
         StartState = startState;
         TerminateStates = terminateStates;
@@ -40,27 +42,27 @@ public class NDFA : Automata
 
     public string ConvertToTexFormat()
     {
-        var result = "\n\\begin{tabular}{ c | " + string.Join(" ", Enumerable.Repeat("c", States.Count)) + " }\n & ";
+        var sb = new StringBuilder();
+        sb.Append("\n\\begin{tabular}{ c | ");
+        sb.AppendJoin(" ", Enumerable.Repeat("c", States.Count));
+        sb.Append(" }\n & ");
         foreach (var state in States)
         {
-            result += state + (States.Last().Equals(state) ? "" : " & ");
+            sb.Append(state.StringToSet().SetToString(true) + (States.Last().Equals(state) ? "" : " & "));
         }
-
-        result += " \\\\ \n\\hline\n";
+        sb.Append(" \\\\ \n\\hline\n");
         foreach (var symbol in Alphabet)
         {
-            result += symbol + " & ";
+            sb.Append(symbol + " & ");
             foreach (var state in States)
             {
-                result += this[state, symbol].SetToString(true) + (States.Last().Equals(state) ? "" : " & ");
+                sb.Append(this[state, symbol].SetToString(true) + (States.Last().Equals(state) ? "" : " & "));
             }
-
-            result += " \\\\\n";
+            sb.Append(" \\\\\n");
         }
-
-        result += "\\end{tabular}\n\\\\\n";
-        result += $"вход: {StartState.StringToSet().SetToString(true)}, выходы: {TerminateStates.SetToString(true)}";
-        return result;
+        sb.Append("\\end{tabular}\n\\\\\n");
+        sb.Append($"вход: {StartState.StringToSet().SetToString(true)}, выходы: {TerminateStates.SetToString(true)}");
+        return sb.ToString();
     }
 
     public NDFA ExceptStates(HashSet<string> exceptedStates)

@@ -4,7 +4,7 @@ using Infrastructure;
 
 namespace AutomataCore.Task;
 
-public class MinimizationAutomataTask : IAutomataTask
+public class MinimizationTask : IAutomataTask
 {
     private string description;
     private MinimizationAlgorithm algorithm;
@@ -12,7 +12,7 @@ public class MinimizationAutomataTask : IAutomataTask
     private HashSet<string> alphabet;
     public string Name { get; }
     
-    public MinimizationAutomataTask()
+    public MinimizationTask()
     {
         algorithm = AlgorithmResolver.GetService<MinimizationAlgorithm>();
         Name = algorithm.Name;
@@ -53,7 +53,7 @@ public class MinimizationAutomataTask : IAutomataTask
 
     private static bool IsAppropriate(Automata.Automata source, Automata.Automata result)
     {
-        return result.CountCompoundSets() > source.States.Count / 4
-               && result.TerminateStates.Count > 1;
+        return result.CountCompoundSets() >= source.States.Count / 4
+               && result.TerminateStates.Count >= 1;
     }
 }

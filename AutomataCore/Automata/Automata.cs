@@ -6,7 +6,7 @@ namespace AutomataCore.Automata;
 
 public abstract class Automata
 {
-    protected HashSet<Tuple<string, string, string>> Transitions = new();
+    public HashSet<Tuple<string, string, string>> Transitions { get; protected init; }
     public Guid Id = Guid.NewGuid();
     public HashSet<string> Alphabet { get; protected init; }
     public HashSet<string> States { get; protected init;}

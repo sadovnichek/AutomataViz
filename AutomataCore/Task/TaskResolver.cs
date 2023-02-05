@@ -1,5 +1,4 @@
-﻿using AutomataCore.Algorithm;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace AutomataCore.Task;
 
@@ -10,8 +9,8 @@ public static class TaskResolver
     static TaskResolver()
     {
         var services = new ServiceCollection()
-            .AddSingleton<IAutomataTask, DeterminizationAutomataTask>()
-            .AddSingleton<IAutomataTask, MinimizationAutomataTask>();
+            .AddSingleton<IAutomataTask, DeterminizationTask>()
+            .AddSingleton<IAutomataTask, MinimizationTask>();
         serviceProvider = services.BuildServiceProvider();
     }
 
