@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using AutomataCore.Task;
@@ -23,10 +24,9 @@ public partial class TaskWindow
 
     private void Algorithms_OnLoaded(object sender, RoutedEventArgs e)
     {
-        foreach (var taskName in TaskResolver.GetAllServices()
-                     .Select(task => task.Name))
+        foreach (var task in TaskResolver.GetAllServices())
         {
-            Algolist.Items.Add(taskName);
+            Tasks.Items.Add(task.Name);
         }
     }
 
@@ -36,23 +36,26 @@ public partial class TaskWindow
             .Configure(description, statesNumber, alphabet);
     }
     
-    private void Create()
+    private Task Create(string taskName)
     {
         var saveFileDialog = new SaveFileDialog
         {
             Filter = "LaTeX files (*.tex)|*.tex|All files (*.*)|*.*"
         };
-        if (saveFileDialog.ShowDialog() == true)
+        var task = new Task(() =>
         {
             TestPaper.Create(variantsNumber, saveFileDialog.FileName, withSolution)
-                .AddTask(GetTask(Algolist.SelectionBoxItem.ToString()))
+                .AddTask(GetTask(taskName))
                 .Generate();
-            Status.Text = "Готово";
-            Status.Foreground = Brushes.Green;
+        });
+        if (saveFileDialog.ShowDialog() == true)
+        {
+            task.Start();
         }
+        return task;
     }
     
-    private void Create_OnClick(object sender, RoutedEventArgs e)
+    private async void Create_OnClick(object sender, RoutedEventArgs e)
     {
         //try
         //{
@@ -61,7 +64,7 @@ public partial class TaskWindow
                 .Split()
                 .Where(x => x.Length > 0)
                 .ToHashSet();
-            if (Algolist.SelectedItem == null)
+            if (Tasks.SelectedItem == null)
             {
                 throw new Exception("Выберите тип задания");
             }
@@ -70,8 +73,10 @@ public partial class TaskWindow
             withSolution = WithSolution.IsChecked!.Value;
             Status.Foreground = Brushes.Black;
             Status.Text = "В процессе создания...";
-            Create();
-        //}
+            await Create(Tasks.SelectionBoxItem.ToString());
+            Status.Text = "Готово";
+            Status.Foreground = Brushes.Green;
+            //}
         //catch (Exception exception)
         //{
             //MessageBox.Show(exception.Message);

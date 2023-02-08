@@ -3,20 +3,20 @@
 namespace AutomataUI.Workspaces;
 
 /*Singleton*/
-public class AcceptWordWorkspace
+public class InputWordWorkspace
 {
-    private static AcceptWordWorkspace _instance;
-    public Label Label { get; private set; }
+    private static InputWordWorkspace _instance;
+    private Label Label { get; set; }
     public TextBox Word { get; private set;}
-    public Label AnswerLabel { get; private set;}
+    private Label AnswerLabel { get; set;}
 
-    private AcceptWordWorkspace() { }
+    private InputWordWorkspace() { }
 
-    public static AcceptWordWorkspace GetInstance()
+    public static InputWordWorkspace GetInstance()
     {
         if (_instance == null)
         {
-            _instance = new AcceptWordWorkspace();
+            _instance = new InputWordWorkspace();
         }
         return _instance;
     }

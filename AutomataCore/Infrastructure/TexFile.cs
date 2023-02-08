@@ -2,7 +2,7 @@
 
 public class TexFile
 {
-    private readonly string _filename;
+    private readonly string filename;
 
     private const string Header = @"\documentclass{article}" + "\n" +
                                   @"\usepackage[T2A]{fontenc}" + "\n" +
@@ -13,27 +13,35 @@ public class TexFile
 
     public TexFile(string filename)
     {
-        _filename = filename;
+        this.filename = filename;
         File.WriteAllText(filename, Header);
     }
     
     public void Write(string content)
     {
-        File.AppendAllText(_filename, content + string.Join("", Enumerable.Repeat(Delimiter, 1)));
+        File.AppendAllText(filename, content + string.Join("", Enumerable.Repeat(Delimiter, 1)));
     }
 
     public void WriteWhiteSpace(int spaceNumber)
     {
-        File.AppendAllText(_filename, string.Join("", Enumerable.Repeat(Delimiter, spaceNumber))+ "\n");
+        File.AppendAllText(filename, string.Join("", Enumerable.Repeat(Delimiter, spaceNumber)) + "\n");
     }
 
     public void Close()
     {
-        File.AppendAllText(_filename, @"\end{document}");
+        File.AppendAllText(filename, @"\end{document}");
     }
 
     public void Delete()
     {
-        File.Delete(_filename);
+        File.Delete(filename);
+    }
+    
+    public static void WriteMany(string text, params TexFile[] files)
+    {
+        foreach (var file in files)
+        {
+            file.Write(text);
+        }
     }
 }

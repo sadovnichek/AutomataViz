@@ -24,7 +24,7 @@ public static class Updater
         {
             Update(args[0], args[1]);
             var process = new Process();
-            process.StartInfo = new ProcessStartInfo()
+            process.StartInfo = new ProcessStartInfo
             {
                 FileName = args[2]
             };

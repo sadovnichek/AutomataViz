@@ -5,9 +5,9 @@ using AutomataCore.Automata;
 namespace AutomataUI.Workspaces;
 
 /*Singleton*/
-public class MinimizationAlgorithmWorkspace
+public class AutomataAlgorithmWorkspace
 {
-    private static MinimizationAlgorithmWorkspace? instance;
+    private static AutomataAlgorithmWorkspace? instance;
     private Label AnswerLabel { get; set; }
     private TextBox Transformed { get; set; }
     private Label StartStatesLabel { get; set; }
@@ -15,13 +15,13 @@ public class MinimizationAlgorithmWorkspace
     private Label TerminateStatesLabel { get; set; }
     private TextBox TerminateStatesText { get; set; }
     
-    private MinimizationAlgorithmWorkspace() { }
+    private AutomataAlgorithmWorkspace() { }
     
-    public static MinimizationAlgorithmWorkspace GetInstance()
+    public static AutomataAlgorithmWorkspace GetInstance()
     {
         if (instance == null)
         {
-            instance = new MinimizationAlgorithmWorkspace();
+            instance = new AutomataAlgorithmWorkspace();
         }
         return instance;
     }

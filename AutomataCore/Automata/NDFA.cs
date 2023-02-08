@@ -135,7 +135,7 @@ public class NDFA : Automata
             }
         }
 
-        return randomAutomata.ExceptStates(randomAutomata.GetUnreachableStates());
+        return randomAutomata;
     }
 
     public static NDFA GetRandom(int statesNumber, int alphabetNumber)

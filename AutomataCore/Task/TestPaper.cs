@@ -34,8 +34,7 @@ public class TestPaper
     {
         for (var variant = 1; variant <= number; variant++)
         {
-            studentFile.Write(@"\textbf{Вариант " + variant + "}");
-            teacherFile.Write(@"\textbf{Вариант " + variant + "}");
+            TexFile.WriteMany(@"\textbf{Вариант " + variant + "}", studentFile, teacherFile);
             foreach (var task in tasks)
             {
                 task.Create(studentFile, teacherFile);

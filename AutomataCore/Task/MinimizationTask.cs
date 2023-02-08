@@ -28,7 +28,7 @@ public class MinimizationTask : IAutomataTask
 
     public void Create(TexFile student, TexFile teacher)
     {
-        WriteBoth(student, teacher, description);
+        TexFile.WriteMany(description, student, teacher);
         
         var randomAutomata = DFA.GetRandom(states, alphabet);
         var transformed = algorithm.Get(randomAutomata);
@@ -38,22 +38,16 @@ public class MinimizationTask : IAutomataTask
             randomAutomata = DFA.GetRandom(states, alphabet);
             transformed = algorithm.Get(randomAutomata);
         }
-        WriteBoth(student, teacher, randomAutomata.ConvertToTexFormat());
+        TexFile.WriteMany(randomAutomata.ConvertToTexFormat(), student, teacher);
         
         teacher.WriteWhiteSpace(2);
         teacher.Write("Ответ:");
         teacher.Write(transformed.ConvertToTexFormat());
     }
-    
-    private static void WriteBoth(TexFile student, TexFile teacher, string text)
-    {
-        student.Write(text); 
-        teacher.Write(text);
-    }
 
     private static bool IsAppropriate(Automata.Automata source, Automata.Automata result)
     {
-        return result.CountCompoundSets() >= source.States.Count / 4
+        return result.CountCompoundSets() > 1
                && result.TerminateStates.Count >= 1;
     }
 }

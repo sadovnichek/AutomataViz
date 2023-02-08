@@ -39,7 +39,7 @@
             </CheckBox>
 
             <ScrollViewer>
-                <StackPanel x:Name="Tasks" DockPanel.Dock="Top">
+                <StackPanel DockPanel.Dock="Top">
                     <WrapPanel>
                         <Label VerticalAlignment="Center" FontSize="15" Margin="10, 0, 10, 0">Описание задания:</Label>
                         <TextBox x:Name="Description" TextWrapping="Wrap" Margin="0, 10, 0, 10"
@@ -55,7 +55,7 @@
                     </WrapPanel>
                     <WrapPanel>
                         <Label FontSize="15" Margin="10, 10, 0, 0">Тип задания:</Label>
-                        <ComboBox Margin="10, 0, 0, 0" x:Name="Algolist"
+                        <ComboBox Margin="10, 0, 0, 0" x:Name="Tasks"
                                   Width="auto"
                                   Loaded="Algorithms_OnLoaded"
                                   FontSize="15" />

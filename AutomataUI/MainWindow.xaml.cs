@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -18,9 +19,9 @@ namespace AutomataUI;
 public partial class MainWindow
 {
     private readonly ScaleTransform st = new();
-    private readonly AcceptWordWorkspace acceptWordWorkspace = AcceptWordWorkspace.GetInstance();
-    private readonly MinimizationAlgorithmWorkspace minimizationAlgorithmWorkspace =
-        MinimizationAlgorithmWorkspace.GetInstance();
+    private readonly InputWordWorkspace inputWordWorkspace = InputWordWorkspace.GetInstance();
+    private readonly AutomataAlgorithmWorkspace automataAlgorithmWorkspace =
+        AutomataAlgorithmWorkspace.GetInstance();
 
     public MainWindow()
     {
@@ -89,7 +90,7 @@ public partial class MainWindow
                 {
                     var algorithm = AlgorithmResolver.GetService<MinimizationAlgorithm>();
                     var transformed = algorithm.Get(dfa);
-                    minimizationAlgorithmWorkspace.AddContent(transformed);
+                    automataAlgorithmWorkspace.AddContent(transformed);
                 }
                 else
                 {
@@ -99,9 +100,9 @@ public partial class MainWindow
             else if (selectedAlgorithmName == AlgorithmResolver.GetService<AcceptWordAlgorithm>().Name)
             {
                 var algorithm = AlgorithmResolver.GetService<AcceptWordAlgorithm>();
-                var word = acceptWordWorkspace.Word.Text;
+                var word = inputWordWorkspace.Word.Text;
                 var answer = algorithm.Get(automata, word) ? "распознаёт" : "не распознаёт";
-                acceptWordWorkspace.AddContent(answer);
+                inputWordWorkspace.AddContent(answer);
             }
             else if (selectedAlgorithmName == AlgorithmResolver.GetService<DeterminizationAlgorithm>().Name)
             {
@@ -109,7 +110,7 @@ public partial class MainWindow
                 {
                     var algorithm = AlgorithmResolver.GetService<DeterminizationAlgorithm>();
                     var transformed = algorithm.Get(ndfa);
-                    minimizationAlgorithmWorkspace.AddContent(transformed);
+                    automataAlgorithmWorkspace.AddContent(transformed);
                 }
                 else
                 {
@@ -131,12 +132,12 @@ public partial class MainWindow
         var selectedAlgorithmName = Algolist.SelectionBoxItem.ToString();
         if (selectedAlgorithmName == AlgorithmResolver.GetService<AcceptWordAlgorithm>().Name)
         {
-            acceptWordWorkspace.Init(AnswerField);
+            inputWordWorkspace.Init(AnswerField);
         }
         else if (selectedAlgorithmName == AlgorithmResolver.GetService<MinimizationAlgorithm>().Name || 
                  selectedAlgorithmName == AlgorithmResolver.GetService<DeterminizationAlgorithm>().Name)
         {
-            minimizationAlgorithmWorkspace.Init(AnswerField);
+            automataAlgorithmWorkspace.Init(AnswerField);
         }
     }
 
@@ -182,7 +183,7 @@ public partial class MainWindow
         return matches.Select(m => m.Value).ToHashSet();
     }
 
-    private void GenerateImage(AutomataCore.Automata.Automata automata)
+    private void GenerateImage(Automata automata)
     {
         using (var writer = new StreamWriter("temp.dot"))
         {
@@ -239,7 +240,7 @@ public partial class MainWindow
         var process = new Process();
         var url = "https://github.com/sadovnichek/AutomataViz/releases/download/v1.0/AutomataViz.zip";
         var pathToSave = Environment.CurrentDirectory;
-        var appName = "AutomataUI.exe";
+        var appName = $"{AppDomain.CurrentDomain.FriendlyName}.exe";
         process.StartInfo = new ProcessStartInfo
         {
             FileName = "Updater.exe",

@@ -28,7 +28,7 @@ public class DeterminizationTask : IAutomataTask
     
     public void Create(TexFile student, TexFile teacher)
     {
-        WriteBoth(student, teacher, description);
+        TexFile.WriteMany(description, student, teacher);
 
         var randomAutomata = NDFA.GetRandom(states, alphabet);
         var transformed = algorithm.Get(randomAutomata);
@@ -38,19 +38,13 @@ public class DeterminizationTask : IAutomataTask
             randomAutomata = NDFA.GetRandom(states, alphabet);
             transformed = algorithm.Get(randomAutomata);
         }
-        WriteBoth(student, teacher, randomAutomata.ConvertToTexFormat());
+        TexFile.WriteMany(randomAutomata.ConvertToTexFormat(), student, teacher);
         
         teacher.WriteWhiteSpace(2);
         teacher.Write("Ответ:");
         teacher.Write(transformed.ConvertToTexFormat());
     }
     
-    private static void WriteBoth(TexFile student, TexFile teacher, string text)
-    {
-        student.Write(text); 
-        teacher.Write(text);
-    }
-
     private static bool IsAppropriate(Automata.Automata source, Automata.Automata result)
     {
         return result.TerminateStates.Count >= 1
