@@ -1,6 +1,6 @@
 ﻿using Infrastructure;
 
-namespace AutomataCore.Task;
+namespace AutomataCore.Test;
 
 public interface IAutomataTask
 {

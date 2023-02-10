@@ -2,7 +2,7 @@
 using AutomataCore.Automata;
 using Infrastructure;
 
-namespace AutomataCore.Task;
+namespace AutomataCore.Test;
 
 public class DeterminizationTask : IAutomataTask
 {

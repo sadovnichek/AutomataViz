@@ -2,12 +2,12 @@
 using AutomataCore.Automata;
 using Infrastructure;
 
-namespace AutomataCore.Task;
+namespace AutomataCore.Test;
 
 public class MinimizationTask : IAutomataTask
 {
     private string description;
-    private MinimizationAlgorithm algorithm;
+    private readonly MinimizationAlgorithm algorithm;
     private HashSet<string> states;
     private HashSet<string> alphabet;
     public string Name { get; }
@@ -48,6 +48,7 @@ public class MinimizationTask : IAutomataTask
     private static bool IsAppropriate(Automata.Automata source, Automata.Automata result)
     {
         return result.CountCompoundSets() > 1
-               && result.TerminateStates.Count >= 1;
+               && source.GetUnreachableStates().Count <= 1
+               && result.States.Count != result.CountCompoundSets();
     }
 }

@@ -85,7 +85,7 @@ public class DFA : Automata
         return newAutomata;
     }
 
-    public HashSet<string> GetUnreachableStates()
+    public override HashSet<string> GetUnreachableStates()
     {
         var start = StartState;
         var used = new HashSet<string>();

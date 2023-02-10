@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace AutomataCore.Task;
+namespace AutomataCore.Test;
 
 public static class TaskResolver
 {

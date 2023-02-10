@@ -33,10 +33,6 @@
                          TextWrapping="Wrap"
                          Text="a b" />
             </WrapPanel>
-            <CheckBox x:Name="WithSolution" FontSize="15" Margin="10, 10, 0, 0"
-                      DockPanel.Dock="Top" IsChecked="True">
-                С решением в отдельном файле
-            </CheckBox>
 
             <ScrollViewer>
                 <StackPanel DockPanel.Dock="Top">
@@ -50,8 +46,7 @@
                                  AcceptsReturn="True"
                                  MinHeight="50"
                                  MaxHeight="50"
-                                 FontSize="15"
-                                 Text="minimize DFA" />
+                                 FontSize="15"/>
                     </WrapPanel>
                     <WrapPanel>
                         <Label FontSize="15" Margin="10, 10, 0, 0">Тип задания:</Label>

@@ -91,4 +91,6 @@ public abstract class Automata
     }
     
     public abstract bool IsAcceptWord(string word);
+
+    public abstract HashSet<string> GetUnreachableStates();
 }
