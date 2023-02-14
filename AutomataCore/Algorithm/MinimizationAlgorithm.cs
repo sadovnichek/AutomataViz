@@ -6,7 +6,7 @@ namespace AutomataCore.Algorithm;
 public class MinimizationAlgorithm : IAlgorithm
 {
     private DFA dfa;
-    public string Name => "Алгоритм минимизации ДКА";
+    public string Name => "Минимимальный ДКА";
     
     public DFA Get(DFA source)
     {

@@ -9,52 +9,72 @@ public static class Updater
     private const string Help = "Утилита для загрузки обновлений в виде zip архива и последующей распаковки.\n" +
                                 "Использование: Updater.exe [1] [2] [3]\n" +
                                 "[1] url адрес, откуда нужно скачать архив\n" +
-                                "[2] путь, по которому нужно сохранить файл\n" +
+                                "[2] путь, по которому нужно распаковать архив\n" +
                                 "[3] Название exe файла, который нужно запустить после завершения обновления\n" +
                                 "Автор: sadovnichek";
 
-    public static void Main(string[] args)
+    private static readonly HttpClient client = new();
+
+    private static void Main(string[] args)
     {
-        if (args.Length != 3)
+        try
         {
-            Console.WriteLine(Help);
-            Console.ReadKey();
-        }
-        else
-        {
-            Update(args[0], args[1]);
-            var process = new Process();
-            process.StartInfo = new ProcessStartInfo
+            var arguments = ParseArguments(args);
+            if (arguments.Length == 3)
             {
-                FileName = args[2]
-            };
-            process.Start();
-            Environment.Exit(0);
-        }
-    }
-    
-    private static void CheckPath(string fullPath)
-    {
-        var parts = fullPath.Split("/");
-        parts = parts.Take(parts.Length - 1).ToArray();
-        var currentPath = "";
-        foreach (var part in parts)
-        {
-            currentPath += $"/{part}";
-            if (!Directory.Exists($"../{currentPath}"))
-            {
-                Directory.CreateDirectory($"../{currentPath}");
+                var url = args[0];
+                var destination = args[1];
+                var setupFile = args[2];
+                var archiveName = url.Split("/").Last();
+                var archivePath = Path.Combine(destination, archiveName);
+                Download(url, archivePath);
+                UnpackZip(archivePath, destination);
+                StartNewProcess(setupFile, destination);
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            Console.ReadLine();
         }
     }
 
-    private static void Download(string url, string fullPath)
+    private static string[] ParseArguments(string[] args)
+    {
+        Console.WriteLine("Переданные аргументы:");
+        args.ToList().ForEach(Console.WriteLine);
+        if (args.Length == 3)
+            return args;
+        Console.WriteLine(Help);
+        Console.ReadKey();
+        return Array.Empty<string>();
+    }
+
+    private static void StartNewProcess(string filename, string workingDirectory)
+    {
+        var process = new Process();
+        process.StartInfo = new ProcessStartInfo
+        {
+            FileName = $@"{workingDirectory}\{filename}",
+        };
+        process.Start();
+    }
+
+    private static async void HttpDownload(string url, string savePath)
+    {
+        using HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+        using Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
+        using Stream streamToWriteTo = File.Open(savePath, FileMode.Create);
+        await streamToReadFrom.CopyToAsync(streamToWriteTo);
+    }
+
+    private static void Download(string url, string savePath)
     {
         try
         {
             Console.WriteLine("Загрузка архива...");
             var client = new WebClient();
-            client.DownloadFile(url, fullPath);
+            client.DownloadFile(url, savePath);
             Console.WriteLine("Архив успешно загружен");
         }
         catch (WebException)
@@ -64,34 +84,36 @@ public static class Updater
         }
     }
 
-    private static void UnpackZip(string fullPath)
+    private static void UnpackZip(string zipPath, string destination)
     {
         Console.WriteLine("Распаковка архива...");
-        try
+        var zipArchive = ZipFile.OpenRead(zipPath);
+        foreach (var file in zipArchive.Entries
+                     .Where(file => !file.Name.Contains("Updater")))
         {
-            var zipArchive = ZipFile.OpenRead(fullPath);
-            Console.WriteLine("Архив успешно распакован");
-            foreach (var file in zipArchive.Entries
-                         .Where(file => file.Name.Length > 0 && !file.Name.Contains("Updater")))
+            var fullPath = Path.Combine(destination, file.FullName);
+            if (!File.Exists(fullPath))
             {
-                CheckPath(file.FullName);
-                file.ExtractToFile($"../{file.FullName}", true);
+                CheckPath(file.FullName, destination);
             }
 
-            Console.WriteLine("Обновление завершено");
+            file.ExtractToFile(fullPath, true);
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            Console.ReadKey();
-            throw;
-        }
+        Console.WriteLine("Архив успешно распакован");
     }
 
-    private static void Update(string url, string pathToSave)
+    private static void CheckPath(string relativePath, string destination)
     {
-        var fullPath = pathToSave + url.Split("/").Last();
-        Download(url, fullPath);
-        UnpackZip(fullPath);
+        var parts = relativePath.Split('/', '\\');
+        parts = parts.Take(parts.Length - 1).ToArray();
+        var currentPath = destination;
+        foreach (var part in parts)
+        {
+            currentPath += $@"\{part}";
+            if (!Directory.Exists(currentPath))
+            {
+                Directory.CreateDirectory(currentPath);
+            }
+        }
     }
 }

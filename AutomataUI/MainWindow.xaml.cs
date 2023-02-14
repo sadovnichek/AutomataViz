@@ -249,7 +249,7 @@ public partial class MainWindow
         process.Start();
         Environment.Exit(0);
     }
-
+    
     private void image_MouseWheel(object sender, MouseWheelEventArgs e)
     {
         var zoom = e.Delta > 0 ? 0.1 : -0.05;
