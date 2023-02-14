@@ -6,7 +6,7 @@ namespace AutomataCore.Algorithm;
 public class MinimizationAlgorithm : IAlgorithm
 {
     private DFA dfa;
-    public string Name => "Минимимальный ДКА";
+    public string Name => "Минимальный ДКА";
     
     public DFA Get(DFA source)
     {
@@ -32,7 +32,7 @@ public class MinimizationAlgorithm : IAlgorithm
     
     private HashSet<string> GetSet(string element, IEnumerable<HashSet<string>> queue)
     {
-        return queue.FirstOrDefault(set => set.Contains(element));
+        return queue.FirstOrDefault(set => set.Contains(element)) ?? throw new InvalidOperationException();
     }
     
     private Dictionary<HashSet<HashSet<string>>, HashSet<string>> SplitClass(HashSet<string> set, 

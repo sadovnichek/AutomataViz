@@ -12,25 +12,22 @@ public static class Updater
                                 "[2] путь, по которому нужно распаковать архив\n" +
                                 "[3] Название exe файла, который нужно запустить после завершения обновления\n" +
                                 "Автор: sadovnichek";
-
-    private static readonly HttpClient client = new();
-
-    private static void Main(string[] args)
+    
+    private static async Task Main(string[] args)
     {
         try
         {
-            var arguments = ParseArguments(args);
-            if (arguments.Length == 3)
-            {
-                var url = args[0];
-                var destination = args[1];
-                var setupFile = args[2];
-                var archiveName = url.Split("/").Last();
-                var archivePath = Path.Combine(destination, archiveName);
-                Download(url, archivePath);
-                UnpackZip(archivePath, destination);
-                StartNewProcess(setupFile, destination);
-            }
+            if (!IsCorrectArguments(args)) 
+                return;
+            var url = args[0];
+            var destination = args[1];
+            var setupFile = args[2];
+            var archiveName = url.Split("/").Last();
+            var archivePath = Path.Combine(destination, archiveName);
+            //Download(url, archivePath);
+            await HttpDownload(url, archivePath);
+            UnpackZip(archivePath, destination);
+            StartNewProcess(setupFile, destination);
         }
         catch (Exception ex)
         {
@@ -38,18 +35,18 @@ public static class Updater
             Console.ReadLine();
         }
     }
-
-    private static string[] ParseArguments(string[] args)
+    
+    private static bool IsCorrectArguments(string[] args)
     {
         Console.WriteLine("Переданные аргументы:");
         args.ToList().ForEach(Console.WriteLine);
         if (args.Length == 3)
-            return args;
+            return true;
         Console.WriteLine(Help);
         Console.ReadKey();
-        return Array.Empty<string>();
+        return false;
     }
-
+    
     private static void StartNewProcess(string filename, string workingDirectory)
     {
         var process = new Process();
@@ -60,27 +57,21 @@ public static class Updater
         process.Start();
     }
 
-    private static async void HttpDownload(string url, string savePath)
-    {
-        using HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
-        using Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
-        using Stream streamToWriteTo = File.Open(savePath, FileMode.Create);
-        await streamToReadFrom.CopyToAsync(streamToWriteTo);
-    }
-
-    private static void Download(string url, string savePath)
+    private static async Task HttpDownload(string url, string savePath)
     {
         try
         {
-            Console.WriteLine("Загрузка архива...");
-            var client = new WebClient();
-            client.DownloadFile(url, savePath);
-            Console.WriteLine("Архив успешно загружен");
+            var client = new HttpClient();
+            using var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            await using var streamToReadFrom = await response.Content.ReadAsStreamAsync();
+            await using var streamToWriteTo = File.Open(savePath, FileMode.Create);
+            await streamToReadFrom.CopyToAsync(streamToWriteTo);
         }
-        catch (WebException)
+        catch (HttpRequestException)
         {
             Console.WriteLine("Проверьте подключение к интернету");
             Console.ReadKey();
+            throw;
         }
     }
 
@@ -96,7 +87,6 @@ public static class Updater
             {
                 CheckPath(file.FullName, destination);
             }
-
             file.ExtractToFile(fullPath, true);
         }
         Console.WriteLine("Архив успешно распакован");
