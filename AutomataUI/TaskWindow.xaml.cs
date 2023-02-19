@@ -12,9 +12,11 @@ namespace AutomataUI;
 public partial class TaskWindow
 {
     private int statesNumber;
-    private HashSet<string> alphabet = null!;
-    private string description = null!;
+    private HashSet<string> alphabet;
+    private string description;
     private int studentsAmount;
+    private string filename;
+    private string taskName;
 
     public TaskWindow()
     {
@@ -29,53 +31,54 @@ public partial class TaskWindow
         }
     }
 
-    private Task Create(string taskName)
+    private void CreateTestPaper()
+    {
+        var task = TaskResolver.GetServiceByName(taskName).Configure(description, statesNumber, alphabet);
+        TestPaper.Create(studentsAmount, filename)
+            .AddTask(task)
+            .Generate();
+    }
+
+    private void SaveFile()
     {
         var saveFileDialog = new SaveFileDialog
         {
             Filter = "LaTeX files (*.tex)|*.tex|All files (*.*)|*.*"
         };
-        var task = new Task(() =>
-        {
-            TestPaper.Create(studentsAmount, saveFileDialog.FileName)
-                .AddTask(TaskResolver.GetServiceByName(taskName)
-                    .Configure(description, statesNumber, alphabet))
-                .Generate();
-        });
         if (saveFileDialog.ShowDialog() == true)
         {
-            task.Start();
+            filename = saveFileDialog.FileName;
         }
-        return task;
     }
 
-    private async void Create_OnClick(object sender, RoutedEventArgs e)
+    private void FillData()
     {
-        //try
-        //{
-        statesNumber = int.Parse(StatesNumber.Text);
-        alphabet = Alphabet.Text.Replace(',', ' ')
-            .Split()
-            .Where(x => x.Length > 0)
-            .ToHashSet();
         if (Tasks.SelectedItem == null)
         {
             throw new Exception("Выберите тип задания");
         }
-
+        statesNumber = int.Parse(StatesNumber.Text);
+        alphabet = Alphabet.Text.Trim().Split().ToHashSet();
         description = Description.Text;
         studentsAmount = int.Parse(Number.Text);
-        Status.Foreground = Brushes.Black;
-        Status.Text = "В процессе создания...";
-        var selectedTask = Tasks.SelectionBoxItem.ToString();
-        if (selectedTask != null)
-            await Create(selectedTask);
-        Status.Text = "Готово";
-        Status.Foreground = Brushes.Green;
-        //}
-        //catch (Exception exception)
-        //{
-        //MessageBox.Show(exception.Message);
-        //}
+        taskName = Tasks.SelectionBoxItem.ToString();
+    }
+
+    private async void CreateButtonOnClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            FillData();
+            SaveFile();
+            Status.Foreground = Brushes.Black;
+            Status.Text = "В процессе создания...";
+            await Task.Run(CreateTestPaper);
+            Status.Text = "Готово";
+            Status.Foreground = Brushes.Green;
+        }
+        catch(Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
     }
 }

@@ -37,11 +37,9 @@ public class TestPaper
             {
                 problem.Create(studentFile, teacherFile);
             }
-
             teacherFile.WriteWhiteSpace(3);
             studentFile.WriteWhiteSpace(3);
         }
-
         studentFile.Close();
         teacherFile.Close();
     }

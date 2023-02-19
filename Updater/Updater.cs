@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.IO.Compression;
-using System.Net;
 
 namespace Updater;
 
@@ -24,7 +23,6 @@ public static class Updater
             var setupFile = args[2];
             var archiveName = url.Split("/").Last();
             var archivePath = Path.Combine(destination, archiveName);
-            //Download(url, archivePath);
             await HttpDownload(url, archivePath);
             UnpackZip(archivePath, destination);
             StartNewProcess(setupFile, destination);
@@ -36,11 +34,11 @@ public static class Updater
         }
     }
     
-    private static bool IsCorrectArguments(string[] args)
+    private static bool IsCorrectArguments(IReadOnlyCollection<string> args)
     {
         Console.WriteLine("Переданные аргументы:");
         args.ToList().ForEach(Console.WriteLine);
-        if (args.Length == 3)
+        if (args.Count == 3)
             return true;
         Console.WriteLine(Help);
         Console.ReadKey();
