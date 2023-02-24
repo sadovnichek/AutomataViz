@@ -8,3 +8,5 @@ Available algorithms:
 * Calculate an answer of automata with some word
 
 Before contribution please check if GraphViz /bin directory has been copied to the directory where exe file is located. Otherwise download GraphViz and copy the /bin directory manually.
+
+![namespace diagram](arch_diagram.png)
