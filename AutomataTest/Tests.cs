@@ -1,5 +1,5 @@
-﻿using AutomataCore.Algorithm;
-using AutomataCore.Automata;
+﻿using Domain.Algorithm;
+using Domain.Automatas;
 using Infrastructure;
 using NUnit.Framework;
 

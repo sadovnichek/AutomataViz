@@ -1,9 +1,8 @@
-﻿using Infrastructure;
-using AutomataCore.Automata;
+﻿using Domain.Automatas;
+using Infrastructure;
 
-namespace AutomataCore.Algorithm;
+namespace Domain.Algorithm;
 
-/*Singleton*/
 public class DeterminizationAlgorithm : IAlgorithm
 {
     public string Name => "Приведение НКА к ДКА";

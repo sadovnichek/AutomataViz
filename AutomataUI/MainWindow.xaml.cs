@@ -10,9 +10,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using AutomataCore.Algorithm;
-using AutomataCore.Automata;
+using Domain.Algorithm;
+using Domain.Automatas;
 using AutomataUI.Workspaces;
+using Application;
 
 namespace AutomataUI;
 
@@ -29,8 +30,7 @@ public partial class MainWindow
         ConfigureImagesDirectory();
         Visualization.RenderTransform = st;
     }
-    
-    /*Creates a directory to store images*/
+   
     private static void ConfigureImagesDirectory()
     {
         if (!Directory.Exists("./images"))
@@ -51,33 +51,6 @@ public partial class MainWindow
         }
     }
 
-    /*Creates an automata from user input*/
-    private Automata GetAutomata()
-    {
-        var states = new HashSet<string>();
-        var alphabet = new HashSet<string>();
-        var terminates = ParseTerminateStates();
-        var start = ParseStartState();
-        var transitions = new HashSet<Tuple<string, string, string>>();
-        var regex = new Regex(@"(\w+|{(.*?)}|∅).\w+\s*=\s*(\w+|{(.*?)}|∅)");
-        var matches = regex.Matches(TableInput.Text);
-        foreach (Match match in matches)
-        {
-            var line = match.Value;
-            var key = line.Split("=")[0].Trim();
-            var state = key.Split(".")[0];
-            var symbol = key.Split(".")[1];
-            var value = line.Split("=")[1].Trim();
-            states.Add(state);
-            alphabet.Add(symbol);
-            transitions.Add(Tuple.Create(state, symbol, value));
-        }
-        if (Automata.IsDfa(transitions, alphabet, states))
-            return new DFA(states, alphabet, transitions, start, terminates);
-        return new NDFA(states, alphabet, transitions, start, terminates);
-    }
-
-    /*Actions after apply button pressing*/
     private void ApplyButton_OnClick(object sender, RoutedEventArgs e)
     {
         try
@@ -124,7 +97,6 @@ public partial class MainWindow
         }
     }
 
-    /*Actions after choosing an algorithm from list*/
     private void Algolist_OnDropDownClosed(object? sender, EventArgs e)
     {
         AnswerField.Children.Clear();
@@ -141,7 +113,11 @@ public partial class MainWindow
         }
     }
 
-    /*Actions after visual button pressing*/
+    private Automata GetAutomata()
+    {
+        return AutomataParser.GetAutomata(StartState.Text, TerminateStates.Text, TableInput.Text);
+    }
+
     private void VisualButton_OnClick(object sender, RoutedEventArgs e)
     {
         try
@@ -158,36 +134,11 @@ public partial class MainWindow
         }
     }
 
-    private string ParseStartState()
-    {
-        var input = StartState.Text;
-        if (input.Length == 0)
-        {
-            throw new Exception("Поле начальных состояний заполнено не корректно");
-        }
-
-        return input.Trim();
-    }
-
-    private HashSet<string> ParseTerminateStates()
-    {
-        var input = TerminateStates.Text;
-        if (input.Length == 0)
-        {
-            throw new Exception("Поле заключительных состояний заполнено не корректно");
-        }
-
-        var regex = new Regex(@"(\w+|{(.*?)})");
-        var matches = regex.Matches(input);
-
-        return matches.Select(m => m.Value).ToHashSet();
-    }
-
     private void GenerateImage(Automata automata)
     {
         using (var writer = new StreamWriter("temp.dot"))
         {
-            writer.Write(automata.ConvertToDotFormat());
+            writer.Write(ConvertAutomataToDotFormat.Convert(automata));
         }
         var process = new Process();
         process.StartInfo = new ProcessStartInfo

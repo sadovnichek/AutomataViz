@@ -1,7 +1,7 @@
-﻿using AutomataCore.Automata;
+﻿using Domain.Automatas;
 using Infrastructure;
 
-namespace AutomataCore.Algorithm;
+namespace Domain.Algorithm;
 
 public class MinimizationAlgorithm : IAlgorithm
 {

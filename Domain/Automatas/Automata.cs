@@ -1,8 +1,7 @@
 ﻿using System.Text;
 using Infrastructure;
-using Infrastructure.DotFormat;
 
-namespace AutomataCore.Automata;
+namespace Domain.Automatas;
 
 public abstract class Automata
 {
@@ -18,38 +17,6 @@ public abstract class Automata
         Transitions.Add(Tuple.Create(state, symbol, value));
     }
 
-    public string ConvertToDotFormat()
-    {
-        var dot = DotGraphBuilder.DirectedGraph("automata");
-        var edges = new Dictionary<Tuple<string, string>, string>(); // <from, to>, label
-
-        dot.AddNode($"START{StartState}").With(n => n.Color("white").FontColor("white"));
-        States.Where(state => !TerminateStates.Contains(state))
-            .ToList()
-            .ForEach(r => dot.AddNode(r).With(n => n.Shape(NodeShape.Ellipse)));
-        TerminateStates.ToList()
-            .ForEach(r => dot.AddNode(r).With(n => n.Shape(NodeShape.DoubleCircle)));
-        dot.AddEdge($"START{StartState}", StartState);
-
-        foreach (var (from, symbol, to) in Transitions)
-        {
-            if (edges.ContainsKey(Tuple.Create(from, to)))
-            {
-                var newLabel = edges[Tuple.Create(from, to)] + $", {symbol}";
-                dot.RemoveEdge(from, to);
-                dot.AddEdge(from, to).With(e => e.Label(newLabel));
-                edges[Tuple.Create(from, to)] = newLabel;
-            }
-            else
-            {
-                dot.AddEdge(from, to).With(e => e.Label(symbol));
-                edges[Tuple.Create(from, to)] = symbol;
-            }
-        }
-
-        return dot.Build();
-    }
-    
     public string GetTextForm()
     {
         var output = new StringBuilder();

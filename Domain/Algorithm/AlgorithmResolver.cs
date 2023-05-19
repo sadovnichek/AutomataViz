@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace AutomataCore.Algorithm;
+namespace Domain.Algorithm;
 
 public static class AlgorithmResolver
 {

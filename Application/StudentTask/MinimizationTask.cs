@@ -1,20 +1,20 @@
-﻿using AutomataCore.Algorithm;
-using AutomataCore.Automata;
+﻿using Domain.Algorithm;
+using Domain.Automatas;
 using Infrastructure;
 
-namespace AutomataCore.Test;
+namespace Application.StudentTask;
 
-public class DeterminizationTask : IAutomataTask
+public class MinimizationTask : IAutomataTask
 {
     private string description;
-    private DeterminizationAlgorithm algorithm;
+    private readonly MinimizationAlgorithm algorithm;
     private HashSet<string> states;
     private HashSet<string> alphabet;
     public string Name { get; }
     
-    public DeterminizationTask()
+    public MinimizationTask()
     {
-        algorithm = AlgorithmResolver.GetService<DeterminizationAlgorithm>();
+        algorithm = AlgorithmResolver.GetService<MinimizationAlgorithm>();
         Name = algorithm.Name;
     }
 
@@ -25,17 +25,17 @@ public class DeterminizationTask : IAutomataTask
         this.alphabet = alphabet;
         return this;
     }
-    
+
     public void Create(TexFile student, TexFile teacher)
     {
         TexFile.WriteMany(description, student, teacher);
-
-        var randomAutomata = NDFA.GetRandom(states, alphabet);
+        
+        var randomAutomata = DFA.GetRandom(states, alphabet);
         var transformed = algorithm.Get(randomAutomata);
 
         while (!IsAppropriate(randomAutomata, transformed))
         {
-            randomAutomata = NDFA.GetRandom(states, alphabet);
+            randomAutomata = DFA.GetRandom(states, alphabet);
             transformed = algorithm.Get(randomAutomata);
         }
         TexFile.WriteMany(randomAutomata.ConvertToTexFormat(), student, teacher);
@@ -44,11 +44,11 @@ public class DeterminizationTask : IAutomataTask
         teacher.Write("Ответ:");
         teacher.Write(transformed.ConvertToTexFormat());
     }
-    
-    private static bool IsAppropriate(Automata.Automata source, Automata.Automata result)
+
+    private static bool IsAppropriate(Automata source, Automata result)
     {
-        return result.TerminateStates.Count >= 1
-               && result.States.Count >= Math.Pow(2, source.States.Count - 1)
-               && result.CountCompoundSets() >= 2;
+        return result.CountCompoundSets() > 1
+               && source.GetUnreachableStates().Count <= 1
+               && result.States.Count != result.CountCompoundSets();
     }
 }

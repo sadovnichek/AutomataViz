@@ -1,6 +1,6 @@
 ﻿using Infrastructure;
 
-namespace AutomataCore.Test;
+namespace Application.StudentTask;
 
 public class TestPaper
 {

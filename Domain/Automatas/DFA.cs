@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Infrastructure;
 
-namespace AutomataCore.Automata;
+namespace Domain.Automatas;
 
 public class DFA : Automata
 {

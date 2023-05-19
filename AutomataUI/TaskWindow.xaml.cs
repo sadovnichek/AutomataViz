@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using AutomataCore.Test;
+using Application.StudentTask;
 using Microsoft.Win32;
 
 namespace AutomataUI;
@@ -66,19 +66,12 @@ public partial class TaskWindow
 
     private async void CreateButtonOnClick(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            FillData();
-            SaveFile();
-            Status.Foreground = Brushes.Black;
-            Status.Text = "В процессе создания...";
-            await Task.Run(CreateTestPaper);
-            Status.Text = "Готово";
-            Status.Foreground = Brushes.Green;
-        }
-        catch(Exception ex)
-        {
-            MessageBox.Show(ex.Message);
-        }
+        FillData();
+        SaveFile();
+        Status.Foreground = Brushes.Black;
+        Status.Text = "В процессе создания...";
+        await Task.Run(CreateTestPaper);
+        Status.Text = "Готово";
+        Status.Foreground = Brushes.Green;
     }
 }
