@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -19,6 +18,13 @@ namespace AutomataUI;
 
 public partial class MainWindow
 {
+    //TODO:
+    // Объявление воркспейсов в начале
+    // Названия методом в соответствии со стилем
+    // Метод ApplyButton слишком большой
+    // Подумать над расширяемостью OnDropDownClosed
+    // SRP в методе GenerateImage
+    
     private readonly ScaleTransform st = new();
     private readonly InputWordWorkspace inputWordWorkspace = InputWordWorkspace.GetInstance();
     private readonly AutomataAlgorithmWorkspace automataAlgorithmWorkspace =

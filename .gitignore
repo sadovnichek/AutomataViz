@@ -22,3 +22,10 @@
 /Updater/obj/project.assets.json
 /Updater/obj/Updater.csproj.nuget.g.targets
 /Updater/obj
+/AutomataCore/.vs
+/AutomataCore/bin/Debug/net6.0
+/AutomataCore/obj
+/AutomataTest/.vs
+/AutomataUI/.vs
+/Updater/.vs
+/Updater/bin/Debug
