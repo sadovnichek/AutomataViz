@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.DotFormat;
+﻿namespace DotFormat;
 
 public class GraphEdge
 {

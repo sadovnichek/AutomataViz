@@ -1,5 +1,5 @@
 ﻿using Domain.Automatas;
-using Infrastructure.DotFormat;
+using DotFormat;
 
 namespace Application
 {

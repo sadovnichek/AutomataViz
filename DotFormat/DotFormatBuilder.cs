@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Infrastructure.DotFormat;
+namespace DotFormat;
 
 public static class NodeShape
 {
