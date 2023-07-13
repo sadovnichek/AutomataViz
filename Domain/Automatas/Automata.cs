@@ -17,6 +17,23 @@ public abstract class Automata
         Transitions.Add(Tuple.Create(state, symbol, value));
     }
 
+    public string GetTransitionTable()
+    {
+        var output = new StringBuilder();
+        foreach (var groups in Transitions.GroupBy(x => x.Item1))
+        {
+            foreach (var (item1, item2, item3) in groups)
+            {
+                output.Append($"{item1}.{item2} = {item3}");
+                output.Append('\t');
+            }
+
+            output.Append('\n');
+        }
+
+        return output.ToString();
+    }
+
     public string GetTextForm()
     {
         var output = new StringBuilder();
