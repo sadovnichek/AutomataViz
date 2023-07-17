@@ -39,7 +39,7 @@ public class DFA : Automata
         }
     }
     
-    public string ConvertToTexFormat()
+    public override string ConvertToTexFormat()
     {
         var sb = new StringBuilder();
         sb.Append("\n\\begin{tabular}{ c | ");
@@ -64,7 +64,7 @@ public class DFA : Automata
         return sb.ToString();
     }
     
-    public DFA ExceptStates(HashSet<string> exceptedStates)
+    public override DFA ExceptStates(HashSet<string> exceptedStates)
     {
         var newTerminates = TerminateStates.Where(s => !exceptedStates.Contains(s)).ToHashSet();
         var newStates = States.Where(s => !exceptedStates.Contains(s)).ToHashSet();

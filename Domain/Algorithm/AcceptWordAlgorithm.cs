@@ -2,7 +2,7 @@
 
 namespace Domain.Algorithm;
 
-public class AcceptWordAlgorithm : IAlgorithm
+public class AcceptWordAlgorithm : IAlgorithmRecognizer
 {
     public string Name => "Проверить слово на распознаваемость";
 

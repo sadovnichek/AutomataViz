@@ -40,7 +40,7 @@ public class NDFA : Automata
         }
     }
 
-    public string ConvertToTexFormat()
+    public override string ConvertToTexFormat()
     {
         var sb = new StringBuilder();
         sb.Append("\n\\begin{tabular}{ c | ");
@@ -65,7 +65,7 @@ public class NDFA : Automata
         return sb.ToString();
     }
 
-    public NDFA ExceptStates(HashSet<string> exceptedStates)
+    public override NDFA ExceptStates(HashSet<string> exceptedStates)
     {
         var newTerminates = TerminateStates.Where(s => !exceptedStates.Contains(s)).ToHashSet();
         var newStates = States.Where(s => !exceptedStates.Contains(s)).ToHashSet();

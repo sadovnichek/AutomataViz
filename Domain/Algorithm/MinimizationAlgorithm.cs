@@ -3,14 +3,14 @@ using Infrastructure;
 
 namespace Domain.Algorithm;
 
-public class MinimizationAlgorithm : IAlgorithm
+public class MinimizationAlgorithm : IAlgorithmTransformer
 {
     private DFA dfa;
     public string Name => "Минимальный ДКА";
     
-    public DFA Get(DFA source)
+    public Automata Get(Automata source)
     {
-        dfa = source.ExceptStates(source.GetUnreachableStates());
+        dfa = (DFA)source.ExceptStates(source.GetUnreachableStates());
         var classes = GetClasses();
         var transitions = new HashSet<Tuple<string, string, string>>();
         var start = GetSet(dfa.StartState, classes);

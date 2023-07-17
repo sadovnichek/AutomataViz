@@ -66,7 +66,7 @@ public partial class MainWindow
                 {
                     var algorithm = AlgorithmResolver.GetService<MinimizationAlgorithm>();
                     var transformed = algorithm.Get(dfa);
-                    automataAlgorithmWorkspace.AddContent(transformed);
+                    automataAlgorithmWorkspace.AddContent((DFA)transformed);
                 }
                 else
                 {
@@ -86,7 +86,7 @@ public partial class MainWindow
                 {
                     var algorithm = AlgorithmResolver.GetService<DeterminizationAlgorithm>();
                     var transformed = algorithm.Get(ndfa);
-                    automataAlgorithmWorkspace.AddContent(transformed);
+                    automataAlgorithmWorkspace.AddContent((DFA)transformed);
                 }
                 else
                 {

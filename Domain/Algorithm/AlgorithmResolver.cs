@@ -22,6 +22,11 @@ public static class AlgorithmResolver
         return (T) serviceProvider.GetServices<IAlgorithm>().First(a => a is T);
     }
 
+    public static IAlgorithm GetServiceByName(string serviceName)
+    {
+        return GetAllServices().First(x => x.Name == serviceName);
+    }
+
     public static IEnumerable<IAlgorithm> GetAllServices()
     {
         return serviceProvider.GetServices<IAlgorithm>();

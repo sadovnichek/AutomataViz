@@ -77,4 +77,8 @@ public abstract class Automata
     public abstract bool IsAcceptWord(string word);
 
     public abstract HashSet<string> GetUnreachableStates();
+
+    public abstract Automata ExceptStates(HashSet<string> exceptedStates);
+
+    public abstract string ConvertToTexFormat();
 }
