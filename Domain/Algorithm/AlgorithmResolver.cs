@@ -5,21 +5,21 @@ namespace Domain.Algorithm;
 public static class AlgorithmResolver
 {
     private static readonly IServiceProvider serviceProvider;
-
+    private static readonly IServiceCollection services;
     static AlgorithmResolver()
     {
-        var services = new ServiceCollection()
+        services = new ServiceCollection()
                 .AddSingleton<IAlgorithm, AcceptWordAlgorithm>()
                 .AddSingleton<IAlgorithm, MinimizationAlgorithm>()
                 .AddSingleton<IAlgorithm, DeterminizationAlgorithm>();
-        
+
         serviceProvider = services.BuildServiceProvider();
     }
 
     public static T GetService<T>()
         where T : IAlgorithm
     {
-        return (T) serviceProvider.GetServices<IAlgorithm>().First(a => a is T);
+        return (T)serviceProvider.GetServices<IAlgorithm>().First(a => a is T);
     }
 
     public static IAlgorithm GetServiceByName(string serviceName)
