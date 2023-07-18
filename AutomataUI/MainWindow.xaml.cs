@@ -60,39 +60,11 @@ public partial class MainWindow
         {
             var automata = GetAutomata();
             var selectedAlgorithmName = Algolist.SelectionBoxItem.ToString();
-            if (selectedAlgorithmName == AlgorithmResolver.GetService<MinimizationAlgorithm>().Name)
-            {
-                if (automata is DFA dfa)
-                {
-                    var algorithm = AlgorithmResolver.GetService<MinimizationAlgorithm>();
-                    var transformed = algorithm.Get(dfa);
-                    automataAlgorithmWorkspace.AddContent((DFA)transformed);
-                }
-                else
-                {
-                    MessageBox.Show("Автомат не является ДКА");
-                }
-            }
-            else if (selectedAlgorithmName == AlgorithmResolver.GetService<AcceptWordAlgorithm>().Name)
-            {
-                var algorithm = AlgorithmResolver.GetService<AcceptWordAlgorithm>();
-                var word = inputWordWorkspace.Word.Text;
-                var answer = algorithm.Get(automata, word) ? "распознаёт" : "не распознаёт";
-                inputWordWorkspace.AddContent(answer);
-            }
-            else if (selectedAlgorithmName == AlgorithmResolver.GetService<DeterminizationAlgorithm>().Name)
-            {
-                if (automata is NDFA ndfa)
-                {
-                    var algorithm = AlgorithmResolver.GetService<DeterminizationAlgorithm>();
-                    var transformed = algorithm.Get(ndfa);
-                    automataAlgorithmWorkspace.AddContent((DFA)transformed);
-                }
-                else
-                {
-                    MessageBox.Show("Автомат не является НКА");
-                }
-            }
+            var service = AlgorithmResolver.GetServiceByName(selectedAlgorithmName);
+            if (service is IAlgorithmTransformer transformer)
+                ImplementTransformerAlgorithm(automata, transformer);
+            else if (service is IAlgorithmRecognizer recognizer)
+                ImplementRecognitionAlgorithm(automata, inputWordWorkspace.Word.Text, recognizer);
         }
         catch (Exception exception)
         {
@@ -100,20 +72,28 @@ public partial class MainWindow
         }
     }
 
+    private void ImplementTransformerAlgorithm(Automata automata, IAlgorithmTransformer algorithm)
+    {
+        var transformed = algorithm.Get(automata);
+        automataAlgorithmWorkspace.AddContent(transformed);
+    }
+
+    private void ImplementRecognitionAlgorithm(Automata automata, string word, IAlgorithmRecognizer recognizer)
+    {
+        var answer = recognizer.Get(automata, word) ? "распознаёт" : "не распознаёт";
+        inputWordWorkspace.AddContent(answer);
+    }
+
     private void Algolist_OnDropDownClosed(object? sender, EventArgs e)
     {
         AnswerField.Children.Clear();
         ApplyButton.IsEnabled = true;
         var selectedAlgorithmName = Algolist.SelectionBoxItem.ToString();
-        if (selectedAlgorithmName == AlgorithmResolver.GetService<AcceptWordAlgorithm>().Name)
-        {
+        var service = AlgorithmResolver.GetServiceByName(selectedAlgorithmName);
+        if (service is IAlgorithmRecognizer)
             inputWordWorkspace.Init(AnswerField);
-        }
-        else if (selectedAlgorithmName == AlgorithmResolver.GetService<MinimizationAlgorithm>().Name || 
-                 selectedAlgorithmName == AlgorithmResolver.GetService<DeterminizationAlgorithm>().Name)
-        {
+        else if (service is IAlgorithmTransformer)
             automataAlgorithmWorkspace.Init(AnswerField);
-        }
     }
 
     private Automata GetAutomata()
@@ -121,6 +101,7 @@ public partial class MainWindow
         return AutomataParser.GetAutomata(StartState.Text, TerminateStates.Text, TableInput.Text);
     }
 
+    //exception на все случаи жизни???
     private void VisualButton_OnClick(object sender, RoutedEventArgs e)
     {
         try
@@ -204,7 +185,7 @@ public partial class MainWindow
         Environment.Exit(0);
     }
     
-    private void image_MouseWheel(object sender, MouseWheelEventArgs e)
+    private void Image_MouseWheel(object sender, MouseWheelEventArgs e)
     {
         var zoom = e.Delta > 0 ? 0.1 : -0.05;
         st.ScaleX += zoom;

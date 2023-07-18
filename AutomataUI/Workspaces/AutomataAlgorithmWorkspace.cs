@@ -72,7 +72,7 @@ public class AutomataAlgorithmWorkspace
         panel.Children.Add(TerminateStatesText);
     }
 
-    public void AddContent(DFA transformed)
+    public void AddContent(Automata transformed)
     {
         Transformed.Text = transformed.GetTextForm();
         StartStatesText.Text = transformed.StartState;

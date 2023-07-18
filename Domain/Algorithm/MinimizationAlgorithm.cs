@@ -10,6 +10,8 @@ public class MinimizationAlgorithm : IAlgorithmTransformer
     
     public Automata Get(Automata source)
     {
+        if (source is not DFA)
+            throw new ArgumentException("Автомат должен быть детерминированным");
         dfa = (DFA)source.ExceptStates(source.GetUnreachableStates());
         var classes = GetClasses();
         var transitions = new HashSet<Tuple<string, string, string>>();
@@ -25,7 +27,6 @@ public class MinimizationAlgorithm : IAlgorithmTransformer
                 transitions.Add(Tuple.Create(cls.SetToString(), letter, value));
             }
         }
-
         return new DFA(classes.Select(x => x.SetToString()).ToHashSet(), 
             dfa.Alphabet, transitions, start.SetToString(), terminates);
     }
