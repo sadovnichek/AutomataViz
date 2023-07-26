@@ -49,6 +49,6 @@ public class DeterminizationTask : IAutomataTask
     {
         return result.TerminateStates.Count >= 1
                && result.States.Count >= Math.Pow(2, source.States.Count - 1)
-               && result.CountCompoundSets() >= 2;
+               && result.States.CountCompoundSets() >= 2;
     }
 }

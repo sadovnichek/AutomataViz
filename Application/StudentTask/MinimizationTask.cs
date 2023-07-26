@@ -47,8 +47,8 @@ public class MinimizationTask : IAutomataTask
 
     private static bool IsAppropriate(Automata source, Automata result)
     {
-        return result.CountCompoundSets() > 1
+        return result.States.CountCompoundSets() > 1
                && source.GetUnreachableStates().Count <= 1
-               && result.States.Count != result.CountCompoundSets();
+               && result.States.Count != result.States.CountCompoundSets();
     }
 }

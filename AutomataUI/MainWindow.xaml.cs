@@ -18,7 +18,6 @@ public partial class MainWindow
     //TODO:
     // Объявление воркспейсов в начале
     // Названия методом в соответствии со стилем
-    // Метод ApplyButton слишком большой
     // Подумать над расширяемостью OnDropDownClosed
     // SRP в методе GenerateImage
     

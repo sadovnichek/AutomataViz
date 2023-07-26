@@ -9,7 +9,7 @@ public static class AlgorithmResolver
     static AlgorithmResolver()
     {
         services = new ServiceCollection()
-                .AddSingleton<IAlgorithm, AcceptWordAlgorithm>()
+                .AddSingleton<IAlgorithm, WordRecognitionAlgorithm>()
                 .AddSingleton<IAlgorithm, MinimizationAlgorithm>()
                 .AddSingleton<IAlgorithm, DeterminizationAlgorithm>();
 

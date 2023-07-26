@@ -1,4 +1,6 @@
-﻿namespace Infrastructure;
+﻿using Microsoft.VisualBasic;
+
+namespace Infrastructure;
 
 public static class Extensions
 {
@@ -37,16 +39,18 @@ public static class Extensions
     public static HashSet<T> GetRandomSubset<T>(this IEnumerable<T> source, int count)
     {
         if (count > source.Count())
-        {
             throw new ArgumentException("Count of result set cannot be more than source set");
-        }
         var result = new HashSet<T>();
         var random = new Random();
         while (result.Count < count)
         {
             result.Add(source.ToList()[random.Next(0, source.Count() - 1)]);
         }
-
         return result;
+    }
+
+    public static int CountCompoundSets(this IEnumerable<string> source)
+    {
+        return source.Count(s => s.StringToSet().Count > 1);
     }
 }

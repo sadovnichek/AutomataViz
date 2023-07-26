@@ -45,7 +45,7 @@ public class Tests
         ndfa.AddTransition("2", "a", "0");
     }
     
-    [SetUp]
+    [OneTimeSetUp]
     public void SetUp()
     {
         ConfigureDfa();
@@ -53,23 +53,33 @@ public class Tests
     }
     
     [Test]
-    public void AcceptWordDfa()
+    [TestCase("a", true)]
+    [TestCase("aaa", false)]
+    [TestCase("aabaa", false)]
+    [TestCase("aab", true)]
+    public void Dfa_IsRecognizeWord_Correctly(string word, bool expected)
     {
-        Assert.AreEqual(true, dfa.IsAcceptWord("a"));
-        Assert.AreEqual(false, dfa.IsAcceptWord("aaa"));
-        Assert.AreEqual(false, dfa.IsAcceptWord("aabaa"));
-        Assert.AreEqual(true, dfa.IsAcceptWord("aab"));
+        Assert.AreEqual(expected, dfa.IsRecognizeWord(word));
     }
 
     [Test]
-    public void DfaMinimization()
+    [TestCase("a", false)]
+    [TestCase("aaa", false)]
+    [TestCase("aba", true)]
+    [TestCase("ab", true)]
+    public void Ndfa_IsRecognizeWord_Correctly(string word, bool expected)
     {
-        var actual = AlgorithmResolver.GetService<MinimizationAlgorithm>().Get(dfa);
-        var expectedStates = new HashSet<string> {"{0, 1}", "2", "3", "4", "{5, 6}"};
-        var expectedAlphabet = new HashSet<string> {"a", "b"};
-        var expectedStart = "{0, 1}";
-        var expectedTerminates = new HashSet<string> {"4", "{5, 6}"};
-        var expectedTransitions = new HashSet<Tuple<string, string, string>>
+        Assert.AreEqual(expected, ndfa.IsRecognizeWord(word));
+    }
+
+    [Test]
+    public void MinimizationAlgorithm_Get_CorrectDfa()
+    {
+        var states = new HashSet<string> {"{0, 1}", "2", "3", "4", "{5, 6}"};
+        var alphabet = new HashSet<string> {"a", "b"};
+        var startState = "{0, 1}";
+        var terminateStates = new HashSet<string> {"4", "{5, 6}"};
+        var transitions = new HashSet<Tuple<string, string, string>>
         {
             Tuple.Create("{0, 1}", "a", "{5, 6}"),
             Tuple.Create("{0, 1}", "b", "2"),
@@ -82,31 +92,21 @@ public class Tests
             Tuple.Create("{5, 6}", "a", "3"),
             Tuple.Create("{5, 6}", "b", "{0, 1}")
         };
-        Assert.IsTrue(actual.States.SetEquals(expectedStates));
-        Assert.IsTrue(actual.Alphabet.SetEquals(expectedAlphabet));
-        Assert.AreEqual(expectedStart, actual.StartState);
-        Assert.IsTrue(actual.TerminateStates.SetEquals(expectedTerminates));
-        Assert.IsTrue(actual.Transitions.SetEquals(expectedTransitions));
-    }
-    
-    [Test]
-    public void AcceptWordNDFA()
-    {
-        Assert.AreEqual(false, ndfa.IsAcceptWord("a"));
-        Assert.AreEqual(false, ndfa.IsAcceptWord("aaa"));
-        Assert.AreEqual(true, ndfa.IsAcceptWord("aba"));
-        Assert.AreEqual(true, ndfa.IsAcceptWord("ab"));
+
+        var expected = new DFA(states, alphabet, transitions, startState, terminateStates);
+        var actual = AlgorithmResolver.GetService<MinimizationAlgorithm>().Get(dfa);
+
+        Assert.AreEqual(expected, actual);
     }
 
     [Test]
-    public void DeterminateNdfa()
+    public void DeterminizationAlgorithm_Get_CorrectDfa()
     {
-        var actual = AlgorithmResolver.GetService<DeterminizationAlgorithm>().Get(ndfa);
-        var expectedStates = new HashSet<string> {"0", "1", "Ø", "{0, 2}", "{0, 1}"};
-        var expectedAlphabet = new HashSet<string> {"a", "b"};
-        var expectedStart = "0";
-        var expectedTerminates = new HashSet<string> {"0", "{0, 1}", "{0, 2}"};
-        var expectedTransitions = new HashSet<Tuple<string, string, string>>
+        var states = new HashSet<string> {"0", "1", "Ø", "{0, 2}", "{0, 1}"};
+        var alphabet = new HashSet<string> {"a", "b"};
+        var startState = "0";
+        var terminateStates = new HashSet<string> {"0", "{0, 1}", "{0, 2}"};
+        var transitions = new HashSet<Tuple<string, string, string>>
         {
             Tuple.Create("0", "a", "1"),
             Tuple.Create("0", "b", "Ø"),
@@ -119,45 +119,46 @@ public class Tests
             Tuple.Create("{0, 1}", "a", "1"),
             Tuple.Create("{0, 1}", "b", "{0, 2}"),
         };
-        Assert.IsTrue(actual.States.SetEquals(expectedStates));
-        Assert.IsTrue(actual.Alphabet.SetEquals(expectedAlphabet));
-        Assert.AreEqual(expectedStart, actual.StartState);
-        Assert.IsTrue(actual.TerminateStates.SetEquals(expectedTerminates));
-        Assert.IsTrue(actual.Transitions.SetEquals(expectedTransitions));
+        var expected = new DFA(states, alphabet, transitions, startState, terminateStates);
+        var actual = AlgorithmResolver.GetService<DeterminizationAlgorithm>().Get(ndfa);
+        Assert.IsTrue(expected.Equals(actual));
     }
 
     [Test]
-    public void IsNotDfa()
+    public void NdfaIsNotDfa()
     {
         Assert.IsFalse(Automata.IsDfa(ndfa.Transitions, ndfa.Alphabet, ndfa.States));
     }
     
     [Test]
-    public void IsDfa()
+    public void DfaIsDfa()
     {
         Assert.IsTrue(Automata.IsDfa(dfa.Transitions, dfa.Alphabet, dfa.States));
     }
 
     [Test]
-    public void CountCompoundSetsTest()
+    public void Extentions_CountCompoundSets()
     {
         var states = new HashSet<string> {"0", "1", "Ø", "{0, 2}", "{0, 1}"};
-        var automata = new DFA(states, 
-            Enumerable.Empty<string>().ToHashSet(), string.Empty, Enumerable.Empty<string>().ToHashSet());
-        Assert.AreEqual(2, automata.CountCompoundSets());
+        Assert.AreEqual(2, states.CountCompoundSets());
     }
 
     [Test]
-    public void SetToStringTest()
+    public void Extentions_HashSetToString_OnMultiElementSet()
     {
-        var set = new HashSet<string> { "1", "2", "3"};
+        var set = new HashSet<string> { "1", "2", "3" };
         Assert.AreEqual("{1, 2, 3}", set.SetToString());
-        set = new HashSet<string> { "1" };
+    }
+
+    [Test]
+    public void Extentions_HashSetToString_OnSingleElementSet()
+    {
+        var set = new HashSet<string> { "1" };
         Assert.AreEqual("1", set.SetToString());
     }
 
     [Test]
-    public void StringToSetTest()
+    public void Extentions_StringToHashSet()
     {
         var str = "{1, 2, 3}";
         Assert.AreEqual(new HashSet<string> { "1", "2", "3"}, str.StringToSet());

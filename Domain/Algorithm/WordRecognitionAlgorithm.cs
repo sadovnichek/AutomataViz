@@ -2,12 +2,12 @@
 
 namespace Domain.Algorithm;
 
-public class AcceptWordAlgorithm : IAlgorithmRecognizer
+public class WordRecognitionAlgorithm : IAlgorithmRecognizer
 {
     public string Name => "Проверить слово на распознаваемость";
 
     public bool Get(Automata automata, string word)
     {
-        return automata.IsAcceptWord(word);
+        return automata.IsRecognizeWord(word);
     }
 }

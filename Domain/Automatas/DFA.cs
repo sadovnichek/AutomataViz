@@ -139,7 +139,7 @@ public class DFA : Automata
         return GetRandom(states, alphabet);
     }
     
-    public override bool IsAcceptWord(string word)
+    public override bool IsRecognizeWord(string word)
     {
         var currentState = StartState;
         foreach (var w in word)

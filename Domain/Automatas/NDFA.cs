@@ -149,7 +149,7 @@ public class NDFA : Automata
         return GetRandom(states, alphabet);
     }
 
-    public override bool IsAcceptWord(string word)
+    public override bool IsRecognizeWord(string word)
     {
         var currentNode = new HashSet<string>{StartState};
         foreach (var w in word)

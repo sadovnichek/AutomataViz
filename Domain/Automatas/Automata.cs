@@ -6,32 +6,20 @@ namespace Domain.Automatas;
 public abstract class Automata
 {
     public HashSet<Tuple<string, string, string>> Transitions { get; protected init; }
+
     public Guid Id = Guid.NewGuid();
+
     public HashSet<string> Alphabet { get; protected init; }
+
     public HashSet<string> States { get; protected init;}
+
     public string StartState { get; protected init;}
+
     public HashSet<string> TerminateStates { get; protected init;}
 
     public void AddTransition(string state, string symbol, string value)
     {
         Transitions.Add(Tuple.Create(state, symbol, value));
-    }
-
-    public string GetTransitionTable()
-    {
-        var output = new StringBuilder();
-        foreach (var groups in Transitions.GroupBy(x => x.Item1))
-        {
-            foreach (var (item1, item2, item3) in groups)
-            {
-                output.Append($"{item1}.{item2} = {item3}");
-                output.Append('\t');
-            }
-
-            output.Append('\n');
-        }
-
-        return output.ToString();
     }
 
     public string GetTextForm()
@@ -49,11 +37,6 @@ public abstract class Automata
         }
 
         return output.ToString();
-    }
-    
-    public int CountCompoundSets()
-    {
-        return States.Count(s => s.StringToSet().Count > 1);
     }
 
     public static bool IsDfa(
@@ -74,11 +57,22 @@ public abstract class Automata
         return true;
     }
     
-    public abstract bool IsAcceptWord(string word);
+    public abstract bool IsRecognizeWord(string word);
 
     public abstract HashSet<string> GetUnreachableStates();
 
     public abstract Automata ExceptStates(HashSet<string> exceptedStates);
 
     public abstract string ConvertToTexFormat();
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not Automata other)
+            return false;
+        return StartState.Equals(other.StartState) && 
+            Alphabet.SetEquals(other.Alphabet) &&
+            Transitions.SetEquals(other.Transitions) &&
+            States.SetEquals(other.States) &&
+            TerminateStates.SetEquals(other.TerminateStates);
+    }
 }

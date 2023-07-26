@@ -7,7 +7,7 @@ public class MinimizationAlgorithm : IAlgorithmTransformer
 {
     private DFA dfa;
     public string Name => "Минимальный ДКА";
-    
+
     public Automata Get(Automata source)
     {
         if (source is not DFA)
@@ -27,16 +27,16 @@ public class MinimizationAlgorithm : IAlgorithmTransformer
                 transitions.Add(Tuple.Create(cls.SetToString(), letter, value));
             }
         }
-        return new DFA(classes.Select(x => x.SetToString()).ToHashSet(), 
+        return new DFA(classes.Select(x => x.SetToString()).ToHashSet(),
             dfa.Alphabet, transitions, start.SetToString(), terminates);
     }
-    
+
     private HashSet<string> GetSet(string element, IEnumerable<HashSet<string>> queue)
     {
         return queue.FirstOrDefault(set => set.Contains(element)) ?? throw new InvalidOperationException();
     }
-    
-    private Dictionary<HashSet<HashSet<string>>, HashSet<string>> SplitClass(HashSet<string> set, 
+
+    private Dictionary<HashSet<HashSet<string>>, HashSet<string>> SplitClass(HashSet<string> set,
         Queue<HashSet<string>> queue)
     {
         var dict = new Dictionary<HashSet<HashSet<string>>, HashSet<string>>(new SetEqualityComparer());
@@ -60,13 +60,13 @@ public class MinimizationAlgorithm : IAlgorithmTransformer
     {
         return queue.Any(set => SplitClass(set, queue).Count != 1);
     }
-    
+
     private HashSet<HashSet<string>> GetClasses()
     {
         var terminates = dfa.TerminateStates;
         var nonTerminateStates = dfa.States.Where(s => !terminates.Contains(s)).ToHashSet();
         var queue = new Queue<HashSet<string>>();
-        queue.Enqueue(terminates.ToHashSet()); 
+        queue.Enqueue(terminates.ToHashSet());
         queue.Enqueue(nonTerminateStates);
         while (CanBeAnyClassSplit(queue))
         {
