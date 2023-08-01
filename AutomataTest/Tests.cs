@@ -119,46 +119,48 @@ public class Tests
             Tuple.Create("{0, 1}", "a", "1"),
             Tuple.Create("{0, 1}", "b", "{0, 2}"),
         };
+
         var expected = new DFA(states, alphabet, transitions, startState, terminateStates);
         var actual = AlgorithmResolver.GetService<DeterminizationAlgorithm>().Get(ndfa);
+
         Assert.IsTrue(expected.Equals(actual));
     }
 
     [Test]
-    public void NdfaIsNotDfa()
+    public void IsDfa_ShouldBeFalse_WhenNdfa()
     {
         Assert.IsFalse(Automata.IsDfa(ndfa.Transitions, ndfa.Alphabet, ndfa.States));
     }
     
     [Test]
-    public void DfaIsDfa()
+    public void IsDfa_ShouldBeTrue_WhenDfa()
     {
         Assert.IsTrue(Automata.IsDfa(dfa.Transitions, dfa.Alphabet, dfa.States));
     }
 
     [Test]
-    public void Extentions_CountCompoundSets()
+    public void Extensions_CountCompoundSets()
     {
         var states = new HashSet<string> {"0", "1", "Ø", "{0, 2}", "{0, 1}"};
         Assert.AreEqual(2, states.CountCompoundSets());
     }
 
     [Test]
-    public void Extentions_HashSetToString_OnMultiElementSet()
+    public void Extensions_HashSetToString_OnMultiElementSet()
     {
         var set = new HashSet<string> { "1", "2", "3" };
         Assert.AreEqual("{1, 2, 3}", set.SetToString());
     }
 
     [Test]
-    public void Extentions_HashSetToString_OnSingleElementSet()
+    public void Extensions_HashSetToString_OnSingleElementSet()
     {
         var set = new HashSet<string> { "1" };
         Assert.AreEqual("1", set.SetToString());
     }
 
     [Test]
-    public void Extentions_StringToHashSet()
+    public void Extensions_StringToHashSet()
     {
         var str = "{1, 2, 3}";
         Assert.AreEqual(new HashSet<string> { "1", "2", "3"}, str.StringToSet());

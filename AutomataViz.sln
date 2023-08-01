@@ -7,15 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutomataTest", "AutomataTes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutomataUI", "AutomataUI\AutomataUI.csproj", "{7D26F331-BF4F-47C0-B58D-602FF595264F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Updater", "Updater\Updater.csproj", "{6CFBB671-44C2-473F-A489-53AF8D8F63E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{CE39C096-F174-4927-8ECF-36EB92D2016D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{CE39C096-F174-4927-8ECF-36EB92D2016D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{45D8433A-83AF-4347-88D9-1ADCD07E9B0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{45D8433A-83AF-4347-88D9-1ADCD07E9B0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotFormat", "DotFormat\DotFormat.csproj", "{36EA5336-402A-441C-AD77-FBFED4F37FD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotFormat", "DotFormat\DotFormat.csproj", "{36EA5336-402A-441C-AD77-FBFED4F37FD3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{50C70153-CD74-447A-8A73-441CF207E9E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{50C70153-CD74-447A-8A73-441CF207E9E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,14 +39,6 @@ Global
 		{7D26F331-BF4F-47C0-B58D-602FF595264F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7D26F331-BF4F-47C0-B58D-602FF595264F}.Release|x86.ActiveCfg = Release|Any CPU
 		{7D26F331-BF4F-47C0-B58D-602FF595264F}.Release|x86.Build.0 = Release|Any CPU
-		{6CFBB671-44C2-473F-A489-53AF8D8F63E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CFBB671-44C2-473F-A489-53AF8D8F63E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6CFBB671-44C2-473F-A489-53AF8D8F63E5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6CFBB671-44C2-473F-A489-53AF8D8F63E5}.Debug|x86.Build.0 = Debug|Any CPU
-		{6CFBB671-44C2-473F-A489-53AF8D8F63E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CFBB671-44C2-473F-A489-53AF8D8F63E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6CFBB671-44C2-473F-A489-53AF8D8F63E5}.Release|x86.ActiveCfg = Release|Any CPU
-		{6CFBB671-44C2-473F-A489-53AF8D8F63E5}.Release|x86.Build.0 = Release|Any CPU
 		{CE39C096-F174-4927-8ECF-36EB92D2016D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CE39C096-F174-4927-8ECF-36EB92D2016D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE39C096-F174-4927-8ECF-36EB92D2016D}.Debug|x86.ActiveCfg = Debug|Any CPU

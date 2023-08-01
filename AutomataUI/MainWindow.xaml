@@ -19,19 +19,17 @@
                Grid.Row="1" Grid.RowSpan="3"
                Grid.Column="1"
                Margin="100, 100, 100, 200"
-               MouseWheel="Image_MouseWheel"
+               MouseWheel="ZoomImageOnMouseWheel"
                MaxHeight="600"
                MaxWidth="600"
         />
-        
+
         <Menu x:Name="Menu" Grid.Row="0" VerticalAlignment="Top" Grid.ColumnSpan="2" >
-            <MenuItem Header="Создать тест" Click="CreateTask_OnClick"/>
-            <MenuItem Header="Вставить шаблон для ввода" Click="Pattern_OnClick"/>
+            <MenuItem Header="Вставить шаблон для ввода" Click="InsertPatternOnButtonClick"/>
             <MenuItem Header="Случайный автомат">
-                <MenuItem Header="ДКА" Click="RandomDFA_OnClick"></MenuItem>
-                <MenuItem Header="НКА" Click="RandomNDFA_OnClick"></MenuItem>
+                <MenuItem Header="ДКА" Click="GetRandomDFAOnButtonClick"></MenuItem>
+                <MenuItem Header="НКА" Click="GetRandomNDFAOnButtonClick"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Обновить" Click="Update"/>
         </Menu>
         
         <ScrollViewer Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
@@ -61,22 +59,22 @@
             </StackPanel>
             
             <DockPanel  LastChildFill="False" Margin="0, 10, 0, 0" >
-                <Button x:Name="ApplyButton" 
+                <Button x:Name="ImplementAlgorithmButton" 
                         DockPanel.Dock="Left" 
                         Content="Применить алгоритм" 
                         IsEnabled="False"
-                        Click="ApplyButton_OnClick"/>
-                <ComboBox x:Name="Algolist" 
+                        Click="ImplementAlgorithmOnButtonClick"/>
+                <ComboBox x:Name="Algorithms" 
                           DockPanel.Dock="Left" 
                           Width="auto" 
-                          Loaded="Algorithms_OnLoaded" 
-                          DropDownClosed="Algolist_OnDropDownClosed"
+                          Loaded="AddAlgorithms" 
+                          DropDownClosed="SelectAlgorithm"
                           FontSize="24"/>
                 <Button x:Name="VisualButton"
                         DockPanel.Dock="Right" 
                         Content="Визуализировать" 
                         Width="100"
-                        Click="VisualButton_OnClick"/>
+                        Click="VisualizeAutomataOnButtonClick"/>
             </DockPanel>
             
             <StackPanel Margin="0, 0, 20, 0" x:Name="AnswerField"/>
