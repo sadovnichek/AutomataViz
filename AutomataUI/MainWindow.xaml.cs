@@ -16,8 +16,6 @@ namespace AutomataUI;
 
 public partial class MainWindow
 {
-    //TODO:
-    // Объявление воркспейсов в начале
     private readonly ScaleTransform st = new();
 
     public MainWindow()
@@ -27,7 +25,7 @@ public partial class MainWindow
         Visualization.RenderTransform = st;
     }
    
-    private static void ConfigureImagesDirectory()
+    private void ConfigureImagesDirectory()
     {
         if (!Directory.Exists("./images"))
             Directory.CreateDirectory("./images");
@@ -35,7 +33,7 @@ public partial class MainWindow
             ClearDirectory("./images");
     }
 
-    private static void ClearDirectory(string path)
+    private void ClearDirectory(string path)
     {
         foreach (var file in Directory.GetFiles(path))
         {
