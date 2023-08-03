@@ -55,7 +55,7 @@ public static class AutomataParser
     private static string ParseStartState(string source)
     {
         if (source.Length == 0)
-            throw new Exception("Поле начальных состояний заполнено не корректно");
+            throw new ArgumentException("Поле начальных состояний заполнено некорректно");
         return source.Trim();
     }
 }

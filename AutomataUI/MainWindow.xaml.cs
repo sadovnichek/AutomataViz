@@ -42,15 +42,22 @@ public partial class MainWindow
 
     private void ImplementAlgorithmOnButtonClick(object sender, RoutedEventArgs e)
     {
-        var automata = GetAutomata();
-        var selectedAlgorithmName = Algorithms.SelectionBoxItem.ToString();
-        var service = AlgorithmResolver.GetAlgorithmByName(selectedAlgorithmName);
-        if (service is IAlgorithmTransformer transformer)
-            ImplementTransformerAlgorithm(automata, transformer);
-        else if (service is IAlgorithmRecognizer recognizer)
+        try
         {
-            var word = WorkspaceResolver.GetService<IWordInputWorkspace>().GetInput();
-            ImplementRecognitionAlgorithm(automata, word, recognizer);
+            var automata = GetAutomata();
+            var selectedAlgorithmName = Algorithms.SelectionBoxItem.ToString();
+            var service = AlgorithmResolver.GetAlgorithmByName(selectedAlgorithmName);
+            if (service is IAlgorithmTransformer transformer)
+                ImplementTransformerAlgorithm(automata, transformer);
+            else if (service is IAlgorithmRecognizer recognizer)
+            {
+                var word = WorkspaceResolver.GetService<IWordInputWorkspace>().GetInput();
+                ImplementRecognitionAlgorithm(automata, word, recognizer);
+            }
+        }
+        catch(ArgumentException exception)
+        {
+            MessageBox.Show(exception.Message);
         }
     }
 
@@ -87,10 +94,17 @@ public partial class MainWindow
 
     private void VisualizeAutomataOnButtonClick(object sender, RoutedEventArgs e)
     {
-        var service = AlgorithmResolver.GetService<IVisualizationService>();
-        var automata = GetAutomata();
-        var uri = service.GetImageUri(automata);
-        Visualization.Source = new BitmapImage(uri);
+        try
+        {
+            var service = AlgorithmResolver.GetService<IVisualizationService>();
+            var automata = GetAutomata();
+            var uri = service.GetImageUri(automata);
+            Visualization.Source = new BitmapImage(uri);
+        }
+        catch(ArgumentException exception)
+        {
+            MessageBox.Show(exception.Message);
+        }
     }
 
     private void InsertPatternOnButtonClick(object sender, RoutedEventArgs e)
