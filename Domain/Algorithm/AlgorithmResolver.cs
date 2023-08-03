@@ -5,30 +5,31 @@ namespace Domain.Algorithm;
 public static class AlgorithmResolver
 {
     private static readonly IServiceProvider serviceProvider;
-    private static readonly IServiceCollection services;
     static AlgorithmResolver()
     {
-        services = new ServiceCollection()
-                .AddSingleton<IAlgorithm, WordRecognitionAlgorithm>()
-                .AddSingleton<IAlgorithm, MinimizationAlgorithm>()
-                .AddSingleton<IAlgorithm, DeterminizationAlgorithm>();
-
-        serviceProvider = services.BuildServiceProvider();
+        serviceProvider = new ServiceCollection()
+                .AddSingleton<IService, WordRecognitionAlgorithm>()
+                .AddSingleton<IService, MinimizationAlgorithm>()
+                .AddSingleton<IService, DeterminizationAlgorithm>()
+                .AddSingleton<IService, VisualizationService>()
+                .BuildServiceProvider();
     }
 
     public static T GetService<T>()
-        where T : IAlgorithm
+        where T : class
     {
-        return (T)serviceProvider.GetServices<IAlgorithm>().First(a => a is T);
+        return (T)serviceProvider.GetServices<IService>().First(a => a is T);
     }
 
-    public static IAlgorithm GetServiceByName(string serviceName)
+    public static IAlgorithm GetAlgorithmByName(string serviceName)
     {
-        return GetAllServices().First(x => x.Name == serviceName);
+        return GetAllAlgorithms().First(x => x.Name == serviceName);
     }
 
-    public static IEnumerable<IAlgorithm> GetAllServices()
+    public static IEnumerable<IAlgorithm> GetAllAlgorithms()
     {
-        return serviceProvider.GetServices<IAlgorithm>();
+        return serviceProvider.GetServices<IService>()
+            .Where(service => service is IAlgorithm)
+            .Select(service => (IAlgorithm)service);
     }
 }

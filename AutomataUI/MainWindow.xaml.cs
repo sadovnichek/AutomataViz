@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -45,7 +44,7 @@ public partial class MainWindow
     {
         var automata = GetAutomata();
         var selectedAlgorithmName = Algorithms.SelectionBoxItem.ToString();
-        var service = AlgorithmResolver.GetServiceByName(selectedAlgorithmName);
+        var service = AlgorithmResolver.GetAlgorithmByName(selectedAlgorithmName);
         if (service is IAlgorithmTransformer transformer)
             ImplementTransformerAlgorithm(automata, transformer);
         else if (service is IAlgorithmRecognizer recognizer)
@@ -70,9 +69,11 @@ public partial class MainWindow
     private void SelectAlgorithm(object sender, EventArgs e)
     {
         AnswerField.Children.Clear();
-        ImplementAlgorithmButton.IsEnabled = true;
         var selectedAlgorithmName = Algorithms.SelectionBoxItem.ToString();
-        var service = AlgorithmResolver.GetServiceByName(selectedAlgorithmName);
+        if (string.IsNullOrEmpty(selectedAlgorithmName))
+            return;
+        ImplementAlgorithmButton.IsEnabled = true;
+        var service = AlgorithmResolver.GetAlgorithmByName(selectedAlgorithmName);
         if (service is IAlgorithmRecognizer)
             WorkspaceResolver.GetService<IWordInputWorkspace>().Init(AnswerField);
         else if (service is IAlgorithmTransformer)
@@ -86,35 +87,10 @@ public partial class MainWindow
 
     private void VisualizeAutomataOnButtonClick(object sender, RoutedEventArgs e)
     {
+        var service = AlgorithmResolver.GetService<IVisualizationService>();
         var automata = GetAutomata();
-        var fileName = "temp.dot";
-        WriteToFile(fileName, automata);
-        GenerateImage(fileName, automata);
-        var imagePath = Directory.GetCurrentDirectory() + $"/images/{automata.Id}.png"; // нельзя через ./
-        var uri = new Uri(imagePath);
+        var uri = service.GetImageUri(automata);
         Visualization.Source = new BitmapImage(uri);
-        File.Delete(fileName);
-    }
-
-    private void WriteToFile(string fileName, Automata automata)
-    {
-        using var writer = new StreamWriter(fileName);
-        writer.Write(ConvertAutomataToDotFormat.Convert(automata));
-    }
-
-    private void GenerateImage(string sourceFileName, Automata automata)
-    {
-        var process = new Process
-        {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = "./bin/dot.exe",
-                UseShellExecute = false,
-                Arguments = $"{sourceFileName} -Tpng -o ./images/{automata.Id}.png"
-            }
-        };
-        process.Start();
-        process.WaitForExit();
     }
 
     private void InsertPatternOnButtonClick(object sender, RoutedEventArgs e)
@@ -166,7 +142,7 @@ public partial class MainWindow
 
     private void AddAlgorithms(object sender, RoutedEventArgs e)
     {
-        AlgorithmResolver.GetAllServices()
+        AlgorithmResolver.GetAllAlgorithms()
             .ToList()
             .ForEach(algorithm => Algorithms.Items.Add(algorithm.Name));
     }

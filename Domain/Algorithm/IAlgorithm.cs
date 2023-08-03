@@ -2,7 +2,7 @@
 
 namespace Domain.Algorithm;
 
-public interface IAlgorithm
+public interface IAlgorithm : IService
 {
     string Name { get; }
 }
