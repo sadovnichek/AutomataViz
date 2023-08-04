@@ -30,15 +30,10 @@ public class NDFA : Automata
         TerminateStates = terminateStates;
     }
 
-    public HashSet<string> this[string state, string symbol]
-    {
-        get
-        {
-            return Transitions.Where(x => x.Item1 == state && x.Item2 == symbol)
+    public HashSet<string> this[string state, string symbol] =>
+        Transitions.Where(x => x.Item1 == state && x.Item2 == symbol)
                 .Select(x => x.Item3)
                 .ToHashSet();
-        }
-    }
 
     public override string ConvertToTexFormat()
     {
@@ -79,9 +74,7 @@ public class NDFA : Automata
                 foreach (var value in values)
                 {
                     if (!exceptedStates.Contains(value))
-                    {
                         newAutomata.AddTransition(state, symbol, value);
-                    }
                 }
             }
         }

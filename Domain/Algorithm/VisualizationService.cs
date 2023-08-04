@@ -14,6 +14,7 @@ namespace Domain.Algorithm
             File.WriteAllText(dotFileName, dotFormat);
             GenerateImage(dotFileName, imageFileName);
             var uri = new Uri(imageFileName);
+            File.Delete(dotFileName);
             return uri;
         }
 

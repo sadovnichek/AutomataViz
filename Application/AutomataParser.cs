@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Domain.Automatas;
+using Infrastructure;
 
 namespace Application;
 
@@ -25,6 +26,9 @@ public static class AutomataParser
             transitions.Add(Tuple.Create(state, symbol, value));
         }
 
+        if (transitions.Count == 0)
+            throw new IncorrectInputException("Таблица переходов заполнено некорректно");
+
         if (Automata.IsDfa(transitions, alphabet, states))
             return new DFA(states, alphabet, transitions, start, terminates);
         return new NDFA(states, alphabet, transitions, start, terminates);
@@ -47,7 +51,7 @@ public static class AutomataParser
     private static HashSet<string> ParseTerminateStates(string source)
     {
         if (source.Length == 0)
-            throw new ArgumentException("Поле заключительных состояний заполнено некорректно");
+            throw new IncorrectInputException("Поле заключительных состояний заполнено некорректно");
         var matches = regexToReadTerminateStates.Matches(source);
         return matches.Select(m => m.Value).ToHashSet();
     }
@@ -55,7 +59,7 @@ public static class AutomataParser
     private static string ParseStartState(string source)
     {
         if (source.Length == 0)
-            throw new ArgumentException("Поле начальных состояний заполнено некорректно");
+            throw new IncorrectInputException("Поле начальных состояний заполнено некорректно");
         return source.Trim();
     }
 }

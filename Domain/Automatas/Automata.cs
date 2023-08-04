@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Infrastructure;
 
 namespace Domain.Automatas;
 
@@ -22,7 +21,7 @@ public abstract class Automata
         Transitions.Add(Tuple.Create(state, symbol, value));
     }
 
-    public string GetTextForm()
+    public string GetTransitionTableFormatted()
     {
         var output = new StringBuilder();
         foreach (var groups in Transitions.GroupBy(x => x.Item1))
@@ -49,14 +48,23 @@ public abstract class Automata
             foreach (var symbol in alphabet)
             {
                 if (transitions.Count(t => t.Item1 == state && t.Item2 == symbol) != 1)
-                {
                     return false;
-                }
             }
         }
         return true;
     }
-    
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not Automata other)
+            return false;
+        return StartState.Equals(other.StartState) &&
+            Alphabet.SetEquals(other.Alphabet) &&
+            Transitions.SetEquals(other.Transitions) &&
+            States.SetEquals(other.States) &&
+            TerminateStates.SetEquals(other.TerminateStates);
+    }
+
     public abstract bool IsRecognizeWord(string word);
 
     public abstract HashSet<string> GetUnreachableStates();
@@ -64,15 +72,4 @@ public abstract class Automata
     public abstract Automata ExceptStates(HashSet<string> exceptedStates);
 
     public abstract string ConvertToTexFormat();
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is not Automata other)
-            return false;
-        return StartState.Equals(other.StartState) && 
-            Alphabet.SetEquals(other.Alphabet) &&
-            Transitions.SetEquals(other.Transitions) &&
-            States.SetEquals(other.States) &&
-            TerminateStates.SetEquals(other.TerminateStates);
-    }
 }

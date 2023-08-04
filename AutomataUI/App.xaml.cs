@@ -15,7 +15,7 @@ namespace AutomataUI
             Dispatcher.UnhandledException += OnDispatcherUnhandledException;
         }
 
-        void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             MessageBox.Show("Произошла непредвиденная ошибка. Подробности в файле log.txt");
             File.WriteAllText("./log.txt", $"{e.Exception.Message}\n{e.Exception.StackTrace}");

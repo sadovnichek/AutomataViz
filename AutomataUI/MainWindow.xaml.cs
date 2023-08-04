@@ -10,6 +10,7 @@ using Domain.Automatas;
 using AutomataUI.Workspaces;
 using Application;
 using System.Linq;
+using Infrastructure;
 
 namespace AutomataUI;
 
@@ -55,9 +56,13 @@ public partial class MainWindow
                 ImplementRecognitionAlgorithm(automata, word, recognizer);
             }
         }
-        catch(ArgumentException exception)
+        catch(IncorrectInputException exception)
         {
-            MessageBox.Show(exception.Message);
+            MessageBox.Show($"Ошибка ввода: {exception.Message}");
+        }
+        catch(InvalidOperationException exception)
+        {
+            MessageBox.Show($"Ошибка выполнения: {exception.Message}");
         }
     }
 
@@ -101,9 +106,9 @@ public partial class MainWindow
             var uri = service.GetImageUri(automata);
             Visualization.Source = new BitmapImage(uri);
         }
-        catch(ArgumentException exception)
+        catch(IncorrectInputException exception)
         {
-            MessageBox.Show(exception.Message);
+            MessageBox.Show($"Ошибка ввода: {exception.Message}");
         }
     }
 
@@ -125,7 +130,7 @@ public partial class MainWindow
     {
         var random = new Random();
         var randomAutomata = NDFA.GetRandom(random.Next(3, 6), random.Next(2, 4));
-        TableInput.Text = randomAutomata.GetTextForm();
+        TableInput.Text = randomAutomata.GetTransitionTableFormatted();
         StartState.Text = randomAutomata.StartState;
         TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);
     }
@@ -134,7 +139,7 @@ public partial class MainWindow
     {
         var random = new Random();
         var randomAutomata = DFA.GetRandom(random.Next(3, 10), random.Next(2, 4));
-        TableInput.Text = randomAutomata.GetTextForm();
+        TableInput.Text = randomAutomata.GetTransitionTableFormatted();
         StartState.Text = randomAutomata.StartState;
         TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);
     }

@@ -61,7 +61,7 @@ public class AutomataWorkspace : IAutomataWorkspace
 
     public void AddContent(Automata transformed)
     {
-        transitionTable.Text = transformed.GetTextForm();
+        transitionTable.Text = transformed.GetTransitionTableFormatted();
         startStateText.Text = transformed.StartState;
         terminateStatesText.Text = string.Join(" ", transformed.TerminateStates);
     }

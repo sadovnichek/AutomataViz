@@ -30,14 +30,10 @@ public class DFA : Automata
         TerminateStates = terminateStates;
     }
 
-    public string this[string state, string symbol]
-    {
-        get
-        {
-            return Transitions.Where(x => x.Item1 == state && x.Item2 == symbol)
-                .Select(x => x.Item3).First();
-        }
-    }
+    public string this[string state, string symbol] => 
+        Transitions.Where(x => x.Item1 == state && x.Item2 == symbol)
+                .Select(x => x.Item3)
+                .First();
     
     public override string ConvertToTexFormat()
     {
