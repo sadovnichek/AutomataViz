@@ -1,32 +1,33 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Domain.Algorithm.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Domain.Algorithm;
 
-public static class AlgorithmResolver
+public class ServiceResolver : IServiceResolver
 {
     private static readonly IServiceProvider serviceProvider;
-    static AlgorithmResolver()
+    static ServiceResolver()
     {
         serviceProvider = new ServiceCollection()
                 .AddSingleton<IService, WordRecognitionAlgorithm>()
                 .AddSingleton<IService, MinimizationAlgorithm>()
                 .AddSingleton<IService, DeterminizationAlgorithm>()
                 .AddSingleton<IService, VisualizationService>()
+                .AddSingleton<IService, RandomAutomataService>()
                 .BuildServiceProvider();
     }
 
-    public static T GetService<T>()
-        where T : class
+    public T GetService<T>()
     {
         return (T)serviceProvider.GetServices<IService>().First(a => a is T);
     }
 
-    public static IAlgorithm GetAlgorithmByName(string serviceName)
+    public IAlgorithm GetAlgorithmByName(string serviceName)
     {
         return GetAllAlgorithms().First(x => x.Name == serviceName);
     }
 
-    public static IEnumerable<IAlgorithm> GetAllAlgorithms()
+    public IEnumerable<IAlgorithm> GetAllAlgorithms()
     {
         return serviceProvider.GetServices<IService>()
             .Where(service => service is IAlgorithm)

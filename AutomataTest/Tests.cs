@@ -94,7 +94,7 @@ public class Tests
         };
 
         var expected = new DFA(states, alphabet, transitions, startState, terminateStates);
-        var actual = AlgorithmResolver.GetService<MinimizationAlgorithm>().Get(dfa);
+        var actual = ServiceResolver.GetService<MinimizationAlgorithm>().Get(dfa);
 
         Assert.AreEqual(expected, actual);
     }
@@ -121,7 +121,7 @@ public class Tests
         };
 
         var expected = new DFA(states, alphabet, transitions, startState, terminateStates);
-        var actual = AlgorithmResolver.GetService<DeterminizationAlgorithm>().Get(ndfa);
+        var actual = ServiceResolver.GetService<DeterminizationAlgorithm>().Get(ndfa);
 
         Assert.IsTrue(expected.Equals(actual));
     }

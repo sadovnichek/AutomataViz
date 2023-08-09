@@ -109,38 +109,6 @@ public class NDFA : Automata
 
         return States.Where(s => !used.Contains(s)).ToHashSet();
     }
-    
-    public static NDFA GetRandom(HashSet<string> states, HashSet<string> alphabet)
-    {
-        var random = new Random();
-        var start = states.ToList()[random.Next(0, states.Count)];
-        var terminates = states.GetRandomSubset(random.Next(2, states.Count / 2 + 1));
-        var randomAutomata = new NDFA(states, alphabet, start, terminates);
-        foreach (var state in states)
-        {
-            foreach (var symbol in alphabet)
-            {
-                for (int i = 0; i < random.Next(0, 3); i++)
-                {
-                    var randomIndex = random.Next(0, states.Count);
-                    randomAutomata.AddTransition(state, symbol, states.ToList()[randomIndex]);
-                }
-            }
-        }
-
-        return randomAutomata;
-    }
-
-    public static NDFA GetRandom(int statesNumber, int alphabetNumber)
-    {
-        var states = Enumerable.Range(1, statesNumber)
-            .Select(x => x.ToString())
-            .ToHashSet();
-        var alphabet = Enumerable.Range(0, alphabetNumber)
-            .Select(x => ((char) (97 + x)).ToString())
-            .ToHashSet();
-        return GetRandom(states, alphabet);
-    }
 
     public override bool IsRecognizeWord(string word)
     {

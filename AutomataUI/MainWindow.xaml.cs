@@ -17,9 +17,11 @@ namespace AutomataUI;
 public partial class MainWindow
 {
     private readonly ScaleTransform st = new();
+    private readonly IServiceResolver serviceResolver;
 
-    public MainWindow()
+    public MainWindow(IServiceResolver serviceResolver)
     {
+        this.serviceResolver = serviceResolver;
         InitializeComponent();
         ConfigureImagesDirectory();
         Visualization.RenderTransform = st;
@@ -47,13 +49,18 @@ public partial class MainWindow
         {
             var automata = GetAutomata();
             var selectedAlgorithmName = Algorithms.SelectionBoxItem.ToString();
-            var service = AlgorithmResolver.GetAlgorithmByName(selectedAlgorithmName);
-            if (service is IAlgorithmTransformer transformer)
-                ImplementTransformerAlgorithm(automata, transformer);
-            else if (service is IAlgorithmRecognizer recognizer)
+            var service = serviceResolver.GetAlgorithmByName(selectedAlgorithmName);
+            switch (service)
             {
-                var word = WorkspaceResolver.GetService<IWordInputWorkspace>().GetInput();
-                ImplementRecognitionAlgorithm(automata, word, recognizer);
+                case IAlgorithmTransformer transformer:
+                    ImplementTransformerAlgorithm(automata, transformer);
+                    break;
+                case IAlgorithmRecognizer recognizer:
+                {
+                    var word = WorkspaceResolver.GetService<IWordInputWorkspace>().GetInput();
+                    ImplementRecognitionAlgorithm(automata, word, recognizer);
+                    break;
+                }
             }
         }
         catch(IncorrectInputException exception)
@@ -85,11 +92,16 @@ public partial class MainWindow
         if (string.IsNullOrEmpty(selectedAlgorithmName))
             return;
         ImplementAlgorithmButton.IsEnabled = true;
-        var service = AlgorithmResolver.GetAlgorithmByName(selectedAlgorithmName);
-        if (service is IAlgorithmRecognizer)
-            WorkspaceResolver.GetService<IWordInputWorkspace>().Init(AnswerField);
-        else if (service is IAlgorithmTransformer)
-            WorkspaceResolver.GetService<IAutomataWorkspace>().Init(AnswerField);
+        var service = serviceResolver.GetAlgorithmByName(selectedAlgorithmName);
+        switch (service)
+        {
+            case IAlgorithmRecognizer:
+                WorkspaceResolver.GetService<IWordInputWorkspace>().Init(AnswerField);
+                break;
+            case IAlgorithmTransformer:
+                WorkspaceResolver.GetService<IAutomataWorkspace>().Init(AnswerField);
+                break;
+        }
     }
 
     private Automata GetAutomata()
@@ -101,7 +113,7 @@ public partial class MainWindow
     {
         try
         {
-            var service = AlgorithmResolver.GetService<IVisualizationService>();
+            var service = serviceResolver.GetService<IVisualizationService>();
             var automata = GetAutomata();
             var uri = service.GetImageUri(automata);
             Visualization.Source = new BitmapImage(uri);
@@ -129,7 +141,8 @@ public partial class MainWindow
     private void GetRandomNDFAOnButtonClick(object sender, RoutedEventArgs e)
     {
         var random = new Random();
-        var randomAutomata = NDFA.GetRandom(random.Next(3, 6), random.Next(2, 4));
+        var randomAutomata = serviceResolver.GetService<IRandomAutomataService>()
+            .GetRandomNDFA(random.Next(3, 6), random.Next(2, 4));
         TableInput.Text = randomAutomata.GetTransitionTableFormatted();
         StartState.Text = randomAutomata.StartState;
         TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);
@@ -138,7 +151,8 @@ public partial class MainWindow
     private void GetRandomDFAOnButtonClick(object sender, RoutedEventArgs e)
     {
         var random = new Random();
-        var randomAutomata = DFA.GetRandom(random.Next(3, 10), random.Next(2, 4));
+        var randomAutomata = serviceResolver.GetService<IRandomAutomataService>()
+            .GetRandomDFA(random.Next(3, 10), random.Next(2, 4));
         TableInput.Text = randomAutomata.GetTransitionTableFormatted();
         StartState.Text = randomAutomata.StartState;
         TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);
@@ -153,15 +167,9 @@ public partial class MainWindow
         st.CenterY = e.MouseDevice.GetPosition(Visualization).Y;
     }
 
-    private void ShowTaskWindow(object sender, RoutedEventArgs e)
-    {
-        var taskWindow = new TaskWindow();
-        taskWindow.Show();
-    }
-
     private void AddAlgorithms(object sender, RoutedEventArgs e)
     {
-        AlgorithmResolver.GetAllAlgorithms()
+        serviceResolver.GetAllAlgorithms()
             .ToList()
             .ForEach(algorithm => Algorithms.Items.Add(algorithm.Name));
     }

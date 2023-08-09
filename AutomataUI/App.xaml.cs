@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
+using Domain.Algorithm;
 
 namespace AutomataUI
 {
@@ -13,6 +14,13 @@ namespace AutomataUI
         public App()
         {
             Dispatcher.UnhandledException += OnDispatcherUnhandledException;
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            var mainWindow = new MainWindow(new ServiceResolver());
+            mainWindow.Show();
         }
 
         private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
