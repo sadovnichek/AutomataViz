@@ -12,7 +12,7 @@ namespace Domain.Algorithm.Services
             random = new Random();
         }
 
-        public Automata GetRandomDFA(int statesNumber, int alphabetPower)
+        public Automata GetRandom(int statesNumber, int alphabetPower, bool isDfa)
         {
             var states = Enumerable.Range(1, statesNumber)
                 .Select(x => x.ToString())
@@ -20,39 +20,11 @@ namespace Domain.Algorithm.Services
             var alphabet = Enumerable.Range(0, alphabetPower)
                 .Select(x => ((char)(97 + x)).ToString())
                 .ToHashSet();
-            return GetRandomDFA(states, alphabet);
+            return GetRandom(states, alphabet, isDfa);
         }
 
-        private DFA GetRandomDFA(HashSet<string> states, HashSet<string> alphabet)
+        private Automata GetRandom(HashSet<string> states, HashSet<string> alphabet, bool isDfa)
         {
-            var startState = states.ToList()[random.Next(1, states.Count)];
-            var terminateStates = states.GetRandomSubset(random.Next(2, states.Count / 2 + 1));
-            var randomAutomata = new DFA(states, alphabet, startState, terminateStates);
-            foreach (var state in states)
-            {
-                foreach (var symbol in alphabet)
-                {
-                    var randomIndex = random.Next(0, states.Count);
-                    randomAutomata.AddTransition(state, symbol, states.ToList()[randomIndex]);
-                }
-            }
-            return randomAutomata;
-        }
-
-        public Automata GetRandomNDFA(int statesNumber, int alphabetNumber)
-        {
-            var states = Enumerable.Range(1, statesNumber)
-                .Select(x => x.ToString())
-                .ToHashSet();
-            var alphabet = Enumerable.Range(0, alphabetNumber)
-                .Select(x => ((char)(97 + x)).ToString())
-                .ToHashSet();
-            return GetRandomNDFA(states, alphabet);
-        }
-
-        private static NDFA GetRandomNDFA(HashSet<string> states, HashSet<string> alphabet)
-        {
-            var random = new Random();
             var start = states.ToList()[random.Next(0, states.Count)];
             var terminates = states.GetRandomSubset(random.Next(2, states.Count / 2 + 1));
             var randomAutomata = new NDFA(states, alphabet, start, terminates);
@@ -60,11 +32,13 @@ namespace Domain.Algorithm.Services
             {
                 foreach (var symbol in alphabet)
                 {
-                    for (int i = 0; i < random.Next(0, 3); i++)
+                    var iteration = 0;
+                    do
                     {
                         var randomIndex = random.Next(0, states.Count);
                         randomAutomata.AddTransition(state, symbol, states.ToList()[randomIndex]);
-                    }
+                        iteration++;
+                    } while (iteration < random.Next(1, 3) && !isDfa);
                 }
             }
             return randomAutomata;

@@ -31,10 +31,8 @@ public abstract class Automata
                 output.Append($"{item1}.{item2} = {item3}");
                 output.Append('\t');
             }
-
             output.Append('\n');
         }
-
         return output.ToString();
     }
 
@@ -63,6 +61,11 @@ public abstract class Automata
             Transitions.SetEquals(other.Transitions) &&
             States.SetEquals(other.States) &&
             TerminateStates.SetEquals(other.TerminateStates);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id, Transitions, Alphabet, States, StartState, TerminateStates);
     }
 
     public abstract bool IsRecognizeWord(string word);

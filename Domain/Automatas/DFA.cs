@@ -11,7 +11,7 @@ public class DFA : Automata
         HashSet<string> terminateStates)
     {
         Alphabet = alphabet;
-        Transitions = new();
+        Transitions = new HashSet<Tuple<string, string, string>>();
         States = states;
         StartState = startState;
         TerminateStates = terminateStates;

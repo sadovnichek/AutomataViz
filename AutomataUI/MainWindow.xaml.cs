@@ -82,13 +82,15 @@ public partial class MainWindow
     private void ImplementTransformerAlgorithm(Automata automata, IAlgorithmTransformer algorithm)
     {
         var transformed = algorithm.Get(automata);
-        workspaceResolver.GetWorkspace<IAutomataWorkspace>().AddContent(transformed);
+        workspaceResolver.GetWorkspace<IAutomataWorkspace>()
+            .AddContent(transformed);
     }
 
     private void ImplementRecognitionAlgorithm(Automata automata, string word, IAlgorithmRecognizer recognizer)
     {
         var answer = recognizer.Get(automata, word) ? "распознаёт" : "не распознаёт";
-        workspaceResolver.GetWorkspace<IWordInputWorkspace>().AddContent(answer);
+        workspaceResolver.GetWorkspace<IWordInputWorkspace>()
+            .AddContent(answer);
     }
 
     private void SelectAlgorithm(object sender, EventArgs e)
@@ -148,7 +150,7 @@ public partial class MainWindow
     {
         var random = new Random();
         var randomAutomata = serviceResolver.GetService<IRandomAutomataService>()
-            .GetRandomNDFA(random.Next(3, 6), random.Next(2, 4));
+            .GetRandom(random.Next(3, 6), random.Next(2, 4), false);
         TableInput.Text = randomAutomata.GetTransitionTableFormatted();
         StartState.Text = randomAutomata.StartState;
         TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);
@@ -158,7 +160,7 @@ public partial class MainWindow
     {
         var random = new Random();
         var randomAutomata = serviceResolver.GetService<IRandomAutomataService>()
-            .GetRandomDFA(random.Next(3, 10), random.Next(2, 4));
+            .GetRandom(random.Next(3, 10), random.Next(2, 4), true);
         TableInput.Text = randomAutomata.GetTransitionTableFormatted();
         StartState.Text = randomAutomata.StartState;
         TerminateStates.Text = string.Join(" ", randomAutomata.TerminateStates);

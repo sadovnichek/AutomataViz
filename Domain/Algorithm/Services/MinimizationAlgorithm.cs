@@ -10,9 +10,9 @@ public class MinimizationAlgorithm : IAlgorithmTransformer
 
     public Automata Get(Automata source)
     {
-        if (source is not DFA)
+        if (source is not DFA dfa)
             throw new InvalidOperationException("Автомат должен быть детерминированным");
-        dfa = (DFA)source.ExceptStates(source.GetUnreachableStates());
+        dfa = dfa.ExceptStates(source.GetUnreachableStates());
         var classes = GetClasses();
         var transitions = new HashSet<Tuple<string, string, string>>();
         var start = GetSet(dfa.StartState, classes);

@@ -9,6 +9,9 @@ public class AutomataParser : IAutomataParser
     private static readonly Regex regexToReadTerminateStates = new(@"(\w+|{(.*?)})");
     private static readonly Regex regexToReadTransitionTable = new(@"(\w+|{(.*?)}|∅).\w+\s*=\s*(\w+|{(.*?)}|∅)");
     
+    /// <summary>
+    /// Generate an automata by string representation
+    /// </summary>
     /// <exception cref="IncorrectInputException"></exception>
     public Automata GetAutomata(string startState, string terminateStates, string transitionTable)
     {

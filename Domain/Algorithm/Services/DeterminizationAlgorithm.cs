@@ -9,9 +9,9 @@ public class DeterminizationAlgorithm : IAlgorithmTransformer
 
     public Automata Get(Automata automata)
     {
-        if (automata is not NDFA)
+        if (automata is not NDFA ndfa)
             throw new InvalidOperationException("Автомат должен быть недетерминированным");
-        var pure = (NDFA)automata.ExceptStates(automata.GetUnreachableStates());
+        var pure = ndfa.ExceptStates(automata.GetUnreachableStates());
         var states = new HashSet<string>();
         var transitions = new HashSet<Tuple<string, string, string>>();
         var queue = new Queue<string>();
