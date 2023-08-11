@@ -18,10 +18,16 @@ public partial class MainWindow
 {
     private readonly ScaleTransform st = new();
     private readonly IServiceResolver serviceResolver;
+    private readonly IAutomataParser automataParser;
+    private readonly IWorkspaceResolver workspaceResolver;
 
-    public MainWindow(IServiceResolver serviceResolver)
+    public MainWindow(IServiceResolver serviceResolver,
+        IAutomataParser automataParser,
+        IWorkspaceResolver workspaceResolver)
     {
         this.serviceResolver = serviceResolver;
+        this.automataParser = automataParser;
+        this.workspaceResolver = workspaceResolver;
         InitializeComponent();
         ConfigureImagesDirectory();
         Visualization.RenderTransform = st;
@@ -57,7 +63,7 @@ public partial class MainWindow
                     break;
                 case IAlgorithmRecognizer recognizer:
                 {
-                    var word = WorkspaceResolver.GetService<IWordInputWorkspace>().GetInput();
+                    var word = workspaceResolver.GetWorkspace<IWordInputWorkspace>().GetInput();
                     ImplementRecognitionAlgorithm(automata, word, recognizer);
                     break;
                 }
@@ -76,13 +82,13 @@ public partial class MainWindow
     private void ImplementTransformerAlgorithm(Automata automata, IAlgorithmTransformer algorithm)
     {
         var transformed = algorithm.Get(automata);
-        WorkspaceResolver.GetService<IAutomataWorkspace>().AddContent(transformed);
+        workspaceResolver.GetWorkspace<IAutomataWorkspace>().AddContent(transformed);
     }
 
     private void ImplementRecognitionAlgorithm(Automata automata, string word, IAlgorithmRecognizer recognizer)
     {
         var answer = recognizer.Get(automata, word) ? "распознаёт" : "не распознаёт";
-        WorkspaceResolver.GetService<IWordInputWorkspace>().AddContent(answer);
+        workspaceResolver.GetWorkspace<IWordInputWorkspace>().AddContent(answer);
     }
 
     private void SelectAlgorithm(object sender, EventArgs e)
@@ -96,17 +102,17 @@ public partial class MainWindow
         switch (service)
         {
             case IAlgorithmRecognizer:
-                WorkspaceResolver.GetService<IWordInputWorkspace>().Init(AnswerField);
+                workspaceResolver.GetWorkspace<IWordInputWorkspace>().Init(AnswerField);
                 break;
             case IAlgorithmTransformer:
-                WorkspaceResolver.GetService<IAutomataWorkspace>().Init(AnswerField);
+                workspaceResolver.GetWorkspace<IAutomataWorkspace>().Init(AnswerField);
                 break;
         }
     }
 
     private Automata GetAutomata()
     {
-        return AutomataParser.GetAutomata(StartState.Text, TerminateStates.Text, TableInput.Text);
+        return automataParser.GetAutomata(StartState.Text, TerminateStates.Text, TableInput.Text);
     }
 
     private void VisualizeAutomataOnButtonClick(object sender, RoutedEventArgs e)

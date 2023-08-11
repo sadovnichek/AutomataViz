@@ -23,7 +23,7 @@ namespace Domain.Algorithm.Services
             return GetRandomDFA(states, alphabet);
         }
 
-        public DFA GetRandomDFA(HashSet<string> states, HashSet<string> alphabet)
+        private DFA GetRandomDFA(HashSet<string> states, HashSet<string> alphabet)
         {
             var startState = states.ToList()[random.Next(1, states.Count)];
             var terminateStates = states.GetRandomSubset(random.Next(2, states.Count / 2 + 1));
@@ -50,7 +50,7 @@ namespace Domain.Algorithm.Services
             return GetRandomNDFA(states, alphabet);
         }
 
-        public static NDFA GetRandomNDFA(HashSet<string> states, HashSet<string> alphabet)
+        private static NDFA GetRandomNDFA(HashSet<string> states, HashSet<string> alphabet)
         {
             var random = new Random();
             var start = states.ToList()[random.Next(0, states.Count)];

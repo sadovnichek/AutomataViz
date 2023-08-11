@@ -2,6 +2,8 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
+using Application;
+using AutomataUI.Workspaces;
 using Domain.Algorithm;
 
 namespace AutomataUI
@@ -19,7 +21,10 @@ namespace AutomataUI
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            var mainWindow = new MainWindow(new ServiceResolver());
+            var mainWindow = new MainWindow(
+                new ServiceResolver(), 
+                new AutomataParser(),
+                new WorkspaceResolver());
             mainWindow.Show();
         }
 

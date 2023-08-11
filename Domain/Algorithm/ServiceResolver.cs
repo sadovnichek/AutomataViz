@@ -5,8 +5,8 @@ namespace Domain.Algorithm;
 
 public class ServiceResolver : IServiceResolver
 {
-    private static readonly IServiceProvider serviceProvider;
-    static ServiceResolver()
+    private readonly IServiceProvider serviceProvider;
+    public ServiceResolver()
     {
         serviceProvider = new ServiceCollection()
                 .AddSingleton<IService, WordRecognitionAlgorithm>()

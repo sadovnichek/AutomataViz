@@ -4,14 +4,13 @@ using Infrastructure;
 
 namespace Application;
 
-public static class AutomataParser
+public class AutomataParser : IAutomataParser
 {
-    public static Automata Current { get; set; }
-    
     private static readonly Regex regexToReadTerminateStates = new(@"(\w+|{(.*?)})");
     private static readonly Regex regexToReadTransitionTable = new(@"(\w+|{(.*?)}|∅).\w+\s*=\s*(\w+|{(.*?)}|∅)");
     
-    public static Automata GetAutomata(string startState, string terminateStates, string transitionTable)
+    /// <exception cref="IncorrectInputException"></exception>
+    public Automata GetAutomata(string startState, string terminateStates, string transitionTable)
     {
         var states = new HashSet<string>();
         var alphabet = new HashSet<string>();
@@ -34,7 +33,7 @@ public static class AutomataParser
         return new NDFA(states, alphabet, transitions, start, terminates);
     }
 
-    private static IEnumerable<Tuple<string, string, string>> ParseTransitionTable(string source)
+    private IEnumerable<Tuple<string, string, string>> ParseTransitionTable(string source)
     {
         var matches = regexToReadTransitionTable.Matches(source);
         foreach (Match match in matches)
@@ -48,7 +47,7 @@ public static class AutomataParser
         }
     }
     
-    private static HashSet<string> ParseTerminateStates(string source)
+    private HashSet<string> ParseTerminateStates(string source)
     {
         if (source.Length == 0)
             throw new IncorrectInputException("Поле заключительных состояний заполнено некорректно");
@@ -56,7 +55,7 @@ public static class AutomataParser
         return matches.Select(m => m.Value).ToHashSet();
     }
     
-    private static string ParseStartState(string source)
+    private string ParseStartState(string source)
     {
         if (source.Length == 0)
             throw new IncorrectInputException("Поле начальных состояний заполнено некорректно");
