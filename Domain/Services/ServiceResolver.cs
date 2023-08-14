@@ -1,7 +1,6 @@
-﻿using Domain.Algorithm.Services;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Domain.Algorithm;
+namespace Domain.Services;
 
 public class ServiceResolver : IServiceResolver
 {

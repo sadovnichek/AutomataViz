@@ -1,6 +1,6 @@
 ﻿using Domain.Automatas;
 
-namespace Domain.Algorithm;
+namespace Domain.Services;
 
 public interface IAlgorithm : IService
 {

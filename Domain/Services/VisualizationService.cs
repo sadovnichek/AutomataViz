@@ -2,25 +2,39 @@
 using DotFormat;
 using System.Diagnostics;
 
-namespace Domain.Algorithm
+namespace Domain.Services
 {
     public class VisualizationService : IVisualizationService
     {
         public Uri GetImageUri(Automata automata)
-        {
-            var dotFormat = Convert(automata);
-            var dotFileName = "./temp.dot";
-            var imageFileName = Directory.GetCurrentDirectory() + $"/images/{automata.Id}.png";
-            File.WriteAllText(dotFileName, dotFormat);
-            GenerateImage(dotFileName, imageFileName);
-            var uri = new Uri(imageFileName);
-            File.Delete(dotFileName);
+        { 
+            var imagePath = GetImagePath(automata);
+            var uri = new Uri(imagePath);
             return uri;
         }
 
-        private string Convert(Automata automata)
+        public string GetBase64Image(Automata automata)
         {
-            var dot = DotGraphBuilder.DirectedGraph("automata");
+            var imagePath = GetImagePath(automata);
+            var bytes = File.ReadAllBytes(imagePath);
+            File.Delete(imagePath);
+            return Convert.ToBase64String(bytes);
+        }
+
+        private string GetImagePath(Automata automata)
+        {
+            var dotFormat = ConvertAutomataToDotFormat(automata);
+            var dotFileName = $"./{automata.Id}.dot";
+            var imageFileName = Directory.GetCurrentDirectory() + $"/images/{automata.Id}.png";
+            File.WriteAllText(dotFileName, dotFormat);
+            GenerateImage(dotFileName, imageFileName);
+            File.Delete(dotFileName);
+            return imageFileName;
+        }
+
+        private string ConvertAutomataToDotFormat(Automata automata)
+        {
+            var dot = DotFormatBuilder.DirectedGraph("automata");
             var edges = new Dictionary<Tuple<string, string>, string>(); // <from, to>, label
             dot.AddNode($"START{automata.StartState}").With(n => n.Color("white").FontColor("white"));
             automata.States.Where(state => !automata.TerminateStates.Contains(state))

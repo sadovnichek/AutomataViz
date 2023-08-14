@@ -1,7 +1,4 @@
-﻿using System.Text;
-using Infrastructure;
-
-namespace Domain.Automatas;
+﻿namespace Domain.Automatas;
 
 public class NDFA : Automata
 {
@@ -35,37 +32,11 @@ public class NDFA : Automata
                 .Select(x => x.Item3)
                 .ToHashSet();
 
-    public override string ConvertToTexFormat()
-    {
-        var sb = new StringBuilder();
-        sb.Append("\n\\begin{tabular}{ c | ");
-        sb.AppendJoin(" ", Enumerable.Repeat("c", States.Count));
-        sb.Append(" }\n & ");
-        foreach (var state in States)
-        {
-            sb.Append(state.StringToSet().SetToString(true) + (States.Last().Equals(state) ? "" : " & "));
-        }
-        sb.Append(" \\\\ \n\\hline\n");
-        foreach (var symbol in Alphabet)
-        {
-            sb.Append(symbol + " & ");
-            foreach (var state in States)
-            {
-                sb.Append(this[state, symbol].SetToString(true) + (States.Last().Equals(state) ? "" : " & "));
-            }
-            sb.Append(" \\\\\n");
-        }
-        sb.Append("\\end{tabular}\n\\\\\n");
-        sb.Append($"вход: {StartState.StringToSet().SetToString(true)}, выходы: {TerminateStates.SetToString(true)}");
-        return sb.ToString();
-    }
-
     public override NDFA ExceptStates(HashSet<string> exceptedStates)
     {
         var newTerminates = TerminateStates.Where(s => !exceptedStates.Contains(s)).ToHashSet();
         var newStates = States.Where(s => !exceptedStates.Contains(s)).ToHashSet();
         var newAutomata = new NDFA(newStates, Alphabet, StartState, newTerminates);
-
         foreach (var state in newStates)
         {
             foreach (var symbol in Alphabet)
@@ -78,7 +49,6 @@ public class NDFA : Automata
                 }
             }
         }
-
         return newAutomata;
     }
 

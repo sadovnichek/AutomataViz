@@ -1,7 +1,4 @@
-﻿using System.Text;
-using Infrastructure;
-
-namespace Domain.Automatas;
+﻿namespace Domain.Automatas;
 
 public class DFA : Automata
 {
@@ -34,32 +31,7 @@ public class DFA : Automata
         Transitions.Where(x => x.Item1 == state && x.Item2 == symbol)
                 .Select(x => x.Item3)
                 .First();
-    
-    public override string ConvertToTexFormat()
-    {
-        var sb = new StringBuilder();
-        sb.Append("\n\\begin{tabular}{ c | ");
-        sb.AppendJoin(" ", Enumerable.Repeat("c", States.Count));
-        sb.Append(" }\n & ");
-        foreach (var state in States)
-        {
-            sb.Append(state.StringToSet().SetToString(true) + (States.Last().Equals(state) ? "" : " & "));
-        }
-        sb.Append(" \\\\ \n\\hline\n");
-        foreach (var symbol in Alphabet)
-        {
-            sb.Append(symbol + " & ");
-            foreach (var state in States)
-            {
-                sb.Append(this[state, symbol].StringToSet().SetToString(true) + (States.Last().Equals(state) ? "" : " & "));
-            }
-            sb.Append(" \\\\\n");
-        }
-        sb.Append("\\end{tabular}\n\\\\\n");
-        sb.Append($"вход: {StartState.StringToSet().SetToString(true)}, выходы: {TerminateStates.SetToString(true)}");
-        return sb.ToString();
-    }
-    
+
     public override DFA ExceptStates(HashSet<string> exceptedStates)
     {
         var newTerminates = TerminateStates.Where(s => !exceptedStates.Contains(s)).ToHashSet();

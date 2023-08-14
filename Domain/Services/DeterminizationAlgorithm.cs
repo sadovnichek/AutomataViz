@@ -1,7 +1,7 @@
 ﻿using Domain.Automatas;
 using Infrastructure;
 
-namespace Domain.Algorithm;
+namespace Domain.Services;
 
 public class DeterminizationAlgorithm : IAlgorithmTransformer
 {

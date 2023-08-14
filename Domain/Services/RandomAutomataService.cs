@@ -1,7 +1,7 @@
 ﻿using Domain.Automatas;
 using Infrastructure;
 
-namespace Domain.Algorithm.Services
+namespace Domain.Services
 {
     public class RandomAutomataService : IRandomAutomataService
     {

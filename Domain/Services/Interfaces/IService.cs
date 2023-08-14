@@ -1,6 +1,6 @@
 ﻿using Domain.Automatas;
 
-namespace Domain.Algorithm
+namespace Domain.Services
 {
     public interface IService
     {
@@ -10,5 +10,7 @@ namespace Domain.Algorithm
     public interface IVisualizationService : IService
     {
         Uri GetImageUri(Automata automata);
+
+        string GetBase64Image(Automata automata);
     }
 }

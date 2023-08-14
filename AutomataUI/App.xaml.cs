@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Application;
 using AutomataUI.Workspaces;
-using Domain.Algorithm;
+using Domain.Services;
 
 namespace AutomataUI
 {

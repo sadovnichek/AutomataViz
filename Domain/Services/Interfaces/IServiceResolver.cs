@@ -1,4 +1,4 @@
-﻿namespace Domain.Algorithm
+﻿namespace Domain.Services
 {
     public interface IServiceResolver
     {

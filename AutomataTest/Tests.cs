@@ -1,4 +1,4 @@
-﻿using Domain.Algorithm;
+﻿using Domain.Services;
 using Domain.Automatas;
 using Infrastructure;
 using NUnit.Framework;
@@ -10,6 +10,7 @@ public class Tests
 {
     private DFA dfa;
     private NDFA ndfa;
+    private IServiceResolver serviceResolver;
 
     private void ConfigureDfa()
     {
@@ -50,6 +51,7 @@ public class Tests
     {
         ConfigureDfa();
         ConfigureNdfa();
+        serviceResolver = new ServiceResolver();
     }
     
     [Test]
@@ -94,7 +96,7 @@ public class Tests
         };
 
         var expected = new DFA(states, alphabet, transitions, startState, terminateStates);
-        var actual = ServiceResolver.GetService<MinimizationAlgorithm>().Get(dfa);
+        var actual = serviceResolver.GetService<MinimizationAlgorithm>().Get(dfa);
 
         Assert.AreEqual(expected, actual);
     }
@@ -121,7 +123,7 @@ public class Tests
         };
 
         var expected = new DFA(states, alphabet, transitions, startState, terminateStates);
-        var actual = ServiceResolver.GetService<DeterminizationAlgorithm>().Get(ndfa);
+        var actual = serviceResolver.GetService<DeterminizationAlgorithm>().Get(ndfa);
 
         Assert.IsTrue(expected.Equals(actual));
     }

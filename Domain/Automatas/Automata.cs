@@ -73,6 +73,4 @@ public abstract class Automata
     public abstract HashSet<string> GetUnreachableStates();
 
     public abstract Automata ExceptStates(HashSet<string> exceptedStates);
-
-    public abstract string ConvertToTexFormat();
 }

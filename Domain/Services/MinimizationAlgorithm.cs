@@ -1,7 +1,7 @@
 ﻿using Domain.Automatas;
 using Infrastructure;
 
-namespace Domain.Algorithm;
+namespace Domain.Services;
 
 public class MinimizationAlgorithm : IAlgorithmTransformer
 {
@@ -10,9 +10,9 @@ public class MinimizationAlgorithm : IAlgorithmTransformer
 
     public Automata Get(Automata source)
     {
-        if (source is not DFA dfa)
+        if (source is not DFA)
             throw new InvalidOperationException("Автомат должен быть детерминированным");
-        dfa = dfa.ExceptStates(source.GetUnreachableStates());
+        dfa = (DFA)source.ExceptStates(source.GetUnreachableStates());
         var classes = GetClasses();
         var transitions = new HashSet<Tuple<string, string, string>>();
         var start = GetSet(dfa.StartState, classes);
