@@ -6,7 +6,7 @@ public abstract class Automata
 {
     public HashSet<Transition> Transitions { get; protected init; }
 
-    public Guid Id = Guid.NewGuid();
+    public Guid Id { get; protected init; }
 
     public HashSet<string> Alphabet { get; protected init; }
 
@@ -35,6 +35,11 @@ public abstract class Automata
             output.Append('\n');
         }
         return output.ToString();
+    }
+
+    public Automata ExceptUnreachableStates()
+    {
+        return ExceptStates(GetUnreachableStates());
     }
 
     public static bool IsDfa(

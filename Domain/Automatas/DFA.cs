@@ -8,6 +8,7 @@ public class DFA : Automata
         HashSet<string> terminateStates)
     {
         Alphabet = alphabet;
+        Id = Guid.NewGuid();
         Transitions = new HashSet<Transition>();
         States = states;
         StartState = startState;
@@ -18,13 +19,9 @@ public class DFA : Automata
         HashSet<string> alphabet,
         HashSet<Transition> transitions,
         string startState,
-        HashSet<string> terminateStates)
+        HashSet<string> terminateStates) : this(states, alphabet, startState, terminateStates)
     {
         Transitions = transitions;
-        Alphabet = alphabet;
-        States = states;
-        StartState = startState;
-        TerminateStates = terminateStates;
     }
 
     public string this[string state, string symbol] => 
