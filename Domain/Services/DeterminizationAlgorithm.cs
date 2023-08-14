@@ -13,7 +13,7 @@ public class DeterminizationAlgorithm : IAlgorithmTransformer
             throw new InvalidOperationException("Автомат должен быть недетерминированным");
         var pure = ndfa.ExceptStates(automata.GetUnreachableStates());
         var states = new HashSet<string>();
-        var transitions = new HashSet<Tuple<string, string, string>>();
+        var transitions = new HashSet<Transition>();
         var queue = new Queue<string>();
         states.Add(pure.StartState);
         queue.Enqueue(pure.StartState);
@@ -32,7 +32,7 @@ public class DeterminizationAlgorithm : IAlgorithmTransformer
                         value = value.Concat(pure[element, symbol]).ToHashSet();
                     }
                     var to = value.SetToString();
-                    transitions.Add(Tuple.Create(from, symbol, to));
+                    transitions.Add(new Transition(from, symbol, to));
                     if (!states.Contains(to))
                     {
                         queue.Enqueue(to);
@@ -44,7 +44,7 @@ public class DeterminizationAlgorithm : IAlgorithmTransformer
                 foreach (var symbol in pure.Alphabet)
                 {
                     var to = pure[from, symbol].SetToString();
-                    transitions.Add(Tuple.Create(from, symbol, to));
+                    transitions.Add(new Transition(from, symbol, to));
                     if (!states.Contains(to))
                     {
                         queue.Enqueue(to);

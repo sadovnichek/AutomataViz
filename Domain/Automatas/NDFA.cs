@@ -16,7 +16,7 @@ public class NDFA : Automata
 
     public NDFA(HashSet<string> states,
         HashSet<string> alphabet,
-        HashSet<Tuple<string, string, string>> transitions,
+        HashSet<Transition> transitions,
         string startState,
         HashSet<string> terminateStates)
     {
@@ -28,8 +28,8 @@ public class NDFA : Automata
     }
 
     public HashSet<string> this[string state, string symbol] =>
-        Transitions.Where(x => x.Item1 == state && x.Item2 == symbol)
-                .Select(x => x.Item3)
+        Transitions.Where(x => x.State == state && x.Symbol == symbol)
+                .Select(x => x.Value)
                 .ToHashSet();
 
     public override NDFA ExceptStates(HashSet<string> exceptedStates)

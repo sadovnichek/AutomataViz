@@ -14,7 +14,7 @@ public class MinimizationAlgorithm : IAlgorithmTransformer
             throw new InvalidOperationException("Автомат должен быть детерминированным");
         dfa = (DFA)source.ExceptStates(source.GetUnreachableStates());
         var classes = GetClasses();
-        var transitions = new HashSet<Tuple<string, string, string>>();
+        var transitions = new HashSet<Transition>();
         var start = GetSet(dfa.StartState, classes);
         var terminates = dfa.TerminateStates.Select(v => GetSet(v, classes)).Select(x => x.SetToString())
             .ToHashSet();
@@ -24,7 +24,7 @@ public class MinimizationAlgorithm : IAlgorithmTransformer
             foreach (var letter in dfa.Alphabet)
             {
                 var value = GetSet(dfa[firstElement, letter], classes).SetToString();
-                transitions.Add(Tuple.Create(cls.SetToString(), letter, value));
+                transitions.Add(new Transition(cls.SetToString(), letter, value));
             }
         }
         return new DFA(classes.Select(x => x.SetToString()).ToHashSet(),

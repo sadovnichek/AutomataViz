@@ -4,7 +4,7 @@ namespace Domain.Automatas;
 
 public abstract class Automata
 {
-    public HashSet<Tuple<string, string, string>> Transitions { get; protected init; }
+    public HashSet<Transition> Transitions { get; protected init; }
 
     public Guid Id = Guid.NewGuid();
 
@@ -16,19 +16,20 @@ public abstract class Automata
 
     public HashSet<string> TerminateStates { get; protected init;}
 
-    public void AddTransition(string state, string symbol, string value)
+    public Automata AddTransition(string state, string symbol, string value)
     {
-        Transitions.Add(Tuple.Create(state, symbol, value));
+        Transitions.Add(new Transition(state, symbol, value));
+        return this;
     }
 
     public string GetTransitionTableFormatted()
     {
         var output = new StringBuilder();
-        foreach (var groups in Transitions.GroupBy(x => x.Item1))
+        foreach (var groups in Transitions.GroupBy(x => x.State))
         {
-            foreach (var (item1, item2, item3) in groups)
+            foreach (var transition in groups)
             {
-                output.Append($"{item1}.{item2} = {item3}");
+                output.Append($"{transition.State}.{transition.Symbol} = {transition.Value}");
                 output.Append('\t');
             }
             output.Append('\n');
@@ -37,7 +38,7 @@ public abstract class Automata
     }
 
     public static bool IsDfa(
-        HashSet<Tuple<string, string, string>> transitions,
+        HashSet<Transition> transitions,
         HashSet<string> alphabet,
         HashSet<string> states)
     {
@@ -45,7 +46,7 @@ public abstract class Automata
         {
             foreach (var symbol in alphabet)
             {
-                if (transitions.Count(t => t.Item1 == state && t.Item2 == symbol) != 1)
+                if (transitions.Count(t => t.State == state && t.Symbol == symbol) != 1)
                     return false;
             }
         }

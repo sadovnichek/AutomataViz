@@ -43,19 +43,19 @@ namespace Domain.Services
             automata.TerminateStates.ToList()
                 .ForEach(r => dot.AddNode(r).With(n => n.Shape(NodeShape.DoubleCircle)));
             dot.AddEdge($"START{automata.StartState}", automata.StartState);
-            foreach (var (from, symbol, to) in automata.Transitions)
+            foreach (var t in automata.Transitions)
             {
-                if (edges.ContainsKey(Tuple.Create(from, to)))
+                if (edges.ContainsKey(Tuple.Create(t.State, t.Value)))
                 {
-                    var newLabel = edges[Tuple.Create(from, to)] + $", {symbol}";
-                    dot.RemoveEdge(from, to);
-                    dot.AddEdge(from, to).With(e => e.Label(newLabel));
-                    edges[Tuple.Create(from, to)] = newLabel;
+                    var newLabel = edges[Tuple.Create(t.State, t.Value)] + $", {t.Symbol}";
+                    dot.RemoveEdge(t.State, t.Value);
+                    dot.AddEdge(t.State, t.Value).With(e => e.Label(newLabel));
+                    edges[Tuple.Create(t.State, t.Value)] = newLabel;
                 }
                 else
                 {
-                    dot.AddEdge(from, to).With(e => e.Label(symbol));
-                    edges[Tuple.Create(from, to)] = symbol;
+                    dot.AddEdge(t.State, t.Value).With(e => e.Label(t.Symbol));
+                    edges[Tuple.Create(t.State, t.Value)] = t.Symbol;
                 }
             }
             return dot.Build();

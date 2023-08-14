@@ -19,13 +19,13 @@ public class AutomataParser : IAutomataParser
         var alphabet = new HashSet<string>();
         var terminates = ParseTerminateStates(terminateStates);
         var start = ParseStartState(startState);
-        var transitions = new HashSet<Tuple<string, string, string>>();
+        var transitions = new HashSet<Transition>();
 
         foreach (var (state, symbol, value) in ParseTransitionTable(transitionTable))
         {
             states.Add(state);
             alphabet.Add(symbol);
-            transitions.Add(Tuple.Create(state, symbol, value));
+            transitions.Add(new Transition(state, symbol, value));
         }
 
         if (transitions.Count == 0)

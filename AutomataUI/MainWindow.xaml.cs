@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -11,9 +10,7 @@ using Domain.Automatas;
 using AutomataUI.Workspaces;
 using Application;
 using System.Linq;
-using System.Windows.Interop;
 using Infrastructure;
-using DotFormat;
 
 namespace AutomataUI;
 

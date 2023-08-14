@@ -8,7 +8,7 @@ public class DFA : Automata
         HashSet<string> terminateStates)
     {
         Alphabet = alphabet;
-        Transitions = new HashSet<Tuple<string, string, string>>();
+        Transitions = new HashSet<Transition>();
         States = states;
         StartState = startState;
         TerminateStates = terminateStates;
@@ -16,7 +16,7 @@ public class DFA : Automata
 
     public DFA(HashSet<string> states,
         HashSet<string> alphabet,
-        HashSet<Tuple<string, string, string>> transitions,
+        HashSet<Transition> transitions,
         string startState,
         HashSet<string> terminateStates)
     {
@@ -28,8 +28,8 @@ public class DFA : Automata
     }
 
     public string this[string state, string symbol] => 
-        Transitions.Where(x => x.Item1 == state && x.Item2 == symbol)
-                .Select(x => x.Item3)
+        Transitions.Where(x => x.State == state && x.Symbol == symbol)
+                .Select(x => x.Value)
                 .First();
 
     public override DFA ExceptStates(HashSet<string> exceptedStates)

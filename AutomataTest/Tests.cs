@@ -18,20 +18,20 @@ public class Tests
         var alphabet = new HashSet<string> {"a", "b"};
         var terminates = new HashSet<string> {"4", "5", "6"};
         dfa = new DFA(states, alphabet, "0", terminates);
-        dfa.AddTransition("0", "a", "5");
-        dfa.AddTransition("0", "b", "2");
-        dfa.AddTransition("1", "a", "6");
-        dfa.AddTransition("1", "b", "2");
-        dfa.AddTransition("2", "a", "0");
-        dfa.AddTransition("2", "b", "4");
-        dfa.AddTransition("3", "a", "3");
-        dfa.AddTransition("3", "b", "5");
-        dfa.AddTransition("4", "a", "6");
-        dfa.AddTransition("4", "b", "2");
-        dfa.AddTransition("5", "a", "3");
-        dfa.AddTransition("5", "b", "0");
-        dfa.AddTransition("6", "a", "3");
-        dfa.AddTransition("6", "b", "1");
+        dfa.AddTransition("0", "a", "5")
+            .AddTransition("0", "b", "2")
+            .AddTransition("1", "a", "6")
+            .AddTransition("1", "b", "2")
+            .AddTransition("2", "a", "0")
+            .AddTransition("2", "b", "4")
+            .AddTransition("3", "a", "3")
+            .AddTransition("3", "b", "5")
+            .AddTransition("4", "a", "6")
+            .AddTransition("4", "b", "2")
+            .AddTransition("5", "a", "3")
+            .AddTransition("5", "b", "0")
+            .AddTransition("6", "a", "3")
+            .AddTransition("6", "b", "1");
     }
 
     private void ConfigureNdfa()
@@ -40,10 +40,10 @@ public class Tests
         var alphabet = new HashSet<string> {"a", "b"};
         var terminates = new HashSet<string> {"0"};
         ndfa = new NDFA(states, alphabet, "0", terminates);
-        ndfa.AddTransition("0", "a", "1");
-        ndfa.AddTransition("1", "b", "0");
-        ndfa.AddTransition("1", "b", "2");
-        ndfa.AddTransition("2", "a", "0");
+        ndfa.AddTransition("0", "a", "1")
+            .AddTransition("1", "b", "0")
+            .AddTransition("1", "b", "2")
+            .AddTransition("2", "a", "0");
     }
     
     [OneTimeSetUp]
@@ -81,18 +81,18 @@ public class Tests
         var alphabet = new HashSet<string> {"a", "b"};
         var startState = "{0, 1}";
         var terminateStates = new HashSet<string> {"4", "{5, 6}"};
-        var transitions = new HashSet<Tuple<string, string, string>>
+        var transitions = new HashSet<Transition>
         {
-            Tuple.Create("{0, 1}", "a", "{5, 6}"),
-            Tuple.Create("{0, 1}", "b", "2"),
-            Tuple.Create("2", "a", "{0, 1}"),
-            Tuple.Create("2", "b", "4"),
-            Tuple.Create("3", "a", "3"),
-            Tuple.Create("3", "b", "{5, 6}"),
-            Tuple.Create("4", "a", "{5, 6}"),
-            Tuple.Create("4", "b", "2"),
-            Tuple.Create("{5, 6}", "a", "3"),
-            Tuple.Create("{5, 6}", "b", "{0, 1}")
+            new("{0, 1}", "a", "{5, 6}"),
+            new("{0, 1}", "b", "2"),
+            new("2", "a", "{0, 1}"),
+            new("2", "b", "4"),
+            new("3", "a", "3"),
+            new("3", "b", "{5, 6}"),
+            new("4", "a", "{5, 6}"),
+            new("4", "b", "2"),
+            new("{5, 6}", "a", "3"),
+            new("{5, 6}", "b", "{0, 1}")
         };
 
         var expected = new DFA(states, alphabet, transitions, startState, terminateStates);
@@ -108,18 +108,18 @@ public class Tests
         var alphabet = new HashSet<string> {"a", "b"};
         var startState = "0";
         var terminateStates = new HashSet<string> {"0", "{0, 1}", "{0, 2}"};
-        var transitions = new HashSet<Tuple<string, string, string>>
+        var transitions = new HashSet<Transition>
         {
-            Tuple.Create("0", "a", "1"),
-            Tuple.Create("0", "b", "Ø"),
-            Tuple.Create("1", "a", "Ø"),
-            Tuple.Create("1", "b", "{0, 2}"),
-            Tuple.Create("Ø", "a", "Ø"),
-            Tuple.Create("Ø", "b", "Ø"),
-            Tuple.Create("{0, 2}", "a", "{0, 1}"),
-            Tuple.Create("{0, 2}", "b",  "Ø"),
-            Tuple.Create("{0, 1}", "a", "1"),
-            Tuple.Create("{0, 1}", "b", "{0, 2}"),
+            new("0", "a", "1"),
+            new("0", "b", "Ø"),
+            new("1", "a", "Ø"),
+            new("1", "b", "{0, 2}"),
+            new("Ø", "a", "Ø"),
+            new("Ø", "b", "Ø"),
+            new("{0, 2}", "a", "{0, 1}"),
+            new("{0, 2}", "b", "Ø"),
+            new("{0, 1}", "a", "1"),
+            new("{0, 1}", "b", "{0, 2}"),
         };
 
         var expected = new DFA(states, alphabet, transitions, startState, terminateStates);
