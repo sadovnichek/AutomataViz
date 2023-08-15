@@ -3,6 +3,8 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f2cc33ca_002D3778_002D45d4_002D8bbe_002D59c97c74e8fc/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Dfa_IsRecognizeWord_Correctly" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::EA99CE1F-1E34-497B-87C6-A46118529499::net6.0::AutomataTest.Tests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::EA99CE1F-1E34-497B-87C6-A46118529499::net6.0::AutomataTest.Extensions_should&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::EA99CE1F-1E34-497B-87C6-A46118529499::net6.0::AutomataTest.Services_should&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Graphviz/@EntryIndexedValue">True</s:Boolean>

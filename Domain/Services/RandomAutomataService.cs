@@ -25,23 +25,28 @@ namespace Domain.Services
 
         private Automata GetRandom(HashSet<string> states, HashSet<string> alphabet, bool isDfa)
         {
-            var start = states.ToList()[random.Next(0, states.Count)];
-            var terminates = states.GetRandomSubset(random.Next(2, states.Count / 2 + 1));
-            var randomAutomata = new NDFA(states, alphabet, start, terminates);
-            foreach (var state in states)
+            while (true)
             {
-                foreach (var symbol in alphabet)
+                var start = states.ToList()[random.Next(0, states.Count)];
+                var terminates = states.GetRandomSubset(random.Next(2, states.Count / 2 + 1));
+                var randomAutomata = new NDFA(states, alphabet, start, terminates);
+                foreach (var state in states)
                 {
-                    var iteration = 0;
-                    do
+                    foreach (var symbol in alphabet)
                     {
-                        var randomIndex = random.Next(0, states.Count);
-                        randomAutomata.AddTransition(state, symbol, states.ToList()[randomIndex]);
-                        iteration++;
-                    } while (iteration < random.Next(1, 3) && !isDfa);
+                        var iteration = 0;
+                        do
+                        {
+                            var randomIndex = random.Next(0, states.Count);
+                            randomAutomata.AddTransition(state, symbol, states.ToList()[randomIndex]);
+                            iteration++;
+                        } while (iteration < random.Next(1, 3) && !isDfa);
+                    }
                 }
+                var unreachableStates = randomAutomata.GetUnreachableStates();
+                if (!randomAutomata.TerminateStates.Intersect(unreachableStates).Any())
+                    return randomAutomata;
             }
-            return randomAutomata;
         }
     }
 }

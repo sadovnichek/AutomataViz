@@ -21,11 +21,11 @@ public class AutomataParser : IAutomataParser
         var start = ParseStartState(startState);
         var transitions = new HashSet<Transition>();
 
-        foreach (var (state, symbol, value) in ParseTransitionTable(transitionTable))
+        foreach (var transition in ParseTransitionTable(transitionTable))
         {
-            states.Add(state);
-            alphabet.Add(symbol);
-            transitions.Add(new Transition(state, symbol, value));
+            states.Add(transition.State);
+            alphabet.Add(transition.Symbol);
+            transitions.Add(transition);
         }
 
         if (transitions.Count == 0)
@@ -36,7 +36,7 @@ public class AutomataParser : IAutomataParser
         return new NDFA(states, alphabet, transitions, start, terminates);
     }
 
-    private IEnumerable<Tuple<string, string, string>> ParseTransitionTable(string source)
+    private IEnumerable<Transition> ParseTransitionTable(string source)
     {
         var matches = regexToReadTransitionTable.Matches(source);
         foreach (Match match in matches)
@@ -46,7 +46,7 @@ public class AutomataParser : IAutomataParser
             var state = key.Split(".")[0];
             var symbol = key.Split(".")[1];
             var value = line.Split("=")[1].Trim();
-            yield return Tuple.Create(state, symbol, value);
+            yield return new Transition(state, symbol, value);
         }
     }
     

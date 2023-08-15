@@ -1,12 +1,11 @@
 ﻿using Domain.Services;
 using Domain.Automatas;
-using Infrastructure;
 using NUnit.Framework;
 
 namespace AutomataTest;
 
 [TestFixture]
-public class Tests
+public class Services_should
 {
     private DFA dfa;
     private NDFA ndfa;
@@ -138,33 +137,5 @@ public class Tests
     public void IsDfa_ShouldBeTrue_WhenDfa()
     {
         Assert.IsTrue(Automata.IsDfa(dfa.Transitions, dfa.Alphabet, dfa.States));
-    }
-
-    [Test]
-    public void Extensions_CountCompoundSets()
-    {
-        var states = new HashSet<string> {"0", "1", "Ø", "{0, 2}", "{0, 1}"};
-        Assert.AreEqual(2, states.CountCompoundSets());
-    }
-
-    [Test]
-    public void Extensions_HashSetToString_OnMultiElementSet()
-    {
-        var set = new HashSet<string> { "1", "2", "3" };
-        Assert.AreEqual("{1, 2, 3}", set.SetToString());
-    }
-
-    [Test]
-    public void Extensions_HashSetToString_OnSingleElementSet()
-    {
-        var set = new HashSet<string> { "1" };
-        Assert.AreEqual("1", set.SetToString());
-    }
-
-    [Test]
-    public void Extensions_StringToHashSet()
-    {
-        var str = "{1, 2, 3}";
-        Assert.AreEqual(new HashSet<string> { "1", "2", "3"}, str.StringToSet());
     }
 }

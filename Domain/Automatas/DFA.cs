@@ -52,10 +52,9 @@ public class DFA : Automata
 
     public override HashSet<string> GetUnreachableStates()
     {
-        var start = StartState;
         var used = new HashSet<string>();
         var queue = new Queue<string>();
-        queue.Enqueue(start);
+        queue.Enqueue(StartState);
 
         while (queue.Count != 0)
         {
@@ -78,9 +77,9 @@ public class DFA : Automata
     public override bool IsRecognizeWord(string word)
     {
         var currentState = StartState;
-        foreach (var w in word)
+        foreach (var symbol in word)
         {
-            currentState = this[currentState, w.ToString()];
+            currentState = this[currentState, symbol.ToString()];
         }
         return TerminateStates.Contains(currentState);
     }
