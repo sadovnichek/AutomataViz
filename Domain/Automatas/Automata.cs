@@ -74,7 +74,7 @@ public abstract class Automata
         return HashCode.Combine(Id, Transitions, Alphabet, States, StartState, TerminateStates);
     }
 
-    public abstract bool IsRecognizeWord(string word);
+    public abstract bool IsRecognizeWord(string word); 
 
     public abstract HashSet<string> GetUnreachableStates();
 
