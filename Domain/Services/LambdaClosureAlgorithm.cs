@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Domain.Automatas;
+﻿using Domain.Automatas;
 using Infrastructure;
 
 namespace Domain.Services
@@ -11,12 +10,12 @@ namespace Domain.Services
         public Automata Get(Automata automata)
         {
             if (automata is not LambdaNDFA lambda)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Автомат должен быть λ-НКА");
             var states = new HashSet<string>();
             var transitions = new HashSet<Transition>();
             var terminates = new HashSet<string>();
             var lambdaClosureMapping = lambda.States
-                .ToDictionary(s => s, s => GetLambdaClosure(lambda, s));
+                .ToDictionary(s => s, s => lambda.GetLambdaClosure(s));
             var startState = lambdaClosureMapping[lambda.StartState];
             var queue = new Queue<HashSet<string>>();
             var used = new HashSet<string>();
@@ -45,27 +44,6 @@ namespace Domain.Services
             }
             var result = new DFA(states, automata.Alphabet, transitions, startState.SetToString(), terminates);
             return Rename(result);
-        }
-
-        private Set GetLambdaClosure(LambdaNDFA automata, string startState)
-        {
-            var queue = new Queue<string>();
-            queue.Enqueue(startState);
-            var used = new Set { startState };
-            while (queue.Count != 0)
-            {
-                var currentState = queue.Dequeue();
-                var nextStates = automata[currentState, LambdaNDFA.Lambda];
-                foreach (var state in nextStates)
-                {
-                    if (!used.Contains(state))
-                    {
-                        queue.Enqueue(state);
-                        used.Add(state);
-                    }
-                }
-            }
-            return used;
         }
 
         private DFA Rename(Automata automata)
