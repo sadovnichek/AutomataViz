@@ -6,30 +6,13 @@ namespace Domain.Services
 {
     public class VisualizationService : IVisualizationService
     {
-        public Uri GetImageUri(Automata automata)
-        { 
-            var imagePath = GetImagePath(automata);
-            var uri = new Uri(imagePath);
-            return uri;
-        }
-
-        public string GetBase64Image(Automata automata)
-        {
-            var imagePath = GetImagePath(automata);
-            var bytes = File.ReadAllBytes(imagePath);
-            File.Delete(imagePath);
-            return Convert.ToBase64String(bytes);
-        }
-
-        private string GetImagePath(Automata automata)
+        public void SaveAutomataImage(Automata automata, string filePath)
         {
             var dotFormat = ConvertAutomataToDotFormat(automata);
             var dotFileName = $"./{automata.Id}.dot";
-            var imageFileName = Directory.GetCurrentDirectory() + $"/images/{automata.Id}.png";
             File.WriteAllText(dotFileName, dotFormat);
-            GenerateImage(dotFileName, imageFileName);
+            GenerateImage(dotFileName, filePath);
             File.Delete(dotFileName);
-            return imageFileName;
         }
 
         private string ConvertAutomataToDotFormat(Automata automata)

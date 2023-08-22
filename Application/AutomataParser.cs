@@ -24,6 +24,7 @@ public class AutomataParser : IAutomataParser
         foreach (var transition in ParseTransitionTable(transitionTable))
         {
             states.Add(transition.State);
+            states.Add(transition.Value);
             alphabet.Add(transition.Symbol);
             transitions.Add(transition);
         }
@@ -33,6 +34,8 @@ public class AutomataParser : IAutomataParser
 
         if (Automata.IsDfa(transitions, alphabet, states))
             return new DFA(states, alphabet, transitions, start, terminates);
+        if (alphabet.Contains(LambdaNDFA.Lambda))
+            return new LambdaNDFA(states, alphabet, transitions, start, terminates);
         return new NDFA(states, alphabet, transitions, start, terminates);
     }
 

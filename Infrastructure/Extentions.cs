@@ -53,4 +53,9 @@ public static class Extensions
     {
         return source.Count(s => s.StringToSet().Count > 1);
     }
+
+    public static IEnumerable<T> Except<T>(this IEnumerable<T> source, T element)
+    {
+        return source.Except(new [] { element });
+    }
 }

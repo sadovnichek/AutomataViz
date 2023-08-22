@@ -123,8 +123,9 @@ public partial class MainWindow
         {
             var service = serviceResolver.GetService<IVisualizationService>();
             var automata = GetAutomata();
-            var uri = service.GetImageUri(automata);
-            Visualization.Source = new BitmapImage(uri);
+            var imageFilePath = $"{Directory.GetCurrentDirectory()}/{automata.Id}.png";
+            service.SaveAutomataImage(automata, imageFilePath);
+            Visualization.Source = new BitmapImage(new Uri(imageFilePath));
         }
         catch(IncorrectInputException exception)
         {
