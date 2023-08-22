@@ -4,6 +4,7 @@ public class DFA : Automata
 {
     public DFA(HashSet<string> states,
         HashSet<string> alphabet,
+        HashSet<Transition> transitions,
         string startState,
         HashSet<string> terminateStates)
     {
@@ -13,14 +14,6 @@ public class DFA : Automata
         States = states;
         StartState = startState;
         TerminateStates = terminateStates;
-    }
-
-    public DFA(HashSet<string> states,
-        HashSet<string> alphabet,
-        HashSet<Transition> transitions,
-        string startState,
-        HashSet<string> terminateStates) : this(states, alphabet, startState, terminateStates)
-    {
         Transitions = transitions;
     }
 
@@ -31,23 +24,18 @@ public class DFA : Automata
 
     public override DFA ExceptStates(HashSet<string> exceptedStates)
     {
-        var newTerminates = TerminateStates.Where(s => !exceptedStates.Contains(s)).ToHashSet();
-        var newStates = States.Where(s => !exceptedStates.Contains(s)).ToHashSet();
-        var newAutomata = new DFA(newStates, Alphabet, StartState, newTerminates);
-
-        foreach (var state in newStates)
+        var terminates = TerminateStates.Where(s => !exceptedStates.Contains(s)).ToArray();
+        var newAutomata = Builder.SetStartState(StartState).SetTerminateStates(terminates);
+        foreach (var state in States.Where(s => !exceptedStates.Contains(s)))
         {
             foreach (var symbol in Alphabet)
             {
                 var value = this[state, symbol];
                 if (!exceptedStates.Contains(value))
-                {
                     newAutomata.AddTransition(state, symbol, value);
-                }
             }
         }
-
-        return newAutomata;
+        return newAutomata.BuildDFA();
     }
 
     public override HashSet<string> GetUnreachableStates()

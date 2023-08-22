@@ -1,6 +1,70 @@
 ﻿using System.Text;
+using Infrastructure;
 
 namespace Domain.Automatas;
+
+public interface IAutomataBuilder
+{
+    IAutomataBuilder AddTransition(string state, string symbol, string value);
+
+    IAutomataBuilder SetStartState(string startState);
+
+    IAutomataBuilder SetTerminateState(string terminateState);
+
+    IAutomataBuilder SetTerminateStates(params string[] terminateStates);
+
+    DFA BuildDFA();
+}
+
+public class AutomataBuilder : IAutomataBuilder
+{
+    private readonly HashSet<Transition> transitions;
+    private readonly Set alphabet;
+    private readonly Set states;
+    private string startState;
+    private readonly Set terminateStates;
+
+    public AutomataBuilder()
+    {
+        states = new Set(); 
+        terminateStates = new Set();
+        alphabet = new Set();
+        transitions = new HashSet<Transition>();
+        startState = string.Empty;
+    }
+
+    public IAutomataBuilder AddTransition(string state, string symbol, string value)
+    {
+        transitions.Add(new Transition(state, symbol, value));
+        alphabet.Add(symbol);
+        states.Add(state);
+        states.Add(value);
+        return this;
+    }
+
+    public IAutomataBuilder SetStartState(string startState)
+    {
+        this.startState = startState;
+        return this;
+    }
+
+    public IAutomataBuilder SetTerminateState(string terminateState)
+    {
+        terminateStates.Add(terminateState);
+        return this;
+    }
+
+    public IAutomataBuilder SetTerminateStates(params string[] source)
+    {
+        source.ToList().ForEach(s => terminateStates.Add(s));
+        return this;
+    }
+
+    public DFA BuildDFA()
+    {
+        return new DFA(states, alphabet, transitions, startState, terminateStates);
+    }
+}
 
 public abstract class Automata
 {
@@ -15,6 +79,8 @@ public abstract class Automata
     public string StartState { get; protected set; }
 
     public HashSet<string> TerminateStates { get; protected set; }
+
+    public static AutomataBuilder Builder => new();
 
     public Automata AddTransition(string state, string symbol, string value)
     {

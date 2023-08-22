@@ -15,11 +15,10 @@ public class Services_should
 
     public void ConfigureDfa()
     {
-        var states = new Set{"0", "1", "2", "3", "4", "5", "6"};
-        var alphabet = new Set {"a", "b"};
-        var terminates = new Set{"4", "5", "6"};
-        dfa = new DFA(states, alphabet, "0", terminates);
-        dfa.AddTransition("0", "a", "5")
+        dfa = Automata.Builder
+            .SetStartState("0")
+            .SetTerminateStates("4", "5", "6")
+            .AddTransition("0", "a", "5")
             .AddTransition("0", "b", "2")
             .AddTransition("1", "a", "6")
             .AddTransition("1", "b", "2")
@@ -32,7 +31,8 @@ public class Services_should
             .AddTransition("5", "a", "3")
             .AddTransition("5", "b", "0")
             .AddTransition("6", "a", "3")
-            .AddTransition("6", "b", "1");
+            .AddTransition("6", "b", "1")
+            .BuildDFA();
     }
 
     public void ConfigureNdfa()
@@ -168,12 +168,10 @@ public class Services_should
     [Test]
     public void GetNDFA_FromLambdaNDFA()
     {
-        var expected = new DFA(
-            new Set { "0", "1", "2", "3", "4", "Ø" },
-            new Set { "a", "b", "c" },
-            "0",
-            new Set { "3", "4" });
-        expected.AddTransition("0", "a", "1")
+        var expected = Automata.Builder
+            .SetStartState("0")
+            .SetTerminateStates("3", "4")
+            .AddTransition("0", "a", "1")
             .AddTransition("0", "b", "2")
             .AddTransition("0", "c", "Ø")
             .AddTransition("1", "a", "1")
@@ -190,8 +188,8 @@ public class Services_should
             .AddTransition("4", "c", "Ø")
             .AddTransition("Ø", "a", "Ø")
             .AddTransition("Ø", "b", "Ø")
-            .AddTransition("Ø", "c", "Ø");
-        var text = lambdaNdfa.GetTransitionTableFormatted();
+            .AddTransition("Ø", "c", "Ø")
+            .BuildDFA();
         var actual = serviceResolver.GetService<LambdaClosureAlgorithm>().Get(lambdaNdfa);
         Assert.AreEqual(expected, actual);
     }
