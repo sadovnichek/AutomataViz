@@ -8,13 +8,13 @@ public abstract class Automata
 
     public Guid Id { get; protected init; }
 
-    public HashSet<string> Alphabet { get; protected init; }
+    public HashSet<string> Alphabet { get; protected set; }
 
-    public HashSet<string> States { get; protected init; }
+    public HashSet<string> States { get; protected set; }
 
-    public string StartState { get; protected init; }
+    public string StartState { get; protected set; }
 
-    public HashSet<string> TerminateStates { get; protected init; }
+    public HashSet<string> TerminateStates { get; protected set; }
 
     public Automata AddTransition(string state, string symbol, string value)
     {

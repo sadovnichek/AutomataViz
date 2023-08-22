@@ -13,6 +13,7 @@ public class ServiceResolver : IServiceResolver
                 .AddSingleton<IService, DeterminizationAlgorithm>()
                 .AddSingleton<IService, VisualizationService>()
                 .AddSingleton<IService, RandomAutomataService>()
+                .AddSingleton<IService, LambdaClosureAlgorithm>()
                 .BuildServiceProvider();
     }
 

@@ -9,8 +9,6 @@ namespace Domain.Services
 
     public interface IVisualizationService : IService
     {
-        Uri GetImageUri(Automata automata);
-
-        string GetBase64Image(Automata automata);
+        void SaveAutomataImage(Automata automata, string folderToSave);
     }
 }

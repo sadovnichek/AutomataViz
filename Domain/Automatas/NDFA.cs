@@ -2,6 +2,11 @@
 
 public class NDFA : Automata
 {
+    public NDFA()
+    {
+
+    }
+
     public NDFA(HashSet<string> states,
         HashSet<string> alphabet,
         string startState,
