@@ -30,6 +30,7 @@
                 <MenuItem Header="ДКА" Click="GetRandomDFAOnButtonClick"></MenuItem>
                 <MenuItem Header="НКА" Click="GetRandomNDFAOnButtonClick"></MenuItem>
             </MenuItem>
+            <MenuItem Header="λ" Click="InsertLambdaOnButtonClick"/>
         </Menu>
         
         <ScrollViewer Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"

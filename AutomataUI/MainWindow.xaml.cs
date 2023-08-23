@@ -182,4 +182,11 @@ public partial class MainWindow
             .ToList()
             .ForEach(algorithm => Algorithms.Items.Add(algorithm.Name));
     }
+
+    private void InsertLambdaOnButtonClick(object sender, RoutedEventArgs e)
+    {
+        var caretIndex = TableInput.CaretIndex;
+        TableInput.Text = TableInput.Text.Insert(caretIndex, LambdaNDFA.Lambda);
+        TableInput.CaretIndex = caretIndex + 1;
+    }
 }
