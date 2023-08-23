@@ -8,13 +8,6 @@ namespace Domain.Automatas
 
         public LambdaNDFA(HashSet<string> states, 
             HashSet<string> alphabet, 
-            string startState, 
-            HashSet<string> terminateStates) : base(states, alphabet, startState, terminateStates)
-        {
-        }
-
-        public LambdaNDFA(HashSet<string> states, 
-            HashSet<string> alphabet, 
             HashSet<Transition> transitions, 
             string startState, 
             HashSet<string> terminateStates) : base(states, alphabet, transitions, startState, terminateStates)

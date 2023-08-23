@@ -1,12 +1,12 @@
-﻿namespace Domain.Automatas
+﻿ namespace Domain.Automatas
 {
     public class Transition
     {
-        public string State { get; private set; }
+        public string State { get; }
 
-        public string Value { get; private set; }
+        public string Value { get; }
 
-        public string Symbol { get; private set; }
+        public string Symbol { get; }
 
         public Transition(string state, string symbol, string value)
         {

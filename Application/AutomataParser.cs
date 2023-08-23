@@ -15,28 +15,19 @@ public class AutomataParser : IAutomataParser
     /// <exception cref="IncorrectInputException"></exception>
     public Automata GetAutomata(string startState, string terminateStates, string transitionTable)
     {
-        var states = new HashSet<string>();
-        var alphabet = new HashSet<string>();
         var terminates = ParseTerminateStates(terminateStates);
         var start = ParseStartState(startState);
-        var transitions = new HashSet<Transition>();
-
-        foreach (var transition in ParseTransitionTable(transitionTable))
-        {
-            states.Add(transition.State);
-            states.Add(transition.Value);
-            alphabet.Add(transition.Symbol);
-            transitions.Add(transition);
-        }
+        var transitions = ParseTransitionTable(transitionTable).ToList();
+        var automata = Automata.Builder
+            .SetStartState(start)
+            .SetTerminateStates(terminates)
+            .AddTransitions(transitions)
+            .Build();
 
         if (transitions.Count == 0)
             throw new IncorrectInputException("Таблица переходов заполнено некорректно");
 
-        if (Automata.IsDfa(transitions, alphabet, states))
-            return new DFA(states, alphabet, transitions, start, terminates);
-        if (alphabet.Contains(LambdaNDFA.Lambda))
-            return new LambdaNDFA(states, alphabet, transitions, start, terminates);
-        return new NDFA(states, alphabet, transitions, start, terminates);
+        return automata;
     }
 
     private IEnumerable<Transition> ParseTransitionTable(string source)
