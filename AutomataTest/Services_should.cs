@@ -1,7 +1,6 @@
 ﻿using Domain.Services;
 using Domain.Automatas;
 using NUnit.Framework;
-using Infrastructure;
 
 namespace AutomataTest;
 

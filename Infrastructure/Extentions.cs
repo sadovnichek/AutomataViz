@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-
-namespace Infrastructure;
+﻿namespace Infrastructure;
 
 public static class Extensions
 {

@@ -16,7 +16,7 @@ namespace AutomataUI;
 
 public partial class MainWindow
 {
-    private readonly ScaleTransform st = new();
+    private readonly ScaleTransform scaleTransform;
     private readonly IServiceResolver serviceResolver;
     private readonly IAutomataParser automataParser;
     private readonly IWorkspaceResolver workspaceResolver;
@@ -30,7 +30,8 @@ public partial class MainWindow
         this.workspaceResolver = workspaceResolver;
         InitializeComponent();
         ConfigureImagesDirectory();
-        Visualization.RenderTransform = st;
+        scaleTransform = new ScaleTransform();
+        Visualization.RenderTransform = scaleTransform;
     }
    
     private void ConfigureImagesDirectory()
@@ -170,10 +171,10 @@ public partial class MainWindow
     private void ZoomImageOnMouseWheel(object sender, MouseWheelEventArgs e)
     {
         var zoom = e.Delta > 0 ? 0.1 : -0.05;
-        st.ScaleX += zoom;
-        st.ScaleY += zoom;
-        st.CenterX = e.MouseDevice.GetPosition(Visualization).X;
-        st.CenterY = e.MouseDevice.GetPosition(Visualization).Y;
+        scaleTransform.ScaleX += zoom;
+        scaleTransform.ScaleY += zoom;
+        scaleTransform.CenterX = e.MouseDevice.GetPosition(Visualization).X;
+        scaleTransform.CenterY = e.MouseDevice.GetPosition(Visualization).Y;
     }
 
     private void AddAlgorithms(object sender, RoutedEventArgs e)
