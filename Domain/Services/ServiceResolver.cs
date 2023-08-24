@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DotFormat;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Domain.Services;
 
@@ -14,6 +15,8 @@ public class ServiceResolver : IServiceResolver
                 .AddSingleton<IService, VisualizationService>()
                 .AddSingleton<IService, RandomAutomataService>()
                 .AddSingleton<IService, LambdaClosureAlgorithm>()
+                .AddSingleton<IGraph, DotFormatBuilder>()
+                .AddSingleton<INodeShape, NodeShape>()
                 .BuildServiceProvider();
     }
 

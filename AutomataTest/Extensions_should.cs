@@ -3,7 +3,6 @@ using NUnit.Framework;
 
 namespace AutomataTest
 {
-    [TestFixture]
     public class Extensions_should
     {
         [Test]

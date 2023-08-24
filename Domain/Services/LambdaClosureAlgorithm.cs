@@ -11,29 +11,29 @@ namespace Domain.Services
         {
             if (automata is not LambdaNDFA lambda)
                 throw new InvalidOperationException("Автомат должен быть λ-НКА");
-            var lambdaClosureMapping = lambda.States
+            var lambdaClosure = lambda.States
                 .ToDictionary(s => s, s => lambda.GetLambdaClosure(s));
-            var startState = lambdaClosureMapping[lambda.StartState];
+            var startState = lambdaClosure[lambda.StartState];
             var queue = new Queue<HashSet<string>>();
             var used = new HashSet<string>();
             queue.Enqueue(startState);
-            var result = Automata.Builder.SetStartState(startState.SetToString());
+            var builder = Automata.Builder.SetStartState(startState.SetToString());
             while (queue.Count != 0)
             {
                 var currentState = queue.Dequeue();
                 foreach (var symbol in lambda.Alphabet.Except(LambdaNDFA.Lambda))
                 {
                     var nextState = currentState.SelectMany(x => lambda[x, symbol])
-                        .SelectMany(x => lambdaClosureMapping[x]).ToHashSet();
-                    result.AddTransition(currentState.SetToString(), symbol, nextState.SetToString());
+                        .SelectMany(x => lambdaClosure[x]).ToHashSet();
+                    builder.AddTransition(currentState.SetToString(), symbol, nextState.SetToString());
                     if (!used.Contains(nextState.SetToString()))
                         queue.Enqueue(nextState);
                 }
                 if (currentState.Intersect(lambda.TerminateStates).Any())
-                    result.SetTerminateState(currentState.SetToString());
+                    builder.SetTerminateState(currentState.SetToString());
                 used.Add(currentState.SetToString());
             }
-            return Rename(result.BuildDFA());
+            return Rename(builder.BuildDFA());
         }
 
         private DFA Rename(Automata automata)
@@ -46,13 +46,18 @@ namespace Domain.Services
                 index++;
             }
             naming.Add("Ø", "Ø");
-            var states = automata.States.Select(s => naming[s]).ToHashSet();
             var transitions = automata.Transitions
                 .Select(t => new Transition(naming[t.State], t.Symbol, naming[t.Value]))
                 .ToHashSet();
-            var terminates = automata.TerminateStates.Select(s => naming[s]).ToHashSet();
+            var terminates = automata.TerminateStates
+                .Select(s => naming[s])
+                .ToHashSet();
             var startState = naming[automata.StartState];
-            return new DFA(states, automata.Alphabet, transitions, startState, terminates);
+            return Automata.Builder
+                .SetStartState(startState)
+                .SetTerminateStates(terminates)
+                .AddTransitions(transitions)
+                .BuildDFA();
         }
     }
 }

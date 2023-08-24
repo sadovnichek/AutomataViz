@@ -28,10 +28,10 @@ public partial class MainWindow
         this.serviceResolver = serviceResolver;
         this.automataParser = automataParser;
         this.workspaceResolver = workspaceResolver;
-        InitializeComponent();
-        ConfigureImagesDirectory();
         scaleTransform = new ScaleTransform();
         Visualization.RenderTransform = scaleTransform;
+        InitializeComponent();
+        ConfigureImagesDirectory();
     }
    
     private void ConfigureImagesDirectory()

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DotFormat
+﻿namespace DotFormat
 {
     public interface IGraph
     {
         string Build();
+
+        IGraph GetDirectedGraph(string graphName);
+
+        IGraph GetUndirectedGraph(string graphName);
 
         IWith<GraphNodeAttributes> AddNode(string name);
 

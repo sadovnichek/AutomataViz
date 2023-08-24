@@ -4,7 +4,6 @@ using NUnit.Framework;
 
 namespace AutomataTest;
 
-[TestFixture]
 public class Services_should
 {
     private DFA dfa;

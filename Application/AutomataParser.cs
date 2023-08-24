@@ -9,10 +9,6 @@ public class AutomataParser : IAutomataParser
     private static readonly Regex regexToReadTerminateStates = new(@"(\w+|{(.*?)})");
     private static readonly Regex regexToReadTransitionTable = new(@"(\w+|{(.*?)}|∅).\w+\s*=\s*(\w+|{(.*?)}|∅)");
     
-    /// <summary>
-    /// Generate an automata by string representation
-    /// </summary>
-    /// <exception cref="IncorrectInputException"></exception>
     public Automata GetAutomata(string startState, string terminateStates, string transitionTable)
     {
         var terminates = ParseTerminateStates(terminateStates);
@@ -25,7 +21,16 @@ public class AutomataParser : IAutomataParser
             .Build();
 
         if (transitions.Count == 0)
-            throw new IncorrectInputException("Таблица переходов заполнено некорректно");
+            throw new IncorrectInputException("Таблица переходов заполнена некорректно");
+        if (!automata.States.Contains(start))
+            throw new IncorrectInputException("Начальное состояние не указано в таблице переходов");
+        if (!automata.TerminateStates.IsSubsetOf(automata.States))
+        {
+            var unusedStates = automata.TerminateStates
+                .Where(x => !automata.States.Contains(x))
+                .ToHashSet();
+            throw new IncorrectInputException($"Состояния {{ {unusedStates.SetToString()} }} не указаны в таблице переходов");
+        }
 
         return automata;
     }
