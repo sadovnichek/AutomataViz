@@ -25,13 +25,13 @@ public partial class MainWindow
         IAutomataParser automataParser,
         IWorkspaceResolver workspaceResolver)
     {
+        InitializeComponent();
+        ConfigureImagesDirectory();
         this.serviceResolver = serviceResolver;
         this.automataParser = automataParser;
         this.workspaceResolver = workspaceResolver;
         scaleTransform = new ScaleTransform();
         Visualization.RenderTransform = scaleTransform;
-        InitializeComponent();
-        ConfigureImagesDirectory();
     }
    
     private void ConfigureImagesDirectory()
@@ -60,11 +60,14 @@ public partial class MainWindow
             switch (service)
             {
                 case IAlgorithmTransformer transformer:
+                {
                     ImplementTransformerAlgorithm(automata, transformer);
                     break;
+                }
                 case IAlgorithmRecognizer recognizer:
                 {
-                    var word = workspaceResolver.GetWorkspace<IWordInputWorkspace>().GetInput();
+                    var word = workspaceResolver.GetWorkspace<IWordInputWorkspace>()
+                        .GetInput();
                     ImplementRecognitionAlgorithm(automata, word, recognizer);
                     break;
                 }
@@ -89,7 +92,9 @@ public partial class MainWindow
 
     private void ImplementRecognitionAlgorithm(Automata automata, string word, IAlgorithmRecognizer recognizer)
     {
-        var answer = recognizer.Get(automata, word) ? "распознаёт" : "не распознаёт";
+        var answer = recognizer.Get(automata, word) 
+            ? "распознаёт" 
+            : "не распознаёт";
         workspaceResolver.GetWorkspace<IWordInputWorkspace>()
             .AddContent(answer);
     }
@@ -113,10 +118,8 @@ public partial class MainWindow
         }
     }
 
-    private Automata GetAutomata()
-    {
-        return automataParser.GetAutomata(StartState.Text, TerminateStates.Text, TableInput.Text);
-    }
+    private Automata GetAutomata() =>
+        automataParser.GetAutomata(StartState.Text, TerminateStates.Text, TableInput.Text);
 
     private void VisualizeAutomataOnButtonClick(object sender, RoutedEventArgs e)
     {

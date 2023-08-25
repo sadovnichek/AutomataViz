@@ -34,7 +34,7 @@ namespace Domain.Services
             automata.States
                 .Where(state => !automata.TerminateStates.Contains(state))
                 .ToList()
-                .ForEach(r => dot.AddNode(r).With(n => n.Shape(nodeShape.Ellipse)));
+                .ForEach(r => dot.AddNode(r).With(n => n.Shape(nodeShape.Circle)));
             automata.TerminateStates
                 .ToList()
                 .ForEach(r => dot.AddNode(r).With(n => n.Shape(nodeShape.DoubleCircle)));

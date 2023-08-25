@@ -6,7 +6,7 @@ namespace DotFormat
     {
         public string Box { get; }
 
-        public string Ellipse { get; }
+        public string Circle { get; }
 
         public string DoubleCircle { get; }
     }
@@ -15,7 +15,7 @@ namespace DotFormat
     {
         public string Box => "box";
 
-        public string Ellipse => "ellipse";
+        public string Circle => "circle";
 
         public string DoubleCircle => "doublecircle";
     }
