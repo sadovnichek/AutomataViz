@@ -9,11 +9,10 @@ public class Services_should
     private DFA dfa;
     private NDFA ndfa;
     private LambdaNDFA lambdaNdfa;
-    private IServiceResolver serviceResolver;
 
     public void ConfigureDfa()
     {
-        dfa = Automata.Builder
+        dfa = AutomataBuilder.CreateAutomata()
             .SetStartState("0")
             .SetTerminateStates("4", "5", "6")
             .AddTransition("0", "a", "5")
@@ -35,7 +34,7 @@ public class Services_should
 
     public void ConfigureNdfa()
     {
-        ndfa = Automata.Builder
+        ndfa = AutomataBuilder.CreateAutomata()
             .SetStartState("0")
             .SetTerminateStates("0")
             .AddTransition("0", "a", "1")
@@ -47,7 +46,7 @@ public class Services_should
     
     public void ConfigureLambdaNDFA()
     {
-        lambdaNdfa = Automata.Builder
+        lambdaNdfa = AutomataBuilder.CreateAutomata()
             .SetStartState("1")
             .SetTerminateStates("12")
             .AddTransition("1", LambdaNDFA.Lambda, "2")
@@ -73,7 +72,6 @@ public class Services_should
         ConfigureDfa();
         ConfigureNdfa();
         ConfigureLambdaNDFA();
-        serviceResolver = new ServiceResolver();
     }
     
     [Test]
@@ -99,7 +97,7 @@ public class Services_should
     [Test]
     public void MinimizationAlgorithm_Get_CorrectDfa()
     {
-        var expected = Automata.Builder
+        var expected = AutomataBuilder.CreateAutomata()
             .SetStartState("{0, 1}")
             .SetTerminateStates("4", "{5, 6}")
             .AddTransition("{0, 1}", "a", "{5, 6}")
@@ -113,8 +111,8 @@ public class Services_should
             .AddTransition("{5, 6}", "a", "3")
             .AddTransition("{5, 6}", "b", "{0, 1}")
             .BuildDFA();
-
-        var actual = serviceResolver.GetService<MinimizationAlgorithm>().Get(dfa);
+        var algorithm = new MinimizationAlgorithm();
+        var actual = algorithm.Get(dfa);
 
         Assert.AreEqual(expected, actual);
     }
@@ -122,7 +120,7 @@ public class Services_should
     [Test]
     public void DeterminizationAlgorithm_Get_CorrectDfa()
     {
-        var expected = Automata.Builder
+        var expected = AutomataBuilder.CreateAutomata()
             .SetStartState("0")
             .SetTerminateStates("0", "{0, 1}", "{0, 2}")
             .AddTransition("0", "a", "1").AddTransition("0", "b", "Ø")
@@ -134,7 +132,8 @@ public class Services_should
             .AddTransition("{0, 1}", "b", "{0, 2}")
             .BuildDFA();
 
-        var actual = serviceResolver.GetService<DeterminizationAlgorithm>().Get(ndfa);
+        var algorithm = new DeterminizationAlgorithm();
+        var actual = algorithm.Get(ndfa);
 
         Assert.IsTrue(expected.Equals(actual));
     }
@@ -142,7 +141,7 @@ public class Services_should
     [Test]
     public void GetNDFA_FromLambdaNDFA()
     {
-        var expected = Automata.Builder
+        var expected = AutomataBuilder.CreateAutomata()
             .SetStartState("0")
             .SetTerminateStates("3", "4")
             .AddTransition("0", "a", "1").AddTransition("0", "b", "2")
@@ -155,7 +154,8 @@ public class Services_should
             .AddTransition("4", "c", "Ø").AddTransition("Ø", "a", "Ø")
             .AddTransition("Ø", "b", "Ø").AddTransition("Ø", "c", "Ø")
             .BuildDFA();
-        var actual = serviceResolver.GetService<LambdaClosureAlgorithm>().Get(lambdaNdfa);
+        var algorithm = new LambdaClosureAlgorithm();
+        var actual = algorithm.Get(lambdaNdfa);
         Assert.AreEqual(expected, actual);
     }
 }

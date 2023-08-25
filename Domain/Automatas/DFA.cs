@@ -25,7 +25,9 @@ public class DFA : Automata
     public override DFA ExceptStates(HashSet<string> exceptedStates)
     {
         var terminates = TerminateStates.Where(s => !exceptedStates.Contains(s)).ToArray();
-        var newAutomata = Builder.SetStartState(StartState).SetTerminateStates(terminates);
+        var newAutomata = AutomataBuilder.CreateAutomata()
+            .SetStartState(StartState)
+            .SetTerminateStates(terminates);
         foreach (var state in States.Where(s => !exceptedStates.Contains(s)))
         {
             foreach (var symbol in Alphabet)

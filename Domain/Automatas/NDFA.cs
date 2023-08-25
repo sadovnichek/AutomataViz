@@ -25,7 +25,7 @@ public class NDFA : Automata
     {
         var terminates = TerminateStates.Where(s => !exceptedStates.Contains(s));
         var newStates = States.Where(s => !exceptedStates.Contains(s));
-        var builder = Automata.Builder
+        var builder = AutomataBuilder.CreateAutomata()
             .SetStartState(StartState)
             .SetTerminateStates(terminates);
         foreach (var state in newStates)

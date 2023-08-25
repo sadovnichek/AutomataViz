@@ -16,8 +16,6 @@ public abstract class Automata
 
     public HashSet<string> TerminateStates { get; protected set; }
 
-    public static IAutomataBuilder Builder => new AutomataBuilder();
-
     public string GetTransitionTableFormatted()
     {
         var output = new StringBuilder();

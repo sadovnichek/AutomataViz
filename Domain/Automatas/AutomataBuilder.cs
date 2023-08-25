@@ -10,13 +10,18 @@ namespace Domain.Automatas
         private string startState;
         private readonly Set terminateStates;
 
-        public AutomataBuilder()
+        private AutomataBuilder()
         {
             states = new Set();
             terminateStates = new Set();
             alphabet = new Set();
             transitions = new HashSet<Transition>();
             startState = string.Empty;
+        }
+
+        public static IAutomataBuilder CreateAutomata()
+        {
+            return new AutomataBuilder();
         }
 
         public IAutomataBuilder AddTransition(string state, string symbol, string value)

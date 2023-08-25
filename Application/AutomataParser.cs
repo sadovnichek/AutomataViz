@@ -14,7 +14,7 @@ public class AutomataParser : IAutomataParser
         var terminates = ParseTerminateStates(terminateStates);
         var start = ParseStartState(startState);
         var transitions = ParseTransitionTable(transitionTable).ToList();
-        var automata = Automata.Builder
+        var automata = AutomataBuilder.CreateAutomata()
             .SetStartState(start)
             .SetTerminateStates(terminates)
             .AddTransitions(transitions)

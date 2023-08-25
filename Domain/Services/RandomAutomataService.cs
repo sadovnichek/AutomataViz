@@ -29,7 +29,7 @@ namespace Domain.Services
             {
                 var start = states.ToList()[random.Next(0, states.Count)];
                 var terminates = states.GetRandomSubset(random.Next(2, states.Count / 2 + 1));
-                var builder = Automata.Builder
+                var builder = AutomataBuilder.CreateAutomata()
                     .SetStartState(start)
                     .SetTerminateStates(terminates);
                 foreach (var state in states)

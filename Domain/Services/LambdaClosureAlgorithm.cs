@@ -17,7 +17,8 @@ namespace Domain.Services
             var queue = new Queue<HashSet<string>>();
             var used = new HashSet<string>();
             queue.Enqueue(startState);
-            var builder = Automata.Builder.SetStartState(startState.SetToString());
+            var builder = AutomataBuilder.CreateAutomata()
+                .SetStartState(startState.SetToString());
             while (queue.Count != 0)
             {
                 var currentState = queue.Dequeue();
@@ -53,7 +54,7 @@ namespace Domain.Services
                 .Select(s => naming[s])
                 .ToHashSet();
             var startState = naming[automata.StartState];
-            return Automata.Builder
+            return AutomataBuilder.CreateAutomata()
                 .SetStartState(startState)
                 .SetTerminateStates(terminates)
                 .AddTransitions(transitions)
