@@ -26,7 +26,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="System.Drawing.Common" Version="7.0.0-preview.6.22324.4" />
+      <PackageReference Include="Autofac" Version="7.1.0" />
+      <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     </ItemGroup>
 
 </Project>

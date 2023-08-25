@@ -4,19 +4,16 @@ public class DotFormatBuilder : IWith<GraphNodeAttributes>, IWith<GraphEdgeAttri
 {
     private static Graph _graph;
 
-    private DotFormatBuilder(Graph graph)
+    public IGraph GetDirectedGraph(string graphName)
     {
-        _graph = graph;
+        _graph = new Graph(graphName, true, false);
+        return this;
     }
 
-    public static IGraph DirectedGraph(string graphName)
+    public IGraph GetUndirectedGraph(string graphName)
     {
-        return new DotFormatBuilder(new Graph(graphName, true, false));
-    }
-
-    public static IGraph UndirectedGraph(string graphName)
-    {
-        return new DotFormatBuilder(new Graph(graphName, false, false));
+        _graph = new Graph(graphName, false, false);
+        return this;
     }
 
     public string Build() => _graph.ToDotFormat();

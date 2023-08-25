@@ -29,7 +29,9 @@ namespace Domain.Services
             {
                 var start = states.ToList()[random.Next(0, states.Count)];
                 var terminates = states.GetRandomSubset(random.Next(2, states.Count / 2 + 1));
-                var randomAutomata = new NDFA(states, alphabet, start, terminates);
+                var builder = AutomataBuilder.CreateAutomata()
+                    .SetStartState(start)
+                    .SetTerminateStates(terminates);
                 foreach (var state in states)
                 {
                     foreach (var symbol in alphabet)
@@ -38,14 +40,15 @@ namespace Domain.Services
                         do
                         {
                             var randomIndex = random.Next(0, states.Count);
-                            randomAutomata.AddTransition(state, symbol, states.ToList()[randomIndex]);
+                            builder.AddTransition(state, symbol, states.ToList()[randomIndex]);
                             iteration++;
                         } while (iteration < random.Next(1, 3) && !isDfa);
                     }
                 }
-                var unreachableStates = randomAutomata.GetUnreachableStates();
-                if (!randomAutomata.TerminateStates.Intersect(unreachableStates).Any())
-                    return randomAutomata;
+                var automata = builder.Build();
+                var unreachableStates = automata.GetUnreachableStates();
+                if (!automata.TerminateStates.Intersect(unreachableStates).Any())
+                    return automata;
             }
         }
     }

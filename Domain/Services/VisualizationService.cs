@@ -6,6 +6,16 @@ namespace Domain.Services
 {
     public class VisualizationService : IVisualizationService
     {
+        private readonly IGraph dotFormatBuilder;
+        private readonly INodeShape nodeShape;
+
+        public VisualizationService(IGraph dotFormatBuilder, 
+            INodeShape nodeShape)
+        {
+            this.dotFormatBuilder = dotFormatBuilder;
+            this.nodeShape = nodeShape;
+        }
+
         public void SaveAutomataImage(Automata automata, string filePath)
         {
             var dotFormat = ConvertAutomataToDotFormat(automata);
@@ -17,14 +27,17 @@ namespace Domain.Services
 
         private string ConvertAutomataToDotFormat(Automata automata)
         {
-            var dot = DotFormatBuilder.DirectedGraph("automata");
+            var dot = dotFormatBuilder.GetDirectedGraph("automata");
             var edges = new Dictionary<Tuple<string, string>, string>(); // <from, to>, label
-            dot.AddNode($"START{automata.StartState}").With(n => n.Color("white").FontColor("white"));
-            automata.States.Where(state => !automata.TerminateStates.Contains(state))
+            dot.AddNode($"START{automata.StartState}")
+                .With(n => n.Color("white").FontColor("white"));
+            automata.States
+                .Where(state => !automata.TerminateStates.Contains(state))
                 .ToList()
-                .ForEach(r => dot.AddNode(r).With(n => n.Shape(NodeShape.Ellipse)));
-            automata.TerminateStates.ToList()
-                .ForEach(r => dot.AddNode(r).With(n => n.Shape(NodeShape.DoubleCircle)));
+                .ForEach(r => dot.AddNode(r).With(n => n.Shape(nodeShape.Circle)));
+            automata.TerminateStates
+                .ToList()
+                .ForEach(r => dot.AddNode(r).With(n => n.Shape(nodeShape.DoubleCircle)));
             dot.AddEdge($"START{automata.StartState}", automata.StartState);
             foreach (var t in automata.Transitions)
             {

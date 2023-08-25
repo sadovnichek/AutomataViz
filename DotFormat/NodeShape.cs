@@ -1,17 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace DotFormat
 {
-    public static class NodeShape
+    public interface INodeShape
     {
-        public static string Box => "box";
+        public string Box { get; }
 
-        public static string Ellipse => "ellipse";
+        public string Circle { get; }
 
-        public static string DoubleCircle => "doublecircle";
+        public string DoubleCircle { get; }
+    }
+
+    public class NodeShape : INodeShape
+    {
+        public string Box => "box";
+
+        public string Circle => "circle";
+
+        public string DoubleCircle => "doublecircle";
     }
 }

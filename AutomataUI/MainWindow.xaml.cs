@@ -16,7 +16,7 @@ namespace AutomataUI;
 
 public partial class MainWindow
 {
-    private readonly ScaleTransform st = new();
+    private readonly ScaleTransform scaleTransform;
     private readonly IServiceResolver serviceResolver;
     private readonly IAutomataParser automataParser;
     private readonly IWorkspaceResolver workspaceResolver;
@@ -25,12 +25,13 @@ public partial class MainWindow
         IAutomataParser automataParser,
         IWorkspaceResolver workspaceResolver)
     {
+        InitializeComponent();
+        ConfigureImagesDirectory();
         this.serviceResolver = serviceResolver;
         this.automataParser = automataParser;
         this.workspaceResolver = workspaceResolver;
-        InitializeComponent();
-        ConfigureImagesDirectory();
-        Visualization.RenderTransform = st;
+        scaleTransform = new ScaleTransform();
+        Visualization.RenderTransform = scaleTransform;
     }
    
     private void ConfigureImagesDirectory()
@@ -59,17 +60,20 @@ public partial class MainWindow
             switch (service)
             {
                 case IAlgorithmTransformer transformer:
+                {
                     ImplementTransformerAlgorithm(automata, transformer);
                     break;
+                }
                 case IAlgorithmRecognizer recognizer:
                 {
-                    var word = workspaceResolver.GetWorkspace<IWordInputWorkspace>().GetInput();
+                    var word = workspaceResolver.GetWorkspace<IWordInputWorkspace>()
+                        .GetInput();
                     ImplementRecognitionAlgorithm(automata, word, recognizer);
                     break;
                 }
             }
         }
-        catch(IncorrectInputException exception)
+        catch(ArgumentException exception)
         {
             MessageBox.Show($"Ошибка ввода: {exception.Message}");
         }
@@ -88,7 +92,9 @@ public partial class MainWindow
 
     private void ImplementRecognitionAlgorithm(Automata automata, string word, IAlgorithmRecognizer recognizer)
     {
-        var answer = recognizer.Get(automata, word) ? "распознаёт" : "не распознаёт";
+        var answer = recognizer.Get(automata, word) 
+            ? "распознаёт" 
+            : "не распознаёт";
         workspaceResolver.GetWorkspace<IWordInputWorkspace>()
             .AddContent(answer);
     }
@@ -112,10 +118,8 @@ public partial class MainWindow
         }
     }
 
-    private Automata GetAutomata()
-    {
-        return automataParser.GetAutomata(StartState.Text, TerminateStates.Text, TableInput.Text);
-    }
+    private Automata GetAutomata() =>
+        automataParser.GetAutomata(StartState.Text, TerminateStates.Text, TableInput.Text);
 
     private void VisualizeAutomataOnButtonClick(object sender, RoutedEventArgs e)
     {
@@ -127,7 +131,7 @@ public partial class MainWindow
             service.SaveAutomataImage(automata, imageFilePath);
             Visualization.Source = new BitmapImage(new Uri(imageFilePath));
         }
-        catch(IncorrectInputException exception)
+        catch(ArgumentException exception)
         {
             MessageBox.Show($"Ошибка ввода: {exception.Message}");
         }
@@ -170,10 +174,10 @@ public partial class MainWindow
     private void ZoomImageOnMouseWheel(object sender, MouseWheelEventArgs e)
     {
         var zoom = e.Delta > 0 ? 0.1 : -0.05;
-        st.ScaleX += zoom;
-        st.ScaleY += zoom;
-        st.CenterX = e.MouseDevice.GetPosition(Visualization).X;
-        st.CenterY = e.MouseDevice.GetPosition(Visualization).Y;
+        scaleTransform.ScaleX += zoom;
+        scaleTransform.ScaleY += zoom;
+        scaleTransform.CenterX = e.MouseDevice.GetPosition(Visualization).X;
+        scaleTransform.CenterY = e.MouseDevice.GetPosition(Visualization).Y;
     }
 
     private void AddAlgorithms(object sender, RoutedEventArgs e)

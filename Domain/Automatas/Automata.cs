@@ -16,12 +16,6 @@ public abstract class Automata
 
     public HashSet<string> TerminateStates { get; protected set; }
 
-    public Automata AddTransition(string state, string symbol, string value)
-    {
-        Transitions.Add(new Transition(state, symbol, value));
-        return this;
-    }
-
     public string GetTransitionTableFormatted()
     {
         var output = new StringBuilder();
@@ -32,7 +26,7 @@ public abstract class Automata
                 output.Append($"{transition.State}.{transition.Symbol} = {transition.Value}");
                 output.Append('\t');
             }
-            output.Append('\n');
+            output.Append(Environment.NewLine);
         }
         return output.ToString();
     }
@@ -40,22 +34,6 @@ public abstract class Automata
     public Automata ExceptUnreachableStates()
     {
         return ExceptStates(GetUnreachableStates());
-    }
-
-    public static bool IsDfa(
-        HashSet<Transition> transitions,
-        HashSet<string> alphabet,
-        HashSet<string> states)
-    {
-        foreach (var state in states)
-        {
-            foreach (var symbol in alphabet)
-            {
-                if (transitions.Count(t => t.State == state && t.Symbol == symbol) != 1)
-                    return false;
-            }
-        }
-        return true;
     }
 
     public override bool Equals(object? obj)

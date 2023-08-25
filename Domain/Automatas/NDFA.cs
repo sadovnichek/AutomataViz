@@ -2,30 +2,17 @@
 
 public class NDFA : Automata
 {
-    public NDFA()
-    {
-
-    }
-
     public NDFA(HashSet<string> states,
         HashSet<string> alphabet,
+        HashSet<Transition> transitions,
         string startState,
         HashSet<string> terminateStates)
     {
         Alphabet = alphabet;
         Id = Guid.NewGuid();
-        Transitions = new HashSet<Transition>();
         States = states;
         StartState = startState;
         TerminateStates = terminateStates;
-    }
-
-    public NDFA(HashSet<string> states,
-        HashSet<string> alphabet,
-        HashSet<Transition> transitions,
-        string startState,
-        HashSet<string> terminateStates) : this(states, alphabet, startState, terminateStates)
-    {
         Transitions = transitions;
     }
 
@@ -36,9 +23,11 @@ public class NDFA : Automata
 
     public override NDFA ExceptStates(HashSet<string> exceptedStates)
     {
-        var newTerminates = TerminateStates.Where(s => !exceptedStates.Contains(s)).ToHashSet();
-        var newStates = States.Where(s => !exceptedStates.Contains(s)).ToHashSet();
-        var newAutomata = new NDFA(newStates, Alphabet, StartState, newTerminates);
+        var terminates = TerminateStates.Where(s => !exceptedStates.Contains(s));
+        var newStates = States.Where(s => !exceptedStates.Contains(s));
+        var builder = AutomataBuilder.CreateAutomata()
+            .SetStartState(StartState)
+            .SetTerminateStates(terminates);
         foreach (var state in newStates)
         {
             foreach (var symbol in Alphabet)
@@ -47,11 +36,11 @@ public class NDFA : Automata
                 foreach (var value in values)
                 {
                     if (!exceptedStates.Contains(value))
-                        newAutomata.AddTransition(state, symbol, value);
+                        builder.AddTransition(state, symbol, value);
                 }
             }
         }
-        return newAutomata;
+        return builder.BuildNDFA();
     }
 
     public override HashSet<string> GetUnreachableStates()

@@ -9,34 +9,30 @@ public class AutomataParser : IAutomataParser
     private static readonly Regex regexToReadTerminateStates = new(@"(\w+|{(.*?)})");
     private static readonly Regex regexToReadTransitionTable = new(@"(\w+|{(.*?)}|∅).\w+\s*=\s*(\w+|{(.*?)}|∅)");
     
-    /// <summary>
-    /// Generate an automata by string representation
-    /// </summary>
-    /// <exception cref="IncorrectInputException"></exception>
     public Automata GetAutomata(string startState, string terminateStates, string transitionTable)
     {
-        var states = new HashSet<string>();
-        var alphabet = new HashSet<string>();
         var terminates = ParseTerminateStates(terminateStates);
         var start = ParseStartState(startState);
-        var transitions = new HashSet<Transition>();
-
-        foreach (var transition in ParseTransitionTable(transitionTable))
-        {
-            states.Add(transition.State);
-            states.Add(transition.Value);
-            alphabet.Add(transition.Symbol);
-            transitions.Add(transition);
-        }
+        var transitions = ParseTransitionTable(transitionTable).ToList();
+        var automata = AutomataBuilder.CreateAutomata()
+            .SetStartState(start)
+            .SetTerminateStates(terminates)
+            .AddTransitions(transitions)
+            .Build();
 
         if (transitions.Count == 0)
-            throw new IncorrectInputException("Таблица переходов заполнено некорректно");
+            throw new ArgumentException("Таблица переходов заполнена некорректно");
+        if (!automata.States.Contains(start))
+            throw new ArgumentException("Начальное состояние не указано в таблице переходов");
+        if (!automata.TerminateStates.IsSubsetOf(automata.States))
+        {
+            var unusedStates = automata.TerminateStates
+                .Where(x => !automata.States.Contains(x))
+                .ToHashSet();
+            throw new ArgumentException($"Состояния {{ {unusedStates.SetToString()} }} не указаны в таблице переходов");
+        }
 
-        if (Automata.IsDfa(transitions, alphabet, states))
-            return new DFA(states, alphabet, transitions, start, terminates);
-        if (alphabet.Contains(LambdaNDFA.Lambda))
-            return new LambdaNDFA(states, alphabet, transitions, start, terminates);
-        return new NDFA(states, alphabet, transitions, start, terminates);
+        return automata;
     }
 
     private IEnumerable<Transition> ParseTransitionTable(string source)
@@ -56,7 +52,7 @@ public class AutomataParser : IAutomataParser
     private HashSet<string> ParseTerminateStates(string source)
     {
         if (source.Length == 0)
-            throw new IncorrectInputException("Поле заключительных состояний заполнено некорректно");
+            throw new ArgumentException("Поле заключительных состояний заполнено некорректно");
         var matches = regexToReadTerminateStates.Matches(source);
         return matches.Select(m => m.Value).ToHashSet();
     }
@@ -64,7 +60,7 @@ public class AutomataParser : IAutomataParser
     private string ParseStartState(string source)
     {
         if (source.Length == 0)
-            throw new IncorrectInputException("Поле начальных состояний заполнено некорректно");
+            throw new ArgumentException("Поле начальных состояний заполнено некорректно");
         return source.Trim();
     }
 }

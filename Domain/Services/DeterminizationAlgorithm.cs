@@ -52,7 +52,8 @@ public class DeterminizationAlgorithm : IAlgorithmTransformer
                 }
             }
         }
-        var terminates = states.Select(x => x.StringToSet())
+        var terminates = states
+            .Select(x => x.StringToSet())
             .Where(s => s.Intersect(pure.TerminateStates).Any())
             .Select(s => s.SetToString())
             .ToHashSet();

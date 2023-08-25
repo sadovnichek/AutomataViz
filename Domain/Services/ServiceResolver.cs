@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DotFormat;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Domain.Services;
 
@@ -14,12 +15,15 @@ public class ServiceResolver : IServiceResolver
                 .AddSingleton<IService, VisualizationService>()
                 .AddSingleton<IService, RandomAutomataService>()
                 .AddSingleton<IService, LambdaClosureAlgorithm>()
+                .AddSingleton<IGraph, DotFormatBuilder>()
+                .AddSingleton<INodeShape, NodeShape>()
                 .BuildServiceProvider();
     }
 
     public T GetService<T>()
     {
-        return (T)serviceProvider.GetServices<IService>().First(a => a is T);
+        return (T)serviceProvider.GetServices<IService>()
+            .First(a => a is T);
     }
 
     public IAlgorithm GetAlgorithmByName(string serviceName)
@@ -29,8 +33,8 @@ public class ServiceResolver : IServiceResolver
 
     public IEnumerable<IAlgorithm> GetAllAlgorithms()
     {
-        return serviceProvider.GetServices<IService>()
-            .Where(service => service is IAlgorithm)
-            .Select(service => (IAlgorithm)service);
+        return serviceProvider
+            .GetServices<IService>()
+            .OfType<IAlgorithm>();
     }
 }

@@ -9,7 +9,7 @@ namespace DotFormat
     public class AttributesBuilder<T>
         where T : class
     {
-        protected Dictionary<string, string> Attributes = new Dictionary<string, string>();
+        protected Dictionary<string, string> Attributes = new();
 
         public T Color(string color)
         {
@@ -25,7 +25,7 @@ namespace DotFormat
 
         public T FontColor(string fontSize)
         {
-            Attributes.Add("fontcolor", fontSize.ToString());
+            Attributes.Add("fontcolor", fontSize);
             return this as T;
         }
 
