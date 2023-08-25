@@ -21,15 +21,15 @@ public class AutomataParser : IAutomataParser
             .Build();
 
         if (transitions.Count == 0)
-            throw new IncorrectInputException("Таблица переходов заполнена некорректно");
+            throw new ArgumentException("Таблица переходов заполнена некорректно");
         if (!automata.States.Contains(start))
-            throw new IncorrectInputException("Начальное состояние не указано в таблице переходов");
+            throw new ArgumentException("Начальное состояние не указано в таблице переходов");
         if (!automata.TerminateStates.IsSubsetOf(automata.States))
         {
             var unusedStates = automata.TerminateStates
                 .Where(x => !automata.States.Contains(x))
                 .ToHashSet();
-            throw new IncorrectInputException($"Состояния {{ {unusedStates.SetToString()} }} не указаны в таблице переходов");
+            throw new ArgumentException($"Состояния {{ {unusedStates.SetToString()} }} не указаны в таблице переходов");
         }
 
         return automata;
@@ -52,7 +52,7 @@ public class AutomataParser : IAutomataParser
     private HashSet<string> ParseTerminateStates(string source)
     {
         if (source.Length == 0)
-            throw new IncorrectInputException("Поле заключительных состояний заполнено некорректно");
+            throw new ArgumentException("Поле заключительных состояний заполнено некорректно");
         var matches = regexToReadTerminateStates.Matches(source);
         return matches.Select(m => m.Value).ToHashSet();
     }
@@ -60,7 +60,7 @@ public class AutomataParser : IAutomataParser
     private string ParseStartState(string source)
     {
         if (source.Length == 0)
-            throw new IncorrectInputException("Поле начальных состояний заполнено некорректно");
+            throw new ArgumentException("Поле начальных состояний заполнено некорректно");
         return source.Trim();
     }
 }

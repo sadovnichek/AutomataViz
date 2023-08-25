@@ -73,7 +73,7 @@ public partial class MainWindow
                 }
             }
         }
-        catch(IncorrectInputException exception)
+        catch(ArgumentException exception)
         {
             MessageBox.Show($"Ошибка ввода: {exception.Message}");
         }
@@ -131,7 +131,7 @@ public partial class MainWindow
             service.SaveAutomataImage(automata, imageFilePath);
             Visualization.Source = new BitmapImage(new Uri(imageFilePath));
         }
-        catch(IncorrectInputException exception)
+        catch(ArgumentException exception)
         {
             MessageBox.Show($"Ошибка ввода: {exception.Message}");
         }

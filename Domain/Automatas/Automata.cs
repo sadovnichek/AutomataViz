@@ -26,7 +26,7 @@ public abstract class Automata
                 output.Append($"{transition.State}.{transition.Symbol} = {transition.Value}");
                 output.Append('\t');
             }
-            output.Append('\n');
+            output.Append(Environment.NewLine);
         }
         return output.ToString();
     }

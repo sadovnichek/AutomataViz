@@ -33,16 +33,16 @@ namespace Domain.Automatas
             return this;
         }
 
-        public IAutomataBuilder AddTransitions(IEnumerable<Transition> transitions)
+        public IAutomataBuilder AddTransitions(IEnumerable<Transition> source)
         {
-            transitions.ToList()
+            source.ToList()
                 .ForEach(t => AddTransition(t.State, t.Symbol, t.Value));
             return this;
         }
 
-        public IAutomataBuilder SetStartState(string startState)
+        public IAutomataBuilder SetStartState(string state)
         {
-            this.startState = startState;
+            this.startState = state;
             return this;
         }
 
