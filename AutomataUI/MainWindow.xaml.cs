@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -10,26 +11,34 @@ using Domain.Automatas;
 using AutomataUI.Workspaces;
 using Application;
 using System.Linq;
-using Infrastructure;
 
 namespace AutomataUI;
 
 public partial class MainWindow
 {
     private readonly ScaleTransform scaleTransform;
-    private readonly IServiceResolver serviceResolver;
+    private readonly IVisualizationService visualizationService;
+    private readonly IRandomAutomataService randomAutomataService;
     private readonly IAutomataParser automataParser;
-    private readonly IWorkspaceResolver workspaceResolver;
+    private readonly IAutomataWorkspace automataWorkspace;
+    private readonly IWordInputWorkspace wordInputWorkspace;
+    private readonly IEnumerable<IAlgorithm> algorithms;
 
-    public MainWindow(IServiceResolver serviceResolver,
+    public MainWindow(IVisualizationService visualizationService,
+        IRandomAutomataService randomAutomataService,
+        IEnumerable<IAlgorithm> algorithms,
         IAutomataParser automataParser,
-        IWorkspaceResolver workspaceResolver)
+        IAutomataWorkspace automataWorkspace,
+        IWordInputWorkspace wordInputWorkspace)
     {
         InitializeComponent();
         ConfigureImagesDirectory();
-        this.serviceResolver = serviceResolver;
+        this.visualizationService = visualizationService;
         this.automataParser = automataParser;
-        this.workspaceResolver = workspaceResolver;
+        this.automataWorkspace = automataWorkspace;
+        this.wordInputWorkspace = wordInputWorkspace;
+        this.randomAutomataService = randomAutomataService;
+        this.algorithms = algorithms;
         scaleTransform = new ScaleTransform();
         Visualization.RenderTransform = scaleTransform;
     }
@@ -56,7 +65,7 @@ public partial class MainWindow
         {
             var automata = GetAutomata();
             var selectedAlgorithmName = Algorithms.SelectionBoxItem.ToString();
-            var service = serviceResolver.GetAlgorithmByName(selectedAlgorithmName);
+            var service = algorithms.First(x => x.Name == selectedAlgorithmName);
             switch (service)
             {
                 case IAlgorithmTransformer transformer:
@@ -66,8 +75,7 @@ public partial class MainWindow
                 }
                 case IAlgorithmRecognizer recognizer:
                 {
-                    var word = workspaceResolver.GetWorkspace<IWordInputWorkspace>()
-                        .GetInput();
+                    var word = wordInputWorkspace.GetInput();
                     ImplementRecognitionAlgorithm(automata, word, recognizer);
                     break;
                 }
@@ -86,8 +94,7 @@ public partial class MainWindow
     private void ImplementTransformerAlgorithm(Automata automata, IAlgorithmTransformer algorithm)
     {
         var transformed = algorithm.Get(automata);
-        workspaceResolver.GetWorkspace<IAutomataWorkspace>()
-            .AddContent(transformed);
+        automataWorkspace.AddContent(transformed);
     }
 
     private void ImplementRecognitionAlgorithm(Automata automata, string word, IAlgorithmRecognizer recognizer)
@@ -95,8 +102,7 @@ public partial class MainWindow
         var answer = recognizer.Get(automata, word) 
             ? "распознаёт" 
             : "не распознаёт";
-        workspaceResolver.GetWorkspace<IWordInputWorkspace>()
-            .AddContent(answer);
+        wordInputWorkspace.AddContent(answer);
     }
 
     private void SelectAlgorithm(object sender, EventArgs e)
@@ -106,14 +112,14 @@ public partial class MainWindow
         if (string.IsNullOrEmpty(selectedAlgorithmName))
             return;
         ImplementAlgorithmButton.IsEnabled = true;
-        var service = serviceResolver.GetAlgorithmByName(selectedAlgorithmName);
+        var service = algorithms.First(x => x.Name == selectedAlgorithmName);
         switch (service)
         {
             case IAlgorithmRecognizer:
-                workspaceResolver.GetWorkspace<IWordInputWorkspace>().Init(AnswerField);
+                wordInputWorkspace.Init(AnswerField);
                 break;
             case IAlgorithmTransformer:
-                workspaceResolver.GetWorkspace<IAutomataWorkspace>().Init(AnswerField);
+                automataWorkspace.Init(AnswerField);
                 break;
         }
     }
@@ -125,10 +131,9 @@ public partial class MainWindow
     {
         try
         {
-            var service = serviceResolver.GetService<IVisualizationService>();
             var automata = GetAutomata();
             var imageFilePath = $"{Directory.GetCurrentDirectory()}/images/{automata.Id}.png";
-            service.SaveAutomataImage(automata, imageFilePath);
+            visualizationService.SaveAutomataImage(automata, imageFilePath);
             Visualization.Source = new BitmapImage(new Uri(imageFilePath));
         }
         catch(ArgumentException exception)
@@ -154,7 +159,7 @@ public partial class MainWindow
     private void GetRandomNDFAOnButtonClick(object sender, RoutedEventArgs e)
     {
         var random = new Random();
-        var randomAutomata = serviceResolver.GetService<IRandomAutomataService>()
+        var randomAutomata = randomAutomataService
             .GetRandom(random.Next(3, 6), random.Next(2, 4), false);
         TableInput.Text = randomAutomata.GetTransitionTableFormatted();
         StartState.Text = randomAutomata.StartState;
@@ -164,7 +169,7 @@ public partial class MainWindow
     private void GetRandomDFAOnButtonClick(object sender, RoutedEventArgs e)
     {
         var random = new Random();
-        var randomAutomata = serviceResolver.GetService<IRandomAutomataService>()
+        var randomAutomata = randomAutomataService
             .GetRandom(random.Next(3, 10), random.Next(2, 4), true);
         TableInput.Text = randomAutomata.GetTransitionTableFormatted();
         StartState.Text = randomAutomata.StartState;
@@ -182,7 +187,7 @@ public partial class MainWindow
 
     private void AddAlgorithms(object sender, RoutedEventArgs e)
     {
-        serviceResolver.GetAllAlgorithms()
+        algorithms
             .ToList()
             .ForEach(algorithm => Algorithms.Items.Add(algorithm.Name));
     }

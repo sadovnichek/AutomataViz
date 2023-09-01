@@ -5,6 +5,7 @@ using Application;
 using Autofac;
 using AutomataUI.Workspaces;
 using Domain.Services;
+using DotFormat;
 
 namespace AutomataUI
 {
@@ -29,9 +30,17 @@ namespace AutomataUI
         private IContainer ConfigureContainer()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<ServiceResolver>().As<IServiceResolver>();
-            builder.RegisterType<AutomataParser>().As<IAutomataParser>();
-            builder.RegisterType<WorkspaceResolver>().As<IWorkspaceResolver>();
+            builder.RegisterType<VisualizationService>().As<IVisualizationService>().SingleInstance();
+            builder.RegisterType<DotFormatBuilder>().As<IGraph>().SingleInstance();
+            builder.RegisterType<NodeShape>().As<INodeShape>().SingleInstance();
+            builder.RegisterType<RandomAutomataService>().As<IRandomAutomataService>().SingleInstance();
+            builder.RegisterType<MinimizationAlgorithm>().As<IAlgorithm>().SingleInstance();
+            builder.RegisterType<DeterminizationAlgorithm>().As<IAlgorithm>().SingleInstance();
+            builder.RegisterType<WordRecognitionAlgorithm>().As<IAlgorithm>().SingleInstance();
+            builder.RegisterType<LambdaClosureAlgorithm>().As<IAlgorithm>().SingleInstance();
+            builder.RegisterType<AutomataParser>().As<IAutomataParser>().SingleInstance();
+            builder.RegisterType<AutomataWorkspace>().As<IAutomataWorkspace>().SingleInstance();
+            builder.RegisterType<WordInputWorkspace>().As<IWordInputWorkspace>().SingleInstance();
             builder.RegisterType<MainWindow>().AsSelf();
             return builder.Build();
         }
