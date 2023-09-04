@@ -81,7 +81,8 @@ public class Services_should
     [TestCase("aab", true)]
     public void Dfa_IsRecognizeWord_Correctly(string word, bool expected)
     {
-        Assert.AreEqual(expected, dfa.IsRecognizeWord(word));
+        var algorithm = new WordRecognitionAlgorithm();
+        Assert.AreEqual(expected, algorithm.Get(dfa, word));
     }
 
     [Test]
@@ -91,7 +92,8 @@ public class Services_should
     [TestCase("ab", true)]
     public void Ndfa_IsRecognizeWord_Correctly(string word, bool expected)
     {
-        Assert.AreEqual(expected, ndfa.IsRecognizeWord(word));
+        var algorithm = new WordRecognitionAlgorithm();
+        Assert.AreEqual(expected, algorithm.Get(ndfa, word));
     }
 
     [Test]
