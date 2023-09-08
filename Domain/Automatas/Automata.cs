@@ -1,9 +1,14 @@
 ﻿using System.Text;
+using Infrastructure;
 
 namespace Domain.Automatas;
 
 public abstract class Automata
 {
+    public static string Lambda => "λ";
+
+    public static string EmptySet => Extensions.EmptySet;
+
     public HashSet<Transition> Transitions { get; protected init; }
 
     public Guid Id { get; protected init; }

@@ -4,8 +4,6 @@ namespace Domain.Automatas
 { 
     public class LambdaNDFA : NDFA
     {
-        public static string Lambda => "λ";
-
         public LambdaNDFA(HashSet<string> states, 
             HashSet<string> alphabet, 
             HashSet<Transition> transitions, 

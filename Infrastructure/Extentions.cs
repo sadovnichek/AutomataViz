@@ -2,10 +2,12 @@
 
 public static class Extensions
 {
+    public static string EmptySet => "Ø";
+
     public static string SetToString(this HashSet<string> source, bool latex = false)
     {
         if (!source.Any())
-            return "Ø";
+            return EmptySet;
         if (source.Count == 1)
             return source.First();
         if (!latex) 
